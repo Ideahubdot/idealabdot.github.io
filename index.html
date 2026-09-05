@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>IDEA LAB — Interactive Physics</title>
+
+    <meta name="description" content="IDEA LAB — Explore physics through interactive simulations and experiments.">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #07111f;
+            color: #eef6ff;
+            line-height: 1.6;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* =========================
+           NAVIGATION
+        ========================= */
+
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 7%;
+
+            background: rgba(7, 17, 31, 0.88);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+            backdrop-filter: blur(14px);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .brand-symbol {
+            width: 38px;
+            height: 38px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border: 1px solid rgba(90, 190, 255, 0.5);
+            border-radius: 10px;
+
+            background: rgba(50, 150, 220, 0.12);
+
+            font-size: 19px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #aebed1;
+            font-size: 14px;
+            transition: 0.25s ease;
+        }
+
+        .nav-links a:hover {
+            color: #ffffff;
+        }
+
+        /* =========================
+           HERO
+        ========================= */
+
+        .hero {
+            position: relative;
+            min-height: 650px;
+
+            display: flex;
+            align-items: center;
+
+            padding: 90px 7% 100px;
+
+            overflow: hidden;
+
+            background:
+                radial-gradient(circle at 80% 25%, rgba(37, 139, 214, 0.18), transparent 32%),
+                radial-gradient(circle at 15% 80%, rgba(86, 70, 180, 0.12), transparent 28%),
+                #07111f;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+
+            background-image:
+                linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+
+            background-size: 50px 50px;
+
+            mask-image: linear-gradient(to bottom, black, transparent);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+
+            max-width: 850px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+
+            padding: 7px 13px;
+
+            border: 1px solid rgba(100, 200, 255, 0.25);
+            border-radius: 999px;
+
+            background: rgba(70, 170, 230, 0.08);
+
+            color: #8ed9ff;
+
+            font-size: 12px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .eyebrow-dot {
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
+
+            background: #66d6ff;
+            box-shadow: 0 0 12px rgba(102, 214, 255, 0.9);
+        }
+
+        .hero h1 {
+            margin-top: 25px;
+
+            font-size: clamp(58px, 10vw, 118px);
+            line-height: 0.9;
+
+            letter-spacing: -5px;
+
+            color: #ffffff;
+        }
+
+        .hero h1 span {
+            color: #70d5ff;
+        }
+
+        .hero-subtitle {
+            margin-top: 28px;
+
+            max-width: 690px;
+
+            font-size: clamp(18px, 2.2vw, 25px);
+            color: #c2d0df;
+
+            font-weight: 300;
+        }
+
+        .hero-description {
+            margin-top: 16px;
+
+            max-width: 650px;
+
+            color: #8294a8;
+            font-size: 15px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 14px;
+
+            margin-top: 35px;
+
+            flex-wrap: wrap;
+        }
+
+        .primary-button,
+        .secondary-button {
+            padding: 13px 21px;
+
+            border-radius: 9px;
+
+            font-size: 14px;
+            font-weight: 600;
+
+            transition: 0.25s ease;
+        }
+
+        .primary-button {
+            background: #72d6ff;
+            color: #04111c;
+
+            box-shadow: 0 0 25px rgba(114, 214, 255, 0.16);
+        }
+
+        .primary-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 35px rgba(114, 214, 255, 0.3);
+        }
+
+        .secondary-button {
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.04);
+            color: #d9e7f4;
+        }
+
+        .secondary-button:hover {
+            background: rgba(255,255,255,0.08);
+        }
+
+        /* =========================
+           SECTION
+        ========================= */
+
+        .section {
+            padding: 90px 7%;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+
+            gap: 30px;
+
+            margin-bottom: 38px;
+        }
+
+        .section-label {
+            color: #72d6ff;
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .section-title {
+            margin-top: 8px;
+
+            font-size: clamp(30px, 4vw, 48px);
+            line-height: 1.1;
+        }
+
+        .section-description {
+            max-width: 520px;
+
+            color: #8294a8;
+            font-size: 14px;
+        }
+
+        /* =========================
+           SEARCH
+        ========================= */
+
+        .search-box {
+            max-width: 700px;
+            margin: 0 auto 45px;
+
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+
+            padding: 17px 22px 17px 50px;
+
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 12px;
+
+            outline: none;
+
+            background: rgba(255,255,255,0.045);
+
+            color: white;
+
+            font-size: 15px;
+
+            transition: 0.25s ease;
+        }
+
+        .search-box input:focus {
+            border-color: rgba(112, 213, 255, 0.5);
+
+            box-shadow: 0 0 25px rgba(112, 213, 255, 0.08);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 19px;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            color: #8294a8;
+            font-size: 18px;
+        }
+
+        /* =========================
+           CATEGORIES
+        ========================= */
+
+        .categories {
+            display: flex;
+            gap: 10px;
+
+            flex-wrap: wrap;
+
+            margin-bottom: 35px;
+        }
+
+        .category {
+            padding: 9px 15px;
+
+            border-radius: 999px;
+
+            border: 1px solid rgba(255,255,255,0.1);
+
+            background: rgba(255,255,255,0.035);
+
+            color: #9eb0c4;
+
+            font-size: 13px;
+
+            cursor: pointer;
+
+            transition: 0.25s ease;
+        }
+
+        .category:hover,
+        .category.active {
+            color: #07111f;
+            background: #72d6ff;
+            border-color: #72d6ff;
+        }
+
+        /* =========================
+           ANIMATION CARD
+        ========================= */
+
+        .animation-grid {
+            display: grid;
+
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+
+            gap: 20px;
+        }
+
+        .animation-card {
+            position: relative;
+
+            padding: 28px;
+
+            min-height: 275px;
+
+            display: flex;
+            flex-direction: column;
+
+            border: 1px solid rgba(255,255,255,0.09);
+            border-radius: 16px;
+
+            background:
+                linear-gradient(145deg, rgba(255,255,255,0.055), rgba(255,255,255,0.018));
+
+            overflow: hidden;
+
+            transition: 0.3s ease;
+        }
+
+        .animation-card::before {
+            content: "";
+
+            position: absolute;
+
+            width: 150px;
+            height: 150px;
+
+            right: -70px;
+            top: -70px;
+
+            border-radius: 50%;
+
+            background: rgba(91, 202, 255, 0.12);
+
+            filter: blur(20px);
+        }
+
+        .animation-card:hover {
+            transform: translateY(-5px);
+
+            border-color: rgba(112, 213, 255, 0.3);
+
+            box-shadow: 0 18px 50px rgba(0,0,0,0.25);
+        }
+
+        .card-number {
+            color: #72d6ff;
+
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            margin: 20px 0;
+
+            border-radius: 12px;
+
+            background: rgba(112, 213, 255, 0.08);
+
+            border: 1px solid rgba(112, 213, 255, 0.16);
+
+            font-size: 22px;
+        }
+
+        .animation-card h3 {
+            font-size: 20px;
+            line-height: 1.3;
+
+            margin-bottom: 10px;
+        }
+
+        .animation-card p {
+            color: #8294a8;
+            font-size: 13px;
+        }
+
+        .card-link {
+            margin-top: auto;
+            padding-top: 25px;
+
+            color: #72d6ff;
+
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        /* =========================
+           INFO STRIP
+        ========================= */
+
+        .info-strip {
+            margin: 20px 7% 90px;
+
+            padding: 35px;
+
+            display: grid;
+
+            grid-template-columns: repeat(3, 1fr);
+
+            gap: 25px;
+
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+
+            background: rgba(255,255,255,0.025);
+        }
+
+        .info-item {
+            text-align: center;
+        }
+
+        .info-number {
+            font-size: 30px;
+            font-weight: 700;
+
+            color: #ffffff;
+        }
+
+        .info-text {
+            color: #8294a8;
+            font-size: 12px;
+
+            margin-top: 5px;
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+            padding: 35px 7%;
+
+            border-top: 1px solid rgba(255,255,255,0.08);
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            gap: 20px;
+
+            color: #708296;
+            font-size: 12px;
+        }
+
+        .footer-brand {
+            color: #dbe9f5;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 700px) {
+
+            .navbar {
+                padding: 0 5%;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                min-height: 600px;
+                padding: 75px 5%;
+            }
+
+            .hero h1 {
+                letter-spacing: -3px;
+            }
+
+            .section {
+                padding: 70px 5%;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: start;
+            }
+
+            .info-strip {
+                margin-left: 5%;
+                margin-right: 5%;
+
+                grid-template-columns: 1fr;
+            }
+
+            footer {
+                flex-direction: column;
+                align-items: start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================
+         NAVIGATION
+    ========================== -->
+
+    <nav class="navbar">
+
+        <a href="#" class="brand">
+            <div class="brand-symbol">⚛</div>
+            IDEA LAB
+        </a>
+
+        <div class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#library">Animations</a>
+            <a href="#topics">Topics</a>
+        </div>
+
+    </nav>
+
+
+    <!-- =========================
+         HERO
+    ========================== -->
+
+    <header class="hero" id="home">
+
+        <div class="hero-content">
+
+            <div class="eyebrow">
+                <span class="eyebrow-dot"></span>
+                Interactive Physics Laboratory
+            </div>
+
+            <h1>
+                IDEA<br>
+                <span>LAB.</span>
+            </h1>
+
+            <p class="hero-subtitle">
+                Explore physics. Experiment with ideas. Understand how it works.
+            </p>
+
+            <p class="hero-description">
+                An interactive collection of physics simulations designed to turn
+                concepts and equations into something you can actually see,
+                manipulate and explore.
+            </p>
+
+            <div class="hero-buttons">
+                <a href="#library" class="primary-button">
+                    Explore Simulations →
+                </a>
+
+                <a href="#topics" class="secondary-button">
+                    Browse Topics
+                </a>
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================
+         LIBRARY
+    ========================== -->
+
+    <section class="section" id="library">
+
+        <div class="section-header">
+
+            <div>
+                <div class="section-label">Simulation Library</div>
+
+                <h2 class="section-title">
+                    Learn by seeing it happen.
+                </h2>
+            </div>
+
+            <p class="section-description">
+                Interactive experiments that allow you to change parameters,
+                observe physical behaviour and understand the concepts behind it.
+            </p>
+
+        </div>
+
+
+        <!-- SEARCH -->
+
+        <div class="search-box">
+
+            <span class="search-icon">⌕</span>
+
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Search simulations..."
+                onkeyup="searchAnimations()"
+            >
+
+        </div>
+
+
+        <!-- CATEGORIES -->
+
+        <div class="categories" id="topics">
+
+            <button class="category active" onclick="filterCategory('all', this)">
+                All
+            </button>
+
+            <button class="category" onclick="filterCategory('waves', this)">
+                Waves
+            </button>
+
+            <button class="category" onclick="filterCategory('optics', this)">
+                Optics
+            </button>
+
+            <button class="category" onclick="filterCategory('interference', this)">
+                Interference
+            </button>
+
+            <button class="category" onclick="filterCategory('mechanics', this)">
+                Mechanics
+            </button>
+
+            <button class="category" onclick="filterCategory('electricity', this)">
+                Electricity
+            </button>
+
+        </div>
+
+
+        <!-- ANIMATION CARDS -->
+
+        <div class="animation-grid" id="animationGrid">
+
+
+            <!-- YOUNG'S DOUBLE SLIT -->
+
+            <article
+                class="animation-card"
+                data-category="waves optics interference"
+                data-title="Young's Double-Slit Experiment"
+            >
+
+                <div class="card-number">
+                    001 / OPTICS
+                </div>
+
+                <div class="card-icon">
+                    ∿
+                </div>
+
+                <h3>
+                    Young's Double-Slit Experiment
+                </h3>
+
+                <p>
+                    Explore wave interference, fringe formation and
+                    the relationship between wavelength, slit separation
+                    and screen distance.
+                </p>
+
+                <a
+                    href="animations/young-double-slit.html"
+                    class="card-link"
+                >
+                    Launch Simulation →
+                </a>
+
+            </article>
+
+
+            <!-- FUTURE CARD -->
+
+            <article
+                class="animation-card"
+                data-category="waves"
+                data-title="Coming Soon"
+            >
+
+                <div class="card-number">
+                    002 / COMING SOON
+                </div>
+
+                <div class="card-icon">
+                    ≋
+                </div>
+
+                <h3>
+                    More Experiments
+                </h3>
+
+                <p>
+                    New interactive physics simulations will be added
+                    to the IDEA LAB library as the project grows.
+                </p>
+
+                <span class="card-link">
+                    Coming soon
+                </span>
+
+            </article>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         PROJECT INFO
+    ========================== -->
+
+    <div class="info-strip">
+
+        <div class="info-item">
+
+            <div class="info-number">
+                01
+            </div>
+
+            <div class="info-text">
+                Interactive Simulation
+            </div>
+
+        </div>
+
+
+        <div class="info-item">
+
+            <div class="info-number">
+                ∞
+            </div>
+
+            <div class="info-text">
+                Ideas to Explore
+            </div>
+
+        </div>
+
+
+        <div class="info-item">
+
+            <div class="info-number">
+                01
+            </div>
+
+            <div class="info-text">
+                Physics Laboratory
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+
+    <footer>
+
+        <div class="footer-brand">
+            IDEA LAB
+        </div>
+
+        <div>
+            Interactive Physics • Explore • Experiment • Understand
+        </div>
+
+    </footer>
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================== -->
+
+    <script>
+
+        function searchAnimations() {
+
+            const search =
+                document.getElementById("searchInput")
+                .value
+                .toLowerCase();
+
+            const cards =
+                document.querySelectorAll(".animation-card");
+
+            cards.forEach(card => {
+
+                const title =
+                    card.dataset.title.toLowerCase();
+
+                const category =
+                    card.dataset.category.toLowerCase();
+
+                if (
+                    title.includes(search) ||
+                    category.includes(search)
+                ) {
+
+                    card.style.display = "flex";
+
+                } else {
+
+                    card.style.display = "none";
+
+                }
+
+            });
+
+        }
+
+
+        function filterCategory(category, button) {
+
+            const buttons =
+                document.querySelectorAll(".category");
+
+            buttons.forEach(btn => {
+                btn.classList.remove("active");
+            });
+
+            button.classList.add("active");
+
+
+            const cards =
+                document.querySelectorAll(".animation-card");
+
+
+            cards.forEach(card => {
+
+                if (category === "all") {
+
+                    card.style.display = "flex";
+
+                } else {
+
+                    const categories =
+                        card.dataset.category;
+
+                    if (categories.includes(category)) {
+
+                        card.style.display = "flex";
+
+                    } else {
+
+                        card.style.display = "none";
+
+                    }
+
+                }
+
+            });
+
+
+            document.getElementById("searchInput").value = "";
+
+        }
+
+    </script>
+
+</body>
+</html>
