@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Simple Harmonic Motion Simulation | IDEA LAB</title>
+
+<meta name="description" content="Explore simple harmonic motion with an interactive physics simulation. Adjust amplitude, frequency and phase to observe displacement, velocity and acceleration in real time.">
+
+<meta name="keywords" content="simple harmonic motion simulation, SHM simulation, harmonic motion, physics simulation, oscillation simulation, amplitude, frequency, phase, displacement velocity acceleration">
+
+<meta name="author" content="IDEA LAB">
+
+<link rel="canonical" href="https://ideahubdot.github.io/idealabdot.github.io/animations/simple-harmonic-motion.html">
+
+<meta property="og:title" content="Simple Harmonic Motion Simulation | IDEA LAB">
+<meta property="og:description" content="Explore simple harmonic motion interactively. Change amplitude, frequency and phase and observe displacement, velocity and acceleration in real time.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ideahubdot.github.io/idealabdot.github.io/animations/simple-harmonic-motion.html">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Simple Harmonic Motion Simulation | IDEA LAB">
+<meta name="twitter:description" content="Explore simple harmonic motion with an interactive physics simulation.">
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    background:#07090d;
+    color:#e8edf5;
+    font-family:Inter,Segoe UI,Arial,sans-serif;
+    min-height:100vh;
+}
+
+.topbar{
+    height:64px;
+    border-bottom:1px solid #1b2029;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 28px;
+    background:#090c11;
+    position:sticky;
+    top:0;
+    z-index:20;
+}
+
+.brand{
+    font-size:17px;
+    font-weight:700;
+    letter-spacing:1.5px;
+}
+
+.back{
+    color:#8f9aaa;
+    text-decoration:none;
+    font-size:14px;
+    transition:.2s;
+}
+
+.back:hover{
+    color:#fff;
+}
+
+.container{
+    width:min(1180px,94%);
+    margin:auto;
+    padding:34px 0 60px;
+}
+
+.hero{
+    margin-bottom:28px;
+}
+
+.kicker{
+    color:#788596;
+    text-transform:uppercase;
+    letter-spacing:2px;
+    font-size:11px;
+    margin-bottom:10px;
+}
+
+h1{
+    font-size:clamp(28px,4vw,46px);
+    line-height:1.05;
+    margin-bottom:12px;
+}
+
+.subtitle{
+    color:#9ca7b7;
+    max-width:760px;
+    line-height:1.7;
+    font-size:15px;
+}
+
+.simulation{
+    display:grid;
+    grid-template-columns:1fr 340px;
+    gap:18px;
+}
+
+.card{
+    background:#0c1016;
+    border:1px solid #1b212b;
+    border-radius:16px;
+    overflow:hidden;
+}
+
+.visual{
+    min-height:520px;
+    padding:18px;
+    position:relative;
+}
+
+.canvas-wrap{
+    height:100%;
+    min-height:480px;
+    position:relative;
+}
+
+canvas{
+    width:100%;
+    height:100%;
+    display:block;
+    border-radius:10px;
+}
+
+.controls{
+    padding:20px;
+}
+
+.section-title{
+    font-size:12px;
+    color:#788596;
+    text-transform:uppercase;
+    letter-spacing:1.5px;
+    margin-bottom:17px;
+}
+
+.control{
+    margin-bottom:21px;
+}
+
+.control-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:9px;
+}
+
+.control-name{
+    font-size:14px;
+}
+
+.value{
+    color:#b8c2d0;
+    font-family:monospace;
+    font-size:13px;
+}
+
+input[type="range"]{
+    width:100%;
+    accent-color:#cbd5e1;
+    cursor:pointer;
+}
+
+.buttons{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:9px;
+    margin-top:7px;
+}
+
+button{
+    border:1px solid #29313d;
+    background:#11161e;
+    color:#e8edf5;
+    border-radius:9px;
+    padding:11px 10px;
+    cursor:pointer;
+    font-size:13px;
+    transition:.2s;
+}
+
+button:hover{
+    background:#171d26;
+    border-color:#414b59;
+}
+
+button.primary{
+    background:#e8edf5;
+    color:#090c11;
+    border-color:#e8edf5;
+    font-weight:600;
+}
+
+button.primary:hover{
+    background:#fff;
+}
+
+.info-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+    margin-top:18px;
+}
+
+.info{
+    background:#0c1016;
+    border:1px solid #1b212b;
+    border-radius:14px;
+    padding:17px;
+}
+
+.info-label{
+    color:#727e8e;
+    text-transform:uppercase;
+    letter-spacing:1.2px;
+    font-size:10px;
+    margin-bottom:8px;
+}
+
+.info-value{
+    font-family:monospace;
+    font-size:18px;
+}
+
+.equations{
+    margin-top:18px;
+    padding:21px;
+    background:#0c1016;
+    border:1px solid #1b212b;
+    border-radius:14px;
+}
+
+.eq-title{
+    color:#788596;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:1.5px;
+    margin-bottom:16px;
+}
+
+.equation{
+    font-family:Georgia,serif;
+    font-size:19px;
+    padding:9px 0;
+    color:#dce3ed;
+}
+
+.explanation{
+    margin-top:18px;
+    padding:22px;
+    border:1px solid #1b212b;
+    border-radius:14px;
+    background:#0c1016;
+}
+
+.explanation h2{
+    font-size:18px;
+    margin-bottom:12px;
+}
+
+.explanation p{
+    color:#9ca7b7;
+    line-height:1.75;
+    font-size:14px;
+    margin-bottom:10px;
+}
+
+.legend{
+    position:absolute;
+    left:30px;
+    top:30px;
+    z-index:3;
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+    background:rgba(7,9,13,.82);
+    border:1px solid #202732;
+    border-radius:9px;
+    padding:10px 12px;
+    backdrop-filter:blur(6px);
+}
+
+.legend span{
+    color:#9ba6b5;
+    font-size:11px;
+}
+
+.dot{
+    display:inline-block;
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    margin-right:7px;
+    background:#d8e0eb;
+}
+
+.status{
+    position:absolute;
+    right:30px;
+    top:30px;
+    z-index:3;
+    background:rgba(7,9,13,.82);
+    border:1px solid #202732;
+    border-radius:9px;
+    padding:9px 12px;
+    color:#9ba6b5;
+    font-size:11px;
+    backdrop-filter:blur(6px);
+}
+
+@media(max-width:900px){
+
+    .simulation{
+        grid-template-columns:1fr;
+    }
+
+    .visual{
+        min-height:460px;
+    }
+
+    .canvas-wrap{
+        min-height:420px;
+    }
+
+}
+
+@media(max-width:600px){
+
+    .topbar{
+        padding:0 16px;
+    }
+
+    .container{
+        width:92%;
+        padding-top:25px;
+    }
+
+    .info-grid{
+        grid-template-columns:1fr;
+    }
+
+    .visual{
+        min-height:390px;
+        padding:10px;
+    }
+
+    .canvas-wrap{
+        min-height:350px;
+    }
+
+    .legend{
+        left:20px;
+        top:20px;
+    }
+
+    .status{
+        right:20px;
+        top:20px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+    <div class="brand">IDEA LAB</div>
+    <a class="back" href="../index.html">← Back to Library</a>
+</header>
+
+<main class="container">
+
+    <section class="hero">
+        <div class="kicker">Simulation #003 · Mechanics</div>
+
+        <h1>Simple Harmonic Motion</h1>
+
+        <p class="subtitle">
+            Explore oscillatory motion by changing amplitude, frequency and phase.
+            Observe displacement, velocity and acceleration as the particle moves.
+        </p>
+    </section>
+
+    <section class="simulation">
+
+        <div class="card visual">
+
+            <div class="legend">
+                <span><i class="dot"></i>Oscillating particle</span>
+                <span>Position → x</span>
+                <span>Equilibrium → 0</span>
+            </div>
+
+            <div class="status" id="status">
+                Running
+            </div>
+
+            <div class="canvas-wrap">
+                <canvas id="canvas"></canvas>
+            </div>
+
+        </div>
+
+        <aside class="card controls">
+
+            <div class="section-title">
+                Controls
+            </div>
+
+            <div class="control">
+
+                <div class="control-head">
+                    <span class="control-name">Amplitude A</span>
+                    <span class="value" id="ampValue">2.0 m</span>
+                </div>
+
+                <input
+                    id="amplitude"
+                    type="range"
+                    min="0.5"
+                    max="4"
+                    step="0.1"
+                    value="2"
+                >
+
+            </div>
+
+            <div class="control">
+
+                <div class="control-head">
+                    <span class="control-name">Frequency f</span>
+                    <span class="value" id="freqValue">0.50 Hz</span>
+                </div>
+
+                <input
+                    id="frequency"
+                    type="range"
+                    min="0.1"
+                    max="2"
+                    step="0.05"
+                    value="0.5"
+                >
+
+            </div>
+
+            <div class="control">
+
+                <div class="control-head">
+                    <span class="control-name">Phase φ</span>
+                    <span class="value" id="phaseValue">0 rad</span>
+                </div>
+
+                <input
+                    id="phase"
+                    type="range"
+                    min="-3.14"
+                    max="3.14"
+                    step="0.01"
+                    value="0"
+                >
+
+            </div>
+
+            <div class="buttons">
+
+                <button
+                    class="primary"
+                    id="playBtn"
+                >
+                    Pause
+                </button>
+
+                <button id="resetBtn">
+                    Reset
+                </button>
+
+            </div>
+
+        </aside>
+
+    </section>
+
+    <section class="info-grid">
+
+        <div class="info">
+            <div class="info-label">Time</div>
+            <div class="info-value" id="timeInfo">0.00 s</div>
+        </div>
+
+        <div class="info">
+            <div class="info-label">Displacement</div>
+            <div class="info-value" id="xInfo">2.00 m</div>
+        </div>
+
+        <div class="info">
+            <div class="info-label">Velocity</div>
+            <div class="info-value" id="vInfo">0.00 m/s</div>
+        </div>
+
+        <div class="info">
+            <div class="info-label">Acceleration</div>
+            <div class="info-value" id="aInfo">-4.93 m/s²</div>
+        </div>
+
+        <div class="info">
+            <div class="info-label">Angular Frequency ω</div>
+            <div class="info-value" id="omegaInfo">3.14 rad/s</div>
+        </div>
+
+        <div class="info">
+            <div class="info-label">Period T</div>
+            <div class="info-value" id="periodInfo">2.00 s</div>
+        </div>
+
+    </section>
+
+    <section class="equations">
+
+        <div class="eq-title">
+            Equations of SHM
+        </div>
+
+        <div class="equation">
+            x = A cos(ωt + φ)
+        </div>
+
+        <div class="equation">
+            v = −Aω sin(ωt + φ)
+        </div>
+
+        <div class="equation">
+            a = −Aω² cos(ωt + φ) = −ω²x
+        </div>
+
+    </section>
+
+    <section class="explanation">
+
+        <h2>What is happening?</h2>
+
+        <p>
+            In simple harmonic motion, the particle oscillates repeatedly about
+            an equilibrium position.
+        </p>
+
+        <p>
+            The restoring acceleration is always directed towards the equilibrium
+            position and is proportional to the displacement:
+            <strong>a = −ω²x</strong>.
+        </p>
+
+        <p>
+            At the extreme positions, displacement is maximum and velocity becomes
+            zero. At equilibrium, velocity is maximum while displacement is zero.
+        </p>
+
+    </section>
+
+</main>
+
+<script>
+
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+const amplitudeSlider = document.getElementById("amplitude");
+const frequencySlider = document.getElementById("frequency");
+const phaseSlider = document.getElementById("phase");
+
+const ampValue = document.getElementById("ampValue");
+const freqValue = document.getElementById("freqValue");
+const phaseValue = document.getElementById("phaseValue");
+
+const timeInfo = document.getElementById("timeInfo");
+const xInfo = document.getElementById("xInfo");
+const vInfo = document.getElementById("vInfo");
+const aInfo = document.getElementById("aInfo");
+const omegaInfo = document.getElementById("omegaInfo");
+const periodInfo = document.getElementById("periodInfo");
+
+const playBtn = document.getElementById("playBtn");
+const resetBtn = document.getElementById("resetBtn");
+const status = document.getElementById("status");
+
+let amplitude = 2;
+let frequency = 0.5;
+let phase = 0;
+
+let time = 0;
+let running = true;
+
+let lastTimestamp = performance.now();
+
+const graphPoints = [];
+
+function resizeCanvas(){
+
+    const rect = canvas.getBoundingClientRect();
+
+    const dpr = window.devicePixelRatio || 1;
+
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+
+}
+
+window.addEventListener("resize",resizeCanvas);
+
+resizeCanvas();
+
+
+amplitudeSlider.addEventListener("input",function(){
+
+    amplitude = Number(this.value);
+
+    updateLabels();
+
+});
+
+
+frequencySlider.addEventListener("input",function(){
+
+    frequency = Number(this.value);
+
+    updateLabels();
+
+});
+
+
+phaseSlider.addEventListener("input",function(){
+
+    phase = Number(this.value);
+
+    updateLabels();
+
+});
+
+
+playBtn.addEventListener("click",function(){
+
+    running = !running;
+
+    playBtn.textContent = running ? "Pause" : "Play";
+
+    status.textContent = running ? "Running" : "Paused";
+
+});
+
+
+resetBtn.addEventListener("click",function(){
+
+    time = 0;
+    graphPoints.length = 0;
+
+    running = true;
+
+    playBtn.textContent = "Pause";
+    status.textContent = "Running";
+
+});
+
+
+function updateLabels(){
+
+    ampValue.textContent =
+        amplitude.toFixed(1) + " m";
+
+    freqValue.textContent =
+        frequency.toFixed(2) + " Hz";
+
+    phaseValue.textContent =
+        phase.toFixed(2) + " rad";
+
+}
+
+
+function physics(){
+
+    const omega = 2 * Math.PI * frequency;
+
+    const angle = omega * time + phase;
+
+    const x = amplitude * Math.cos(angle);
+
+    const v = -amplitude * omega * Math.sin(angle);
+
+    const a = -amplitude * omega * omega * Math.cos(angle);
+
+    return {
+        omega,
+        x,
+        v,
+        a
+    };
+
+}
+
+
+function updateInfo(){
+
+    const p = physics();
+
+    const period = 1 / frequency;
+
+    timeInfo.textContent =
+        time.toFixed(2) + " s";
+
+    xInfo.textContent =
+        p.x.toFixed(2) + " m";
+
+    vInfo.textContent =
+        p.v.toFixed(2) + " m/s";
+
+    aInfo.textContent =
+        p.a.toFixed(2) + " m/s²";
+
+    omegaInfo.textContent =
+        p.omega.toFixed(2) + " rad/s";
+
+    periodInfo.textContent =
+        period.toFixed(2) + " s";
+
+}
+
+
+function draw(){
+
+    const width = canvas.clientWidth;
+    const height = canvas.clientHeight;
+
+    ctx.clearRect(0,0,width,height);
+
+    /*
+        Background
+    */
+
+    ctx.fillStyle = "#090c11";
+    ctx.fillRect(0,0,width,height);
+
+
+    /*
+        Main oscillator area
+    */
+
+    const centerY = height * 0.34;
+
+    const left = width * 0.10;
+    const right = width * 0.90;
+
+    const centerX = (left + right) / 2;
+
+    const trackWidth = right - left;
+
+    const maxAmplitude = 4;
+
+    const p = physics();
+
+    const particleX =
+        centerX +
+        (p.x / maxAmplitude) *
+        (trackWidth * 0.42);
+
+
+    /*
+        Grid
+    */
+
+    ctx.strokeStyle = "#161c24";
+    ctx.lineWidth = 1;
+
+    for(let i=0;i<=8;i++){
+
+        const x =
+            left + (trackWidth / 8) * i;
+
+        ctx.beginPath();
+        ctx.moveTo(x,centerY-70);
+        ctx.lineTo(x,centerY+70);
+        ctx.stroke();
+
+    }
+
+
+    for(let i=-2;i<=2;i++){
+
+        const y =
+            centerY + i * 35;
+
+        ctx.beginPath();
+        ctx.moveTo(left,y);
+        ctx.lineTo(right,y);
+        ctx.stroke();
+
+    }
+
+
+    /*
+        Equilibrium line
+    */
+
+    ctx.strokeStyle = "#5e6877";
+    ctx.setLineDash([6,6]);
+
+    ctx.beginPath();
+    ctx.moveTo(left,centerY);
+    ctx.lineTo(right,centerY);
+    ctx.stroke();
+
+    ctx.setLineDash([]);
+
+
+    /*
+        Amplitude markers
+    */
+
+    const positiveLimit =
+        centerX + (trackWidth * 0.42);
+
+    const negativeLimit =
+        centerX - (trackWidth * 0.42);
+
+    ctx.strokeStyle = "#3d4653";
+
+    ctx.beginPath();
+    ctx.moveTo(positiveLimit,centerY-12);
+    ctx.lineTo(positiveLimit,centerY+12);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(negativeLimit,centerY-12);
+    ctx.lineTo(negativeLimit,centerY+12);
+    ctx.stroke();
+
+
+    /*
+        Spring-like oscillator line
+    */
+
+    ctx.strokeStyle = "#7d8998";
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+
+    const startX = left;
+    const endX = particleX;
+
+    const coils = 18;
+    const springLength = Math.max(20,endX-startX-20);
+
+    ctx.moveTo(startX,centerY);
+
+    for(let i=1;i<=coils;i++){
+
+        const px =
+            startX + springLength * i / coils;
+
+        let py = centerY;
+
+        if(i < coils){
+
+            py =
+                centerY +
+                (i % 2 === 0 ? -8 : 8);
+
+        }
+
+        ctx.lineTo(px,py);
+
+    }
+
+    ctx.lineTo(particleX,centerY);
+
+    ctx.stroke();
+
+
+    /*
+        Wall
+    */
+
+    ctx.strokeStyle = "#8993a0";
+    ctx.lineWidth = 3;
+
+    ctx.beginPath();
+    ctx.moveTo(left,centerY-45);
+    ctx.lineTo(left,centerY+45);
+    ctx.stroke();
+
+
+    /*
+        Particle
+    */
+
+    ctx.beginPath();
+
+    ctx.arc(
+        particleX,
+        centerY,
+        13,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fillStyle = "#e6edf5";
+    ctx.fill();
+
+    ctx.strokeStyle = "#8995a5";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+
+    /*
+        Direction arrow
+    */
+
+    if(Math.abs(p.v) > 0.05){
+
+        const direction = p.v > 0 ? 1 : -1;
+
+        const arrowStart = particleX;
+        const arrowEnd = particleX + direction * 55;
+
+        ctx.strokeStyle = "#9ba7b6";
+        ctx.lineWidth = 2;
+
+        ctx.beginPath();
+        ctx.moveTo(arrowStart,centerY-35);
+        ctx.lineTo(arrowEnd,centerY-35);
+        ctx.stroke();
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            arrowEnd,
+            centerY-35
+        );
+
+        ctx.lineTo(
+            arrowEnd-direction*9,
+            centerY-41
+        );
+
+        ctx.lineTo(
+            arrowEnd-direction*9,
+            centerY-29
+        );
+
+        ctx.closePath();
+
+        ctx.fillStyle = "#9ba7b6";
+        ctx.fill();
+
+    }
+
+
+    /*
+        Labels
+    */
+
+    ctx.font = "12px Arial";
+    ctx.fillStyle = "#7d8998";
+
+    ctx.textAlign = "center";
+
+    ctx.fillText(
+        "−A",
+        negativeLimit,
+        centerY+42
+    );
+
+    ctx.fillText(
+        "0  equilibrium",
+        centerX,
+        centerY+42
+    );
+
+    ctx.fillText(
+        "+A",
+        positiveLimit,
+        centerY+42
+    );
+
+
+    /*
+        Wave graph
+    */
+
+    const graphTop = height * 0.58;
+    const graphBottom = height * 0.90;
+
+    ctx.fillStyle = "#0b0f15";
+
+    ctx.fillRect(
+        left,
+        graphTop,
+        trackWidth,
+        graphBottom-graphTop
+    );
+
+
+    ctx.strokeStyle = "#202731";
+    ctx.lineWidth = 1;
+
+    ctx.beginPath();
+    ctx.moveTo(left,graphTop);
+    ctx.lineTo(left,graphBottom);
+    ctx.lineTo(right,graphBottom);
+    ctx.stroke();
+
+
+    const graphCenter =
+        (graphTop + graphBottom) / 2;
+
+    ctx.strokeStyle = "#29313c";
+
+    ctx.setLineDash([5,5]);
+
+    ctx.beginPath();
+    ctx.moveTo(left,graphCenter);
+    ctx.lineTo(right,graphCenter);
+    ctx.stroke();
+
+    ctx.setLineDash([]);
+
+
+    /*
+        Store graph history
+    */
+
+    if(running){
+
+        graphPoints.push({
+            t:time,
+            x:p.x
+        });
+
+    }
+
+    const visibleTime = 8;
+
+    while(
+        graphPoints.length &&
+        graphPoints[0].t < time-visibleTime
+    ){
+
+        graphPoints.shift();
+
+    }
+
+
+    /*
+        Draw SHM graph
+    */
+
+    if(graphPoints.length > 1){
+
+        ctx.strokeStyle = "#dce4ed";
+        ctx.lineWidth = 2;
+
+        ctx.beginPath();
+
+        graphPoints.forEach((point,index)=>{
+
+            const gx =
+                left +
+                ((point.t-(time-visibleTime))
+                /visibleTime) *
+                trackWidth;
+
+            const gy =
+                graphCenter -
+                (point.x/maxAmplitude) *
+                ((graphBottom-graphTop)*0.40);
+
+            if(index===0){
+                ctx.moveTo(gx,gy);
+            }else{
+                ctx.lineTo(gx,gy);
+            }
+
+        });
+
+        ctx.stroke();
+
+    }
+
+
+    /*
+        Graph labels
+    */
+
+    ctx.fillStyle = "#7d8998";
+    ctx.font = "11px Arial";
+
+    ctx.textAlign = "left";
+
+    ctx.fillText(
+        "Displacement x(t)",
+        left+10,
+        graphTop+18
+    );
+
+    ctx.textAlign = "right";
+
+    ctx.fillText(
+        "time →",
+        right-10,
+        graphBottom-10
+    );
+
+}
+
+
+function animate(timestamp){
+
+    const dt =
+        Math.min((timestamp-lastTimestamp)/1000,0.05);
+
+    lastTimestamp = timestamp;
+
+    if(running){
+
+        time += dt;
+
+    }
+
+    draw();
+    updateInfo();
+
+    requestAnimationFrame(animate);
+
+}
+
+
+updateLabels();
+updateInfo();
+
+requestAnimationFrame(animate);
+
+</script>
+
+</body>
+</html>
