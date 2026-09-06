@@ -337,7 +337,90 @@ button:active {
     color: var(--muted);
     font-size: 12px;
 }
+/* ---------- LEARN ---------- */
 
+.learnPanel {
+    width: calc(100% - 32px);
+    max-width: 1100px;
+    margin: 18px auto 0;
+    padding: 22px 24px;
+
+    background:
+        linear-gradient(145deg,
+            rgba(255, 255, 255, 0.045),
+            rgba(255, 255, 255, 0.018));
+
+    border: 1px solid var(--border);
+    border-radius: 18px;
+
+    box-shadow:
+        0 20px 55px rgba(0, 0, 0, 0.25);
+}
+
+.learnTitle {
+    margin-bottom: 10px;
+    color: var(--blue);
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.learnText {
+    color: #b9c7d4;
+    font-size: 13px;
+    line-height: 1.65;
+    margin-bottom: 16px;
+}
+
+.learnGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.learnBox {
+    padding: 14px;
+
+    background: rgba(255,255,255,0.025);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+}
+
+.learnBox strong {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--blue);
+    font-size: 12px;
+}
+
+.learnBox span {
+    color: #aebdca;
+    font-size: 11.5px;
+    line-height: 1.5;
+}
+
+.tryBox {
+    margin-top: 12px;
+    padding: 12px 14px;
+
+    border-left: 3px solid #4ade80;
+    background: rgba(74,222,128,0.05);
+    border-radius: 8px;
+
+    color: #b9c7d4;
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+@media (max-width: 700px) {
+    .learnPanel {
+        width: calc(100% - 20px);
+        padding: 18px;
+    }
+
+    .learnGrid {
+        grid-template-columns: 1fr;
+    }
+}
 /* ---------- MOBILE ---------- */
 
 @media (max-width: 700px) {
@@ -477,7 +560,56 @@ button:active {
     </div>
 
 </div>
+<!-- ---------- LEARN ---------- -->
 
+<div class="learnPanel">
+
+    <div class="learnTitle">
+        Learn: Wave Propagation
+    </div>
+
+    <div class="learnText">
+        A wave is a disturbance that transfers energy from one place to another.
+        In this simulation, the wave travels along the X-direction while the
+        particles of the medium oscillate up and down along the Y-direction.
+    </div>
+
+    <div class="learnGrid">
+
+        <div class="learnBox">
+            <strong>Amplitude A</strong>
+            <span>
+                Maximum displacement of the wave from its equilibrium position.
+                A larger amplitude means a larger displacement.
+            </span>
+        </div>
+
+        <div class="learnBox">
+            <strong>Wavelength λ</strong>
+            <span>
+                The distance between two consecutive points in the same phase,
+                such as two neighbouring crests.
+            </span>
+        </div>
+
+        <div class="learnBox">
+            <strong>Frequency f</strong>
+            <span>
+                Number of complete oscillations made per second.
+                Its unit is hertz (Hz).
+            </span>
+        </div>
+
+    </div>
+
+    <div class="tryBox">
+        <strong>Try it:</strong>
+        Increase A → the wave becomes taller.
+        Increase λ → the waves become more spread out.
+        Increase f → the wave changes more rapidly with time.
+    </div>
+
+</div>
 <div class="info">
     <div class="infoBox">
         <span>Wave number k = 2π/λ</span>
