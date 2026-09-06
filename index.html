@@ -468,20 +468,20 @@
         .card-icon {
             width: 48px;
             height: 48px;
-
             display: flex;
             align-items: center;
             justify-content: center;
+            margin: 18px 0 20px;
 
-            margin: 20px 0;
-
+            border: 1px solid rgba(112, 213, 255, 0.18);
             border-radius: 12px;
+            background: rgba(112, 213, 255, 0.06);
 
-            background: rgba(112, 213, 255, 0.08);
+           color: #72d6ff;
+           font-size: 26px;
+           line-height: 1;
 
-            border: 1px solid rgba(112, 213, 255, 0.16);
-
-            font-size: 22px;
+           box-shadow: 0 0 25px rgba(112, 213, 255, 0.06);
         }
 
         .animation-card h3 {
@@ -489,6 +489,22 @@
                line-height: 1.3;
                margin-bottom: 10px;
                letter-spacing: -0.3px;
+        }
+      .card-tags {
+             display: flex;
+             gap: 7px;
+             flex-wrap: wrap;
+             margin-bottom: 18px;
+        }
+
+      .card-tags span {
+             padding: 5px 9px;
+             border: 1px solid rgba(112, 213, 255, 0.16);
+             border-radius: 999px;
+             background: rgba(112, 213, 255, 0.06);
+             color: #9edfff;
+             font-size: 11px;
+             font-weight: 600;
         }
 
         .animation-card p {
@@ -713,13 +729,13 @@
                 <div class="section-label">Simulation Library</div>
 
                 <h2 class="section-title">
-                    Learn by seeing it happen.
+                    Explore. Experiment. Understand.
                 </h2>
             </div>
 
             <p class="section-description">
-                Interactive experiments that allow you to change parameters,
-                observe physical behaviour and understand the concepts behind it.
+                Explore interactive experiments, change parameters, observe physical
+                behaviour and build an intuitive understanding of the physics behind it.
             </p>
 
         </div>
@@ -734,7 +750,7 @@
             <input
                 type="text"
                 id="searchInput"
-                placeholder="Search simulations..."
+                placeholder="Search simulations by name or topic..."
                 onkeyup="searchAnimations()"
             >
 
@@ -780,37 +796,40 @@
             <!-- YOUNG'S DOUBLE SLIT -->
 
             <article
-                class="animation-card"
-                data-category="waves"
-                data-title="Wave Propagation Simulation in 3D"
-            ><div class="card-number">
-    001 / WAVES
-</div>
+            class="animation-card"
+            data-category="waves"
+            data-title="Wave Propagation Simulation in 3D"
+          >
+       <div class="card-number">
+            001 / WAVES
+       </div>
 
- 
-                <div class="card-icon">
-                    ∿
-                </div>
+       <div class="card-icon">
+           ∿
+       </div>
 
-                <h3>
-                    Wave Propagation Simulation in 3D
-                </h3>
+       <div class="card-tags">
+            <span>Waves</span>
+            <span>3D</span>
+            <span>Interactive</span>
+       </div>
 
-                <p>
-                    Explore how waves propagate through space in three
-                   dimensions. Adjust the simulation parameters and
-                   observe the behaviour of the wave in real time.
-                </p>
+       <h3>
+            Wave Propagation Simulation in 3D
+       </h3>
 
-                <a
-                    href="animations/wave-propagation-3d.html"
-                    class="card-link"
-                >
-                    Launch Simulation →
-                </a>
+       <p>
+           Explore how waves propagate through space in three dimensions.
+           Adjust parameters and observe the behaviour of the wave in real time.
+       </p>
 
-            </article>
-
+       <a
+           href="animations/wave-propagation-3d.html"
+           class="card-link"
+         >
+           Launch Simulation →
+      </a>
+     </article>
 
             <!-- FUTURE CARD -->
 
