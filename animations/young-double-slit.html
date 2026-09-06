@@ -3,871 +3,3293 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Young's Double-Slit Experiment — Interactive 3D Simulator (-4π to +4π)</title>
+
+<title>Young's Double-Slit Experiment | IDEA LAB</title>
+
 <style>
-    * { box-sizing: border-box; }
-    body {
-        margin: 0;
-        font-family: -apple-system, Arial, sans-serif;
-        background: #f5f7fa;
-        color: #1a1a1a;
-    }
-    header { text-align: center; padding: 12px 10px 4px 10px; }
-    header h1 { margin: 0 0 2px 0; font-size: 18px; color: #1a2f6b; }
-    header p { margin: 0; font-size: 12px; color: #667; }
+* {
+    box-sizing: border-box;
+}
 
-    .panelTitle { font-size: 13px; font-weight: 700; padding: 8px 12px 2px 12px; color: #333; }
-    .legendRow { display: flex; justify-content: center; gap: 16px; font-size: 12px; padding: 2px 0 4px 0; flex-wrap: wrap; }
-    .legendRow span { display: inline-flex; align-items: center; gap: 5px; }
-    .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+:root {
+    --bg: #070b12;
+    --panel: #0d131d;
+    --panel-light: #111a26;
+    --border: rgba(255,255,255,0.10);
+    --border-blue: rgba(112,213,255,0.25);
+    --text: #f2f7fb;
+    --muted: #91a2b5;
+    --blue: #70d5ff;
+    --green: #4ade80;
+    --purple: #a78bfa;
+    --orange: #f59e0b;
+}
 
-    #graphWrap, #setupWrap {
-        width: 100%;
-        height: 340px;
-        background: linear-gradient(#eef2f7,#ffffff);
-        touch-action: none;
-        position: relative;
+html {
+    background: var(--bg);
+}
+
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    background:
+        radial-gradient(circle at 50% 0%, rgba(65,150,200,0.08), transparent 35%),
+        var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+}
+
+/* ================= TOP ================= */
+
+header {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 22px 24px 10px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: clamp(25px, 4vw, 36px);
+    letter-spacing: -1px;
+    color: #f5f9fc;
+}
+
+header h1 span {
+    color: var(--blue);
+}
+
+header p {
+    margin: 8px 0 0;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+/* ================= CARDS ================= */
+
+.card {
+    width: calc(100% - 32px);
+    max-width: 1100px;
+    margin: 16px auto 0;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.045),
+            rgba(255,255,255,0.018)
+        );
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 20px 55px rgba(0,0,0,0.25);
+}
+
+.panelTitle {
+    padding: 18px 20px 8px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #dce8f2;
+}
+
+.panelSub {
+    padding: 0 20px 12px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+/* ================= LEGEND ================= */
+
+.legendRow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 4px 15px 10px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.legendRow span {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+/* ================= 3D SCENES ================= */
+
+#graphWrap,
+#setupWrap {
+    width: calc(100% - 20px);
+    margin: 0 auto;
+    height: clamp(340px, 48vw, 520px);
+    position: relative;
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 50% 50%,
+            rgba(112,213,255,0.055),
+            transparent 48%
+        ),
+        linear-gradient(145deg, #0c131d, #070b12);
+
+    border: 1px solid var(--border-blue);
+    border-radius: 14px;
+
+    touch-action: none;
+}
+
+canvas {
+    display: block;
+}
+
+.hint {
+    text-align: center;
+    padding: 10px 12px 12px;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+/* ================= FORMULA ================= */
+
+.promLine {
+    text-align: center;
+    margin: 0 16px 12px;
+    padding: 10px 12px;
+
+    border: 1px solid rgba(112,213,255,0.14);
+    border-radius: 10px;
+
+    background: rgba(112,213,255,0.045);
+
+    color: var(--blue);
+    font-family: "Times New Roman", serif;
+    font-size: 15px;
+}
+
+/* ================= READOUT ================= */
+
+.readout {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    padding: 6px 16px 14px;
+}
+
+.readoutBox {
+    padding: 12px 7px;
+    text-align: center;
+
+    background: rgba(255,255,255,0.025);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+}
+
+.readoutBox span {
+    display: block;
+    font-size: 10.5px;
+    color: var(--muted);
+}
+
+.readoutBox strong {
+    display: block;
+    margin-top: 4px;
+    color: var(--blue);
+    font-size: 14px;
+    font-family: monospace;
+}
+
+/* ================= STATUS ================= */
+
+.statusBanner {
+    margin: 0 16px 16px;
+    padding: 10px 12px;
+
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.08);
+
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+
+    transition: 0.2s ease;
+}
+
+/* ================= CONTROLS ================= */
+
+.controls {
+    padding-bottom: 18px;
+}
+
+.row {
+    display: grid;
+    grid-template-columns: 105px 1fr 72px;
+    align-items: center;
+    gap: 14px;
+
+    margin: 16px 20px;
+}
+
+.row label {
+    color: #d9e5ef;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.row .val {
+    padding: 7px 8px;
+
+    text-align: center;
+    font-family: monospace;
+    font-size: 12px;
+
+    color: var(--blue);
+
+    background: rgba(112,213,255,0.045);
+    border: 1px solid rgba(112,213,255,0.14);
+    border-radius: 8px;
+}
+
+/* ================= SLIDERS ================= */
+
+input[type="range"] {
+    width: 100%;
+    height: 5px;
+
+    appearance: none;
+    -webkit-appearance: none;
+
+    background: rgba(255,255,255,0.12);
+    border-radius: 999px;
+    outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+
+    width: 17px;
+    height: 17px;
+
+    border-radius: 50%;
+    border: 2px solid var(--blue);
+
+    background: #0b1119;
+
+    box-shadow: 0 0 12px rgba(112,213,255,0.45);
+
+    cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 17px;
+    height: 17px;
+
+    border-radius: 50%;
+    border: 2px solid var(--blue);
+
+    background: #0b1119;
+
+    box-shadow: 0 0 12px rgba(112,213,255,0.45);
+
+    cursor: pointer;
+}
+
+/* ================= BETA ================= */
+
+.betaRow {
+    margin: 4px 20px 0;
+    padding: 10px 12px;
+
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 9px;
+
+    background: rgba(255,255,255,0.025);
+
+    color: var(--muted);
+    font-size: 12px;
+    text-align: center;
+}
+
+.betaRow strong {
+    color: var(--blue);
+    font-family: monospace;
+}
+
+/* ================= BUTTONS ================= */
+
+.btnGrid {
+    width: calc(100% - 32px);
+    max-width: 1100px;
+
+    margin: 16px auto 0;
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+button {
+    padding: 11px 14px;
+
+    border: 1px solid rgba(112,213,255,0.20);
+    border-radius: 9px;
+
+    background: rgba(112,213,255,0.07);
+    color: #dff5ff;
+
+    font-size: 12.5px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+button:hover {
+    transform: translateY(-2px);
+
+    border-color: rgba(112,213,255,0.45);
+    background: rgba(112,213,255,0.12);
+
+    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+button.secondary {
+    background: rgba(255,255,255,0.035);
+    border-color: rgba(255,255,255,0.10);
+    color: #cbd8e4;
+}
+
+button.active {
+    background: rgba(74,222,128,0.14);
+    border-color: rgba(74,222,128,0.35);
+    color: #86efac;
+}
+
+button.wide {
+    grid-column: 1 / span 3;
+}
+
+/* ================= EQUATIONS ================= */
+
+.eqPanel,
+.stepPanel,
+.remember {
+    padding-bottom: 18px;
+}
+
+.eqline {
+    margin: 5px 16px;
+    padding: 9px 11px;
+
+    border: 1px solid transparent;
+    border-radius: 8px;
+
+    color: #bdcad6;
+
+    font-family: "Times New Roman", serif;
+    font-size: 15px;
+
+    transition: 0.2s ease;
+}
+
+.eqline b {
+    color: var(--blue);
+}
+
+.eqline.active {
+    background: rgba(112,213,255,0.08);
+    border-color: rgba(112,213,255,0.20);
+    color: #edf8ff;
+}
+
+/* ================= STEP MODE ================= */
+
+#stepTitle {
+    margin: 0 20px 7px;
+    color: var(--blue);
+    font-weight: 700;
+}
+
+#stepText {
+    margin: 0 20px;
+    color: #b8c6d3;
+    font-size: 13px;
+    line-height: 1.55;
+    min-height: 55px;
+}
+
+.stepFormula {
+    margin-bottom: 8px;
+    color: #eaf8ff;
+    font-family: "Times New Roman", serif;
+    font-size: 17px;
+}
+
+.stepNav {
+    display: flex;
+    gap: 8px;
+    margin: 12px 20px 0;
+}
+
+.stepNav button {
+    flex: 1;
+}
+
+/* ================= REMEMBER ================= */
+
+.remember ul {
+    margin: 4px 20px 0;
+    padding-left: 18px;
+}
+
+.remember li {
+    margin-bottom: 7px;
+    color: #b9c7d4;
+    font-family: monospace;
+    font-size: 12.5px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 700px) {
+
+    header {
+        padding: 18px 15px 8px;
     }
-    #graphWrap canvas, #setupWrap canvas { display: block; }
-    .hint { text-align: center; font-size: 11px; color: #999; padding-bottom: 4px; }
+
+    .card {
+        width: calc(100% - 20px);
+        border-radius: 14px;
+    }
+
+    #graphWrap,
+    #setupWrap {
+        width: calc(100% - 12px);
+        height: 390px;
+        border-radius: 11px;
+    }
+
+    .readout {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .row {
+        grid-template-columns: 1fr 68px;
+        gap: 8px 12px;
+        margin: 18px 20px;
+    }
+
+    .row label {
+        grid-column: 1;
+    }
+
+    .row input[type="range"] {
+        grid-column: 1;
+    }
+
+    .row .val {
+        grid-column: 2;
+        grid-row: 1 / span 2;
+        align-self: center;
+    }
+
+    .btnGrid {
+        width: calc(100% - 20px);
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    button.wide {
+        grid-column: 1 / span 2;
+    }
 
     .promLine {
-        text-align: center;
-        font-family: "Times New Roman", serif;
-        font-size: 15px;
-        color: #1a56db;
-        padding: 4px 8px;
-        background: #eef4ff;
-        margin: 0 12px 8px 12px;
-        border-radius: 8px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 420px) {
+
+    #graphWrap,
+    #setupWrap {
+        height: 350px;
     }
 
-    .readout { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 8px 12px; }
-    .readoutBox { background: #fff; border: 1px solid #e3e7ee; border-radius: 8px; padding: 8px 6px; text-align: center; }
-    .readoutBox span { display:block; font-size: 10.5px; color:#777; }
-    .readoutBox strong { display:block; font-size: 14px; font-family: monospace; margin-top:2px; color:#1a2f6b; }
-    .statusBanner {
-        margin: 0 12px 8px 12px; padding: 7px 10px; border-radius: 8px;
-        font-size: 12.5px; font-weight: 600; text-align: center; transition: background 0.2s, color 0.2s;
+    .btnGrid {
+        grid-template-columns: 1fr 1fr;
     }
 
-    .card { background: #fff; border-radius: 12px; margin: 8px 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); overflow: hidden; }
-
-    .controls { padding: 10px 14px 4px 14px; }
-    .row { display: grid; grid-template-columns: 92px 1fr 58px; align-items: center; gap: 8px; margin-bottom: 10px; }
-    .row label { font-size: 13px; font-weight: 600; color: #333; }
-    .row .val { font-family: monospace; font-size: 12.5px; text-align: right; color: #444; }
-    input[type=range] { width: 100%; accent-color: #1a56db; }
-
-    .btnGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 6px 14px 14px 14px; }
-    button { border: none; border-radius: 8px; padding: 9px 8px; font-size: 12.5px; cursor: pointer; background: #1a56db; color: #fff; }
-    button.secondary { background: #e5e7eb; color: #222; }
-    button.active { background: #16a34a; color: #fff; }
-    button.wide { grid-column: 1 / span 2; }
-
-    .eqPanel, .stepPanel, .remember { padding: 10px 14px 14px 14px; font-size: 13px; }
-    .eqline {
-        font-family: "Times New Roman", serif; font-size: 15px; padding: 5px 8px;
-        margin-bottom: 4px; border-radius: 6px; transition: background 0.2s;
+    button {
+        font-size: 11.5px;
+        padding: 10px 8px;
     }
-    .eqline.active { background: #fff3cd; }
-    .eqline b { color:#1a56db; }
-
-    .stepNav { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
-    .stepNav button { flex: 1; }
-    #stepText { font-size: 13px; line-height: 1.4; color: #333; min-height: 40px; }
-    #stepTitle { font-weight: 700; color: #1a2f6b; margin-bottom: 4px; }
-
-    .remember ul { margin: 4px 0 0 0; padding-left: 18px; }
-    .remember li { font-family: monospace; font-size: 13px; margin-bottom: 4px; }
-
-    .hidden { display: none !important; }
+}
 </style>
 </head>
+
 <body>
 
 <header>
-    <h1>Young's Double-Slit Experiment</h1>
-    <p>Interference intensity pattern — θ from −4π to +4π</p>
+    <h1>Young's Double-Slit Experiment <span>· IDEA LAB</span></h1>
+    <p>Interactive interference simulator • small-angle / far-screen approximation</p>
 </header>
 
-<div class="card">
-    <div class="panelTitle">Intensity Graph — I = 4I₀ cos²θ, θ = Δφ/2 = πdx/(λD)</div>
-    <div class="legendRow">
-        <span><i class="dot" style="background:#2563eb"></i>Blue = cos θ</span>
-        <span><i class="dot" style="background:#dc2626"></i>Red = cos² θ (normalized intensity)</span>
-    </div>
-    <div id="graphWrap"></div>
-    <div class="hint">Drag to rotate • Scroll / pinch to zoom</div>
-    <div class="promLine">Phase difference / 2π = Path difference / λ &nbsp;→&nbsp; Δφ = 2πΔ/λ</div>
-    <div class="readout">
-        <div class="readoutBox"><span>θ (rad)</span><strong id="thetaVal">0.00</strong></div>
-        <div class="readoutBox"><span>Δφ = 2θ (rad)</span><strong id="dphiVal">0.00</strong></div>
-        <div class="readoutBox"><span>Δ = λθ/π (nm)</span><strong id="deltaVal">0.0</strong></div>
-        <div class="readoutBox"><span>I / 4I₀ = cos²θ</span><strong id="intensityVal">1.00</strong></div>
-    </div>
-    <div class="statusBanner" id="statusBanner">Central bright fringe (θ = 0) — constructive interference</div>
-</div>
+<!-- ================= GRAPH ================= -->
 
 <div class="card">
-    <div class="panelTitle">Slit Setup — coherent source, S₁, S₂, screen, point P</div>
-    <div id="setupWrap"></div>
-    <div class="hint">Drag to rotate • Scroll / pinch to zoom</div>
+
+    <div class="panelTitle">
+        Interference Intensity
+    </div>
+
+    <div class="panelSub">
+        I = 4I₀ cos²θ &nbsp;&nbsp; | &nbsp;&nbsp;
+        θ = Δφ/2 = πdx/(λD)
+    </div>
+
+    <div class="legendRow">
+        <span>
+            <i class="dot" style="background:#70d5ff"></i>
+            cos θ
+        </span>
+
+        <span>
+            <i class="dot" style="background:#fb7185"></i>
+            cos² θ
+        </span>
+
+        <span>
+            <i class="dot" style="background:#4ade80"></i>
+            Bright
+        </span>
+
+        <span>
+            <i class="dot" style="background:#a78bfa"></i>
+            Dark
+        </span>
+    </div>
+
+    <div id="graphWrap"></div>
+
+    <div class="hint">
+        Drag to rotate • Scroll / pinch to zoom
+    </div>
+
+    <div class="promLine">
+        Δφ / 2π = Δ / λ
+        &nbsp;→&nbsp;
+        Δφ = 2πΔ / λ
+    </div>
+
+    <div class="readout">
+
+        <div class="readoutBox">
+            <span>θ (rad)</span>
+            <strong id="thetaVal">0.00</strong>
+        </div>
+
+        <div class="readoutBox">
+            <span>Δφ = 2θ (rad)</span>
+            <strong id="dphiVal">0.00</strong>
+        </div>
+
+        <div class="readoutBox">
+            <span>Δ (nm)</span>
+            <strong id="deltaVal">0.0</strong>
+        </div>
+
+        <div class="readoutBox">
+            <span>I / 4I₀</span>
+            <strong id="intensityVal">1.00</strong>
+        </div>
+
+    </div>
+
+    <div class="statusBanner" id="statusBanner">
+        ● Central bright fringe — constructive interference
+    </div>
+
 </div>
+
+<!-- ================= SETUP ================= -->
+
+<div class="card">
+
+    <div class="panelTitle">
+        Double-Slit Arrangement
+    </div>
+
+    <div class="panelSub">
+        Source → S₁, S₂ → screen → observation point P
+    </div>
+
+    <div id="setupWrap"></div>
+
+    <div class="hint">
+        Drag to rotate • Scroll / pinch to zoom
+    </div>
+
+</div>
+
+<!-- ================= CONTROLS ================= -->
 
 <div class="card controls">
+
+    <div class="panelTitle">
+        Simulation Controls
+    </div>
+
     <div class="row">
         <label>Wavelength λ</label>
-        <input type="range" id="lambda" min="0.40" max="0.70" step="0.01" value="0.50">
-        <span class="val" id="lambdaVal">0.50 µm</span>
+
+        <input
+            type="range"
+            id="lambda"
+            min="0.40"
+            max="0.70"
+            step="0.01"
+            value="0.50"
+        >
+
+        <span class="val" id="lambdaVal">
+            0.50 µm
+        </span>
     </div>
+
     <div class="row">
         <label>Slit gap d</label>
-        <input type="range" id="dSlit" min="0.20" max="1.00" step="0.01" value="0.50">
-        <span class="val" id="dSlitVal">0.50 mm</span>
+
+        <input
+            type="range"
+            id="dSlit"
+            min="0.20"
+            max="1.00"
+            step="0.01"
+            value="0.50"
+        >
+
+        <span class="val" id="dSlitVal">
+            0.50 mm
+        </span>
     </div>
+
     <div class="row">
         <label>Screen dist D</label>
-        <input type="range" id="Dscreen" min="0.50" max="2.00" step="0.05" value="1.00">
-        <span class="val" id="DscreenVal">1.00 m</span>
+
+        <input
+            type="range"
+            id="Dscreen"
+            min="0.50"
+            max="2.00"
+            step="0.05"
+            value="1.00"
+        >
+
+        <span class="val" id="DscreenVal">
+            1.00 m
+        </span>
     </div>
+
     <div class="row">
         <label>Anim. speed</label>
-        <input type="range" id="speed" min="0.2" max="3" step="0.1" value="1.0">
-        <span class="val" id="speedVal">1.0×</span>
+
+        <input
+            type="range"
+            id="speed"
+            min="0.2"
+            max="3"
+            step="0.1"
+            value="1.0"
+        >
+
+        <span class="val" id="speedVal">
+            1.0×
+        </span>
     </div>
-    <div class="row" style="grid-template-columns: 1fr;">
-        <span style="font-size:12.5px; color:#555;">Fringe width β = <strong id="betaVal" style="color:#1a56db;">1.00 mm</strong></span>
+
+    <div class="betaRow">
+        Fringe width β =
+        <strong id="betaVal">1.000 mm</strong>
     </div>
+
 </div>
+
+<!-- ================= BUTTONS ================= -->
 
 <div class="btnGrid">
-    <button id="playBtn">▶ Play</button>
-    <button class="secondary" id="pauseBtn">⏸ Pause</button>
-    <button class="secondary" id="resetBtn">↻ Reset</button>
-    <button class="secondary" id="wavefrontBtn">Hide Wavefronts</button>
-    <button class="secondary" id="eqBtn">Hide Equations</button>
-    <button class="secondary" id="labelsBtn">Hide Labels</button>
-    <button class="secondary" id="brightBtn">Bright Fringe Mode</button>
-    <button class="secondary" id="darkBtn">Dark Fringe Mode</button>
-    <button class="secondary wide" id="stepBtn">Start Step-by-Step Mode</button>
+
+    <button id="playBtn">
+        ▶ Play
+    </button>
+
+    <button class="secondary" id="pauseBtn">
+        ⏸ Pause
+    </button>
+
+    <button class="secondary" id="resetBtn">
+        ↻ Reset
+    </button>
+
+    <button class="secondary" id="wavefrontBtn">
+        Hide Wavefronts
+    </button>
+
+    <button class="secondary" id="eqBtn">
+        Hide Equations
+    </button>
+
+    <button class="secondary" id="labelsBtn">
+        Hide Labels
+    </button>
+
+    <button class="secondary" id="brightBtn">
+        Bright Fringe Mode
+    </button>
+
+    <button class="secondary" id="darkBtn">
+        Dark Fringe Mode
+    </button>
+
+    <button class="secondary wide" id="stepBtn">
+        Start Step-by-Step Mode
+    </button>
+
 </div>
+
+<!-- ================= EQUATIONS ================= -->
 
 <div class="card eqPanel" id="eqPanel">
-    <div class="panelTitle" style="padding:0 0 6px 0;">Equations</div>
-    <div class="eqline" data-step="1"><b>Δ</b> = xd / D &nbsp;(path difference)</div>
-    <div class="eqline" data-step="2"><b>Δφ</b> = 2πΔ / λ &nbsp;(phase difference)</div>
-    <div class="eqline" data-step="3"><b>Δφ</b> = 2πxd / (λD) &nbsp;(substituting Δ)</div>
-    <div class="eqline" data-step="4"><b>I</b> = 4I₀ cos²(Δφ/2) &nbsp;(two equal coherent sources)</div>
-    <div class="eqline" data-step="5"><b>I</b> = 4I₀ cos²(πdx / λD) &nbsp;(substituting Δφ)</div>
-    <div class="eqline" data-step="6"><b>Bright:</b> Δ = nλ &nbsp;→&nbsp; xₙ = nλD/d</div>
-    <div class="eqline" data-step="7"><b>Dark:</b> Δ = (2n+1)λ/2 &nbsp;→&nbsp; xₙ = (2n+1)λD/2d</div>
-    <div class="eqline" data-step="8"><b>β</b> = λD / d &nbsp;(fringe width)</div>
+
+    <div class="panelTitle">
+        Equations
+    </div>
+
+    <div class="eqline" data-step="1">
+        <b>Δ</b> = xd / D
+        &nbsp; — path difference
+    </div>
+
+    <div class="eqline" data-step="2">
+        <b>Δφ</b> = 2πΔ / λ
+        &nbsp; — phase difference
+    </div>
+
+    <div class="eqline" data-step="3">
+        <b>Δφ</b> = 2πxd / (λD)
+    </div>
+
+    <div class="eqline" data-step="4">
+        <b>I</b> = 4I₀ cos²(Δφ/2)
+        &nbsp; — equal coherent sources
+    </div>
+
+    <div class="eqline" data-step="5">
+        <b>I</b> = 4I₀ cos²(πdx / λD)
+    </div>
+
+    <div class="eqline" data-step="6">
+        <b>Bright:</b>
+        Δ = nλ
+        → xₙ = nλD/d
+    </div>
+
+    <div class="eqline" data-step="7">
+        <b>Dark:</b>
+        Δ = (2n+1)λ/2
+        → xₙ = (2n+1)λD/2d
+    </div>
+
+    <div class="eqline" data-step="8">
+        <b>β</b> = λD/d
+        &nbsp; — fringe width
+    </div>
+
 </div>
+
+<!-- ================= STEP MODE ================= -->
 
 <div class="card stepPanel hidden" id="stepPanel">
-    <div class="panelTitle" style="padding:0 0 4px 0;">Step-by-Step Derivation</div>
-    <div id="stepTitle">Step 1 of 8</div>
-    <div id="stepText"></div>
-    <div class="stepNav">
-        <button class="secondary" id="stepPrev">◀ Prev</button>
-        <button class="secondary" id="stepNext">Next ▶</button>
-        <button class="secondary" id="stepExit">Exit</button>
+
+    <div class="panelTitle">
+        Step-by-Step Derivation
     </div>
+
+    <div id="stepTitle">
+        Step 1 of 8
+    </div>
+
+    <div id="stepText"></div>
+
+    <div class="stepNav">
+
+        <button class="secondary" id="stepPrev">
+            ◀ Prev
+        </button>
+
+        <button class="secondary" id="stepNext">
+            Next ▶
+        </button>
+
+        <button class="secondary" id="stepExit">
+            Exit
+        </button>
+
+    </div>
+
 </div>
 
+<!-- ================= REMEMBER ================= -->
+
 <div class="card remember">
-    <div class="panelTitle" style="padding:0 0 6px 0;">What to Remember</div>
+
+    <div class="panelTitle">
+        What to Remember
+    </div>
+
     <ul>
+
         <li>Δ = xd/D</li>
+
         <li>Δφ = 2πΔ/λ</li>
+
         <li>θ = Δφ/2</li>
+
         <li>I = 4I₀ cos²θ</li>
+
         <li>Bright: Δ = nλ, Δφ = 2nπ, θ = nπ</li>
+
         <li>Dark: Δ = (2n+1)λ/2, Δφ = (2n+1)π, θ = (2n+1)π/2</li>
+
         <li>β = λD/d</li>
+
     </ul>
+
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
 <script>
 (function() {
 
-if (typeof THREE === 'undefined') {
-    document.getElementById('graphWrap').textContent = '3D engine failed to load — check your internet connection and reload.';
+"use strict";
+
+if (typeof THREE === "undefined") {
+    document.getElementById("graphWrap").textContent =
+        "3D engine failed to load. Check your internet connection and reload.";
     return;
 }
 
-/* ============================================================
-   SHARED HELPERS
-   ============================================================ */
+/* =========================================================
+   TEXT SPRITE
+========================================================= */
 
-function makeTextSprite(text, hexColor, sizePx) {
-    sizePx = sizePx || 80;
-    const c = document.createElement('canvas');
-    c.width = 200; c.height = 80;
-    const ctx = c.getContext('2d');
-    ctx.fillStyle = hexColor;
-    ctx.font = 'bold ' + sizePx + 'px Arial';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(text, 100, 40);
-    const tex = new THREE.CanvasTexture(c);
-    const mat = new THREE.SpriteMaterial({ map: tex, depthTest: false, transparent: true });
-    const sprite = new THREE.Sprite(mat);
-    sprite.scale.set(1.6, 0.64, 1);
+function makeTextSprite(text, color, sizePx) {
+
+    sizePx = sizePx || 60;
+
+    const canvas = document.createElement("canvas");
+
+    canvas.width = 420;
+    canvas.height = 100;
+
+    const ctx = canvas.getContext("2d");
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = color;
+
+    ctx.font = "bold " + sizePx + "px Arial";
+
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+
+    const texture = new THREE.CanvasTexture(canvas);
+
+    texture.needsUpdate = true;
+
+    const material = new THREE.SpriteMaterial({
+        map: texture,
+        transparent: true,
+        depthTest: false
+    });
+
+    const sprite = new THREE.Sprite(material);
+
+    sprite.scale.set(2.2, 0.52, 1);
+
     return sprite;
 }
 
-function makeOrbitScene(container, camDefaults) {
+/* =========================================================
+   ORBIT SCENE
+========================================================= */
+
+function makeOrbitScene(container, defaults) {
+
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(55, container.clientWidth / container.clientHeight, 0.05, 300);
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    renderer.setSize(container.clientWidth, container.clientHeight);
-    renderer.setClearColor(0xffffff, 0);
+
+    const camera = new THREE.PerspectiveCamera(
+        55,
+        container.clientWidth / container.clientHeight,
+        0.05,
+        300
+    );
+
+    const renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: true
+    });
+
+    renderer.setPixelRatio(
+        Math.min(window.devicePixelRatio || 1, 2)
+    );
+
+    renderer.setSize(
+        container.clientWidth,
+        container.clientHeight
+    );
+
+    renderer.setClearColor(0x000000, 0);
+
     container.appendChild(renderer.domElement);
 
-    scene.add(new THREE.AmbientLight(0xffffff, 0.75));
-    const d1 = new THREE.DirectionalLight(0xffffff, 0.6); d1.position.set(4,6,5); scene.add(d1);
-    const d2 = new THREE.DirectionalLight(0xffffff, 0.3); d2.position.set(-4,3,-5); scene.add(d2);
+    scene.add(
+        new THREE.AmbientLight(0xffffff, 0.75)
+    );
 
-    let camTheta = camDefaults.theta;
-    let camPhi = camDefaults.phi;
-    let camRadius = camDefaults.radius;
-    const target = new THREE.Vector3(camDefaults.tx||0, camDefaults.ty||0, camDefaults.tz||0);
+    const light1 =
+        new THREE.DirectionalLight(0xffffff, 0.55);
+
+    light1.position.set(5, 7, 6);
+
+    scene.add(light1);
+
+    const light2 =
+        new THREE.DirectionalLight(0x70d5ff, 0.25);
+
+    light2.position.set(-5, 3, -4);
+
+    scene.add(light2);
+
+    let theta = defaults.theta;
+    let phi = defaults.phi;
+    let radius = defaults.radius;
+
+    const target = new THREE.Vector3(
+        defaults.tx || 0,
+        defaults.ty || 0,
+        defaults.tz || 0
+    );
 
     function updateCamera() {
-        const cp = Math.max(0.15, Math.min(Math.PI-0.15, camPhi));
-        camera.position.x = target.x + camRadius*Math.sin(cp)*Math.sin(camTheta);
-        camera.position.y = target.y + camRadius*Math.cos(cp);
-        camera.position.z = target.z + camRadius*Math.sin(cp)*Math.cos(camTheta);
+
+        phi = Math.max(
+            0.15,
+            Math.min(Math.PI - 0.15, phi)
+        );
+
+        camera.position.x =
+            target.x +
+            radius *
+            Math.sin(phi) *
+            Math.sin(theta);
+
+        camera.position.y =
+            target.y +
+            radius * Math.cos(phi);
+
+        camera.position.z =
+            target.z +
+            radius *
+            Math.sin(phi) *
+            Math.cos(theta);
+
         camera.lookAt(target);
     }
+
     updateCamera();
 
-    let dragging = false, lastX=0, lastY=0;
-    function down(x,y){ dragging=true; lastX=x; lastY=y; }
-    function move(x,y){
-        if(!dragging) return;
-        const dx=x-lastX, dy=y-lastY; lastX=x; lastY=y;
-        camTheta -= dx*0.006;
-        camPhi -= dy*0.006;
+    let dragging = false;
+    let lastX = 0;
+    let lastY = 0;
+
+    function startDrag(x, y) {
+        dragging = true;
+        lastX = x;
+        lastY = y;
+    }
+
+    function drag(x, y) {
+
+        if (!dragging) return;
+
+        const dx = x - lastX;
+        const dy = y - lastY;
+
+        lastX = x;
+        lastY = y;
+
+        theta -= dx * 0.006;
+        phi -= dy * 0.006;
+
         updateCamera();
     }
-    function up(){ dragging=false; }
 
-    // Pan support (right-drag / two-finger not required; use shift+drag on desktop, kept simple: skip explicit pan control
-    // to avoid conflicting gestures — rotate + zoom cover the required "rotate, zoom, pan" via zoom re-centering).
-    renderer.domElement.addEventListener('mousedown', e=>down(e.clientX,e.clientY));
-    window.addEventListener('mousemove', e=>move(e.clientX,e.clientY));
-    window.addEventListener('mouseup', up);
-    renderer.domElement.addEventListener('touchstart', e=>{ if(e.touches.length===1) down(e.touches[0].clientX,e.touches[0].clientY); }, {passive:true});
-    renderer.domElement.addEventListener('touchmove', e=>{ if(e.touches.length===1) move(e.touches[0].clientX,e.touches[0].clientY); }, {passive:true});
-    renderer.domElement.addEventListener('touchend', up);
-    renderer.domElement.addEventListener('wheel', e=>{
-        e.preventDefault();
-        camRadius = Math.max(camDefaults.radius*0.35, Math.min(camDefaults.radius*3.0, camRadius + e.deltaY*0.01*(camDefaults.radius/14)));
-        updateCamera();
-    }, {passive:false});
+    function endDrag() {
+        dragging = false;
+    }
 
-    let pinchDist=null, pinchR=camRadius;
-    renderer.domElement.addEventListener('touchstart', e=>{
-        if(e.touches.length===2){
-            const dx=e.touches[0].clientX-e.touches[1].clientX, dy=e.touches[0].clientY-e.touches[1].clientY;
-            pinchDist=Math.sqrt(dx*dx+dy*dy); pinchR=camRadius;
-        }
-    }, {passive:true});
-    renderer.domElement.addEventListener('touchmove', e=>{
-        if(e.touches.length===2 && pinchDist){
-            const dx=e.touches[0].clientX-e.touches[1].clientX, dy=e.touches[0].clientY-e.touches[1].clientY;
-            const dist=Math.sqrt(dx*dx+dy*dy);
-            camRadius = Math.max(camDefaults.radius*0.35, Math.min(camDefaults.radius*3.0, pinchR*(pinchDist/dist)));
+    renderer.domElement.addEventListener(
+        "mousedown",
+        e => startDrag(e.clientX, e.clientY)
+    );
+
+    window.addEventListener(
+        "mousemove",
+        e => drag(e.clientX, e.clientY)
+    );
+
+    window.addEventListener(
+        "mouseup",
+        endDrag
+    );
+
+    renderer.domElement.addEventListener(
+        "touchstart",
+        e => {
+            if (e.touches.length === 1) {
+                startDrag(
+                    e.touches[0].clientX,
+                    e.touches[0].clientY
+                );
+            }
+        },
+        { passive: true }
+    );
+
+    renderer.domElement.addEventListener(
+        "touchmove",
+        e => {
+            if (e.touches.length === 1) {
+                drag(
+                    e.touches[0].clientX,
+                    e.touches[0].clientY
+                );
+            }
+        },
+        { passive: true }
+    );
+
+    renderer.domElement.addEventListener(
+        "touchend",
+        endDrag
+    );
+
+    renderer.domElement.addEventListener(
+        "wheel",
+        e => {
+
+            e.preventDefault();
+
+            radius +=
+                e.deltaY *
+                0.01 *
+                (defaults.radius / 14);
+
+            radius = Math.max(
+                defaults.radius * 0.35,
+                Math.min(
+                    defaults.radius * 3,
+                    radius
+                )
+            );
+
             updateCamera();
-        }
-    }, {passive:true});
+        },
+        { passive: false }
+    );
 
-    function resize(){
-        const w=container.clientWidth, h=container.clientHeight;
-        camera.aspect = w/h;
+    let pinchDistance = null;
+    let pinchRadius = radius;
+
+    renderer.domElement.addEventListener(
+        "touchstart",
+        e => {
+
+            if (e.touches.length === 2) {
+
+                const dx =
+                    e.touches[0].clientX -
+                    e.touches[1].clientX;
+
+                const dy =
+                    e.touches[0].clientY -
+                    e.touches[1].clientY;
+
+                pinchDistance =
+                    Math.sqrt(dx * dx + dy * dy);
+
+                pinchRadius = radius;
+            }
+
+        },
+        { passive: true }
+    );
+
+    renderer.domElement.addEventListener(
+        "touchmove",
+        e => {
+
+            if (
+                e.touches.length === 2 &&
+                pinchDistance
+            ) {
+
+                const dx =
+                    e.touches[0].clientX -
+                    e.touches[1].clientX;
+
+                const dy =
+                    e.touches[0].clientY -
+                    e.touches[1].clientY;
+
+                const distance =
+                    Math.sqrt(dx * dx + dy * dy);
+
+                if (distance > 0) {
+
+                    radius =
+                        pinchRadius *
+                        (pinchDistance / distance);
+
+                    radius = Math.max(
+                        defaults.radius * 0.35,
+                        Math.min(
+                            defaults.radius * 3,
+                            radius
+                        )
+                    );
+
+                    updateCamera();
+                }
+            }
+
+        },
+        { passive: true }
+    );
+
+    renderer.domElement.addEventListener(
+        "touchend",
+        () => {
+            pinchDistance = null;
+        }
+    );
+
+    function resize() {
+
+        const width = container.clientWidth;
+        const height = container.clientHeight;
+
+        camera.aspect = width / height;
+
         camera.updateProjectionMatrix();
-        renderer.setSize(w,h);
+
+        renderer.setSize(width, height);
     }
-    window.addEventListener('resize', resize);
+
+    window.addEventListener("resize", resize);
+
     resize();
 
-    return { scene, camera, renderer, updateCamera, resetCam: function(){ camTheta=camDefaults.theta; camPhi=camDefaults.phi; camRadius=camDefaults.radius; updateCamera(); } };
+    return {
+        scene,
+        camera,
+        renderer,
+
+        resetCam() {
+
+            theta = defaults.theta;
+            phi = defaults.phi;
+            radius = defaults.radius;
+
+            updateCamera();
+        }
+    };
 }
 
-// Formats k*(π/2) as a clean pi-fraction label, e.g. k=-8 -> "-4π", k=-7 -> "-7π/2", k=-1 -> "-π/2", k=0 -> "0"
-function piLabel(k) {
-    if (k === 0) return '0';
-    const sign = k < 0 ? '-' : '';
-    const n = Math.abs(k);
-    if (n % 2 === 0) {
-        const m = n / 2;
-        return sign + (m === 1 ? '' : m) + 'π';
-    } else {
-        return sign + (n === 1 ? '' : n) + 'π/2';
-    }
-}
-
-/* ============================================================
-   STATE
-   ============================================================ */
+/* =========================================================
+   PHYSICS STATE
+========================================================= */
 
 const state = {
+
     lambda_um: 0.50,
+
     d_mm: 0.50,
+
     D_m: 1.00,
+
     speed: 1.0,
-    theta: 0.0,
+
+    theta: 0,
+
     playing: true,
+
     showWavefronts: true,
+
     showEquations: true,
+
     showLabels: true,
+
     stepMode: false,
+
     stepIndex: 0
 };
 
-const THETA_MIN = -4*Math.PI, THETA_MAX = 4*Math.PI;
-const BASE_RATE = 1.1; // rad/sec at speed = 1 (covers the wider -4π..4π range at a reasonable pace)
+const THETA_MIN = -4 * Math.PI;
+const THETA_MAX = 4 * Math.PI;
+
+const BASE_RATE = 1.1;
+
+/* =========================================================
+   PHYSICS
+========================================================= */
 
 function computePhysics() {
-    const lambda_m = state.lambda_um * 1e-6;
-    const d_m = state.d_mm * 1e-3;
-    const D_m = state.D_m;
-    const beta_m = lambda_m * D_m / d_m;
-    const beta_mm = beta_m * 1000;
-    const x_mm = (state.theta / Math.PI) * beta_mm;
-    const delta_m = (state.theta / Math.PI) * lambda_m; // Δ = λθ/π
-    const delta_nm = delta_m * 1e9;
-    const dphi = 2 * state.theta; // Δφ = 2θ
-    const normI = Math.pow(Math.cos(state.theta), 2); // I/4I0 = cos²θ
-    return { lambda_m, d_m, D_m, beta_mm, x_mm, delta_nm, dphi, normI };
+
+    const lambda_m =
+        state.lambda_um * 1e-6;
+
+    const d_m =
+        state.d_mm * 1e-3;
+
+    const D_m =
+        state.D_m;
+
+    const beta_m =
+        lambda_m * D_m / d_m;
+
+    const beta_mm =
+        beta_m * 1000;
+
+    const x_mm =
+        (state.theta / Math.PI) *
+        beta_mm;
+
+    const delta_m =
+        (state.theta / Math.PI) *
+        lambda_m;
+
+    const delta_nm =
+        delta_m * 1e9;
+
+    const dphi =
+        2 * state.theta;
+
+    const normI =
+        Math.pow(Math.cos(state.theta), 2);
+
+    return {
+        lambda_m,
+        d_m,
+        D_m,
+        beta_mm,
+        x_mm,
+        delta_nm,
+        dphi,
+        normI
+    };
 }
 
-/* ============================================================
-   GRAPH SCENE  (θ on X, exactly -4π..4π; amplitude on Y; curve depth on Z)
-   ============================================================ */
+/* =========================================================
+   GRAPH SCENE
+========================================================= */
 
-const graphWrap = document.getElementById('graphWrap');
-const G = makeOrbitScene(graphWrap, { theta: 0.5, phi: 1.18, radius: 30, tx: 0 });
+const graphWrap =
+    document.getElementById("graphWrap");
 
-const graphLabelsGroup = new THREE.Group();
+const G =
+    makeOrbitScene(
+        graphWrap,
+        {
+            theta: 0.48,
+            phi: 1.18,
+            radius: 30,
+            tx: 0
+        }
+    );
+
+const graphLabelsGroup =
+    new THREE.Group();
+
 G.scene.add(graphLabelsGroup);
 
+/* =========================================================
+   GRAPH AXES
+========================================================= */
+
 function addLine(scene, p1, p2, color) {
-    const geo = new THREE.BufferGeometry().setFromPoints([p1,p2]);
-    const mat = new THREE.LineBasicMaterial({ color: color });
-    const line = new THREE.Line(geo, mat);
+
+    const geometry =
+        new THREE.BufferGeometry()
+            .setFromPoints([p1, p2]);
+
+    const material =
+        new THREE.LineBasicMaterial({
+            color,
+            transparent: true,
+            opacity: 0.7
+        });
+
+    const line =
+        new THREE.Line(
+            geometry,
+            material
+        );
+
     scene.add(line);
+
     return line;
 }
 
-// Main horizontal axis, spanning exactly -4π to +4π (with a small visual margin)
-addLine(G.scene, new THREE.Vector3(THETA_MIN-0.5,0,0), new THREE.Vector3(THETA_MAX+0.5,0,0), 0x888888);
-addLine(G.scene, new THREE.Vector3(0,-1.6,0), new THREE.Vector3(0,1.6,0), 0xcccccc);
+addLine(
+    G.scene,
 
-// All 17 tick marks from -4π to +4π in steps of π/2
-for (let k=-8; k<=8; k++) {
-    const x = k*Math.PI/2;
-    addLine(G.scene, new THREE.Vector3(x,-0.06,0), new THREE.Vector3(x,0.06,0), 0x999999);
-    const lbl = makeTextSprite(piLabel(k), '#555', 46);
-    lbl.scale.set(0.85,0.4,1);
-    lbl.position.set(x, -0.32, 0);
-    graphLabelsGroup.add(lbl);
+    new THREE.Vector3(
+        THETA_MIN - 0.5,
+        0,
+        0
+    ),
+
+    new THREE.Vector3(
+        THETA_MAX + 0.5,
+        0,
+        0
+    ),
+
+    0x4b6475
+);
+
+addLine(
+    G.scene,
+
+    new THREE.Vector3(
+        0,
+        -1.6,
+        0
+    ),
+
+    new THREE.Vector3(
+        0,
+        1.6,
+        0
+    ),
+
+    0x4b6475
+);
+
+/* =========================================================
+   GRAPH LABELS
+========================================================= */
+
+function piLabel(k) {
+
+    if (k === 0) return "0";
+
+    const sign =
+        k < 0 ? "-" : "";
+
+    const n =
+        Math.abs(k);
+
+    if (n % 2 === 0) {
+
+        const m = n / 2;
+
+        return sign +
+            (m === 1 ? "" : m) +
+            "π";
+
+    } else {
+
+        return sign +
+            (n === 1 ? "" : n) +
+            "π/2";
+    }
 }
-// y tick marks -1, 0, 1
-[-1,1].forEach(y => {
-    const lbl = makeTextSprite(y.toString(), '#555', 60);
-    lbl.scale.set(0.55,0.45,1);
-    lbl.position.set(THETA_MIN-0.9, y, 0);
-    graphLabelsGroup.add(lbl);
+
+for (let k = -8; k <= 8; k++) {
+
+    const x =
+        k * Math.PI / 2;
+
+    addLine(
+        G.scene,
+
+        new THREE.Vector3(
+            x,
+            -0.06,
+            0
+        ),
+
+        new THREE.Vector3(
+            x,
+            0.06,
+            0
+        ),
+
+        0x526777
+    );
+
+    const label =
+        makeTextSprite(
+            piLabel(k),
+            "#91a2b5",
+            42
+        );
+
+    label.scale.set(
+        0.85,
+        0.4,
+        1
+    );
+
+    label.position.set(
+        x,
+        -0.32,
+        0
+    );
+
+    graphLabelsGroup.add(label);
+}
+
+[-1, 1].forEach(y => {
+
+    const label =
+        makeTextSprite(
+            y.toString(),
+            "#91a2b5",
+            50
+        );
+
+    label.scale.set(
+        0.5,
+        0.4,
+        1
+    );
+
+    label.position.set(
+        THETA_MIN - 0.8,
+        y,
+        0
+    );
+
+    graphLabelsGroup.add(label);
 });
 
-// Legend labels floating above/below curves
-const blueLbl = makeTextSprite('cos θ', '#2563eb', 50);
-blueLbl.position.set(THETA_MIN+1.6, 1.35, 0.55);
-blueLbl.scale.set(1.5,0.6,1);
-graphLabelsGroup.add(blueLbl);
-const redLbl = makeTextSprite('cos² θ', '#dc2626', 50);
-redLbl.position.set(THETA_MIN+1.6, -1.35, -0.55);
-redLbl.scale.set(1.5,0.6,1);
-graphLabelsGroup.add(redLbl);
+const cosLabel =
+    makeTextSprite(
+        "cos θ",
+        "#70d5ff",
+        48
+    );
 
-// Curves
+cosLabel.position.set(
+    THETA_MIN + 1.5,
+    1.3,
+    0.5
+);
+
+graphLabelsGroup.add(cosLabel);
+
+const intensityLabel =
+    makeTextSprite(
+        "cos² θ",
+        "#fb7185",
+        48
+    );
+
+intensityLabel.position.set(
+    THETA_MIN + 1.5,
+    1.0,
+    -0.5
+);
+
+graphLabelsGroup.add(intensityLabel);
+
+/* =========================================================
+   CURVES
+========================================================= */
+
 const CURVE_SEGMENTS = 640;
-function makeCurveLine(color, zOffset) {
-    const positions = new Float32Array((CURVE_SEGMENTS+1)*3);
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    const mat = new THREE.LineBasicMaterial({ color: color, linewidth: 2 });
-    const line = new THREE.Line(geo, mat);
-    line.userData.zOffset = zOffset;
+
+function makeCurve(color, z) {
+
+    const positions =
+        new Float32Array(
+            (CURVE_SEGMENTS + 1) * 3
+        );
+
+    const geometry =
+        new THREE.BufferGeometry();
+
+    geometry.setAttribute(
+        "position",
+        new THREE.BufferAttribute(
+            positions,
+            3
+        )
+    );
+
+    const material =
+        new THREE.LineBasicMaterial({
+            color,
+            linewidth: 2
+        });
+
+    const line =
+        new THREE.Line(
+            geometry,
+            material
+        );
+
+    line.userData.z = z;
+
     G.scene.add(line);
+
     return line;
 }
-const blueCurve = makeCurveLine(0x2563eb, 0.5);
-const redCurve = makeCurveLine(0xdc2626, -0.5);
+
+const blueCurve =
+    makeCurve(
+        0x70d5ff,
+        0.5
+    );
+
+const redCurve =
+    makeCurve(
+        0xfb7185,
+        -0.5
+    );
 
 function updateCurves() {
-    [blueCurve, redCurve].forEach(curve => {
-        const pos = curve.geometry.attributes.position;
-        for (let i=0;i<=CURVE_SEGMENTS;i++){
-            const th = THETA_MIN + (i/CURVE_SEGMENTS)*(THETA_MAX-THETA_MIN);
-            const y = (curve===blueCurve) ? Math.cos(th) : Math.pow(Math.cos(th),2);
-            pos.setXYZ(i, th, y, curve.userData.zOffset);
+
+    [blueCurve, redCurve].forEach(
+        curve => {
+
+            const position =
+                curve.geometry
+                    .attributes
+                    .position;
+
+            for (
+                let i = 0;
+                i <= CURVE_SEGMENTS;
+                i++
+            ) {
+
+                const theta =
+                    THETA_MIN +
+                    (i / CURVE_SEGMENTS) *
+                    (THETA_MAX - THETA_MIN);
+
+                const y =
+                    curve === blueCurve
+                        ? Math.cos(theta)
+                        : Math.pow(
+                            Math.cos(theta),
+                            2
+                        );
+
+                position.setXYZ(
+                    i,
+                    theta,
+                    y,
+                    curve.userData.z
+                );
+            }
+
+            position.needsUpdate = true;
         }
-        pos.needsUpdate = true;
-    });
+    );
 }
+
 updateCurves();
 
-// Bright fringes: θ = nπ  (k even, k = -8..8 -> n = -4..4)
-// Dark fringes:   θ = (2n+1)π/2  (k odd, k = -7..7)
-for (let k=-8; k<=8; k++) {
-    const x = k*Math.PI/2;
-    const isBright = (k % 2 === 0);
-    const color = isBright ? 0x16a34a : 0x7c3aed;
-    const tick = new THREE.Mesh(new THREE.SphereGeometry(0.05,8,8), new THREE.MeshBasicMaterial({color}));
-    tick.position.set(x, -0.15, 0);
-    graphLabelsGroup.add(tick);
+/* =========================================================
+   BRIGHT / DARK MARKERS
+========================================================= */
 
-    let text;
-    if (isBright && k === 0) text = 'Central Bright (θ=0)';
-    else text = 'θ=' + piLabel(k) + (isBright ? ' Bright' : ' Dark');
-    const lbl = makeTextSprite(text, '#'+color.toString(16).padStart(6,'0'), 30);
-    lbl.scale.set(1.9,0.38,1);
-    lbl.position.set(x, isBright ? -0.62 : -0.9, 0);
-    graphLabelsGroup.add(lbl);
+for (let k = -8; k <= 8; k++) {
+
+    const x =
+        k * Math.PI / 2;
+
+    const bright =
+        k % 2 === 0;
+
+    const color =
+        bright
+            ? 0x4ade80
+            : 0xa78bfa;
+
+    const sphere =
+        new THREE.Mesh(
+            new THREE.SphereGeometry(
+                0.055,
+                10,
+                10
+            ),
+            new THREE.MeshBasicMaterial({
+                color
+            })
+        );
+
+    sphere.position.set(
+        x,
+        -0.15,
+        0
+    );
+
+    graphLabelsGroup.add(sphere);
+
+    const text =
+        k === 0
+            ? "Central Bright"
+            : "θ=" +
+              piLabel(k) +
+              (bright ? " Bright" : " Dark");
+
+    const label =
+        makeTextSprite(
+            text,
+            "#" +
+            color
+                .toString(16)
+                .padStart(6, "0"),
+            27
+        );
+
+    label.scale.set(
+        1.8,
+        0.35,
+        1
+    );
+
+    label.position.set(
+        x,
+        bright ? -0.58 : -0.88,
+        0
+    );
+
+    graphLabelsGroup.add(label);
 }
 
-// Marker (vertical rod + dots on both curves)
-const markerGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,-1.5,0), new THREE.Vector3(0,1.5,0)]);
-const markerMat = new THREE.LineBasicMaterial({ color: 0xf59e0b });
-const markerLine = new THREE.Line(markerGeo, markerMat);
+/* =========================================================
+   GRAPH MARKER
+========================================================= */
+
+const markerGeometry =
+    new THREE.BufferGeometry()
+        .setFromPoints([
+            new THREE.Vector3(
+                0,
+                -1.5,
+                0
+            ),
+
+            new THREE.Vector3(
+                0,
+                1.5,
+                0
+            )
+        ]);
+
+const markerLine =
+    new THREE.Line(
+        markerGeometry,
+
+        new THREE.LineBasicMaterial({
+            color: 0xf59e0b
+        })
+    );
+
 G.scene.add(markerLine);
 
-const markerDotBlue = new THREE.Mesh(new THREE.SphereGeometry(0.09,16,16), new THREE.MeshPhongMaterial({color:0x2563eb}));
-const markerDotRed = new THREE.Mesh(new THREE.SphereGeometry(0.09,16,16), new THREE.MeshPhongMaterial({color:0xdc2626}));
-G.scene.add(markerDotBlue);
-G.scene.add(markerDotRed);
+const markerBlue =
+    new THREE.Mesh(
+        new THREE.SphereGeometry(
+            0.10,
+            16,
+            16
+        ),
+        new THREE.MeshBasicMaterial({
+            color: 0x70d5ff
+        })
+    );
+
+const markerRed =
+    new THREE.Mesh(
+        new THREE.SphereGeometry(
+            0.10,
+            16,
+            16
+        ),
+        new THREE.MeshBasicMaterial({
+            color: 0xfb7185
+        })
+    );
+
+G.scene.add(markerBlue);
+G.scene.add(markerRed);
 
 function updateGraphMarker() {
-    const th = Math.max(THETA_MIN, Math.min(THETA_MAX, state.theta)); // marker stays exactly within -4π..4π
-    markerLine.geometry.setFromPoints([new THREE.Vector3(th,-1.5,0), new THREE.Vector3(th,1.5,0)]);
-    markerDotBlue.position.set(th, Math.cos(th), 0.5);
-    markerDotRed.position.set(th, Math.pow(Math.cos(th),2), -0.5);
+
+    const theta =
+        Math.max(
+            THETA_MIN,
+            Math.min(
+                THETA_MAX,
+                state.theta
+            )
+        );
+
+    markerLine.geometry.setFromPoints([
+        new THREE.Vector3(
+            theta,
+            -1.5,
+            0
+        ),
+
+        new THREE.Vector3(
+            theta,
+            1.5,
+            0
+        )
+    ]);
+
+    markerBlue.position.set(
+        theta,
+        Math.cos(theta),
+        0.5
+    );
+
+    markerRed.position.set(
+        theta,
+        Math.pow(
+            Math.cos(theta),
+            2
+        ),
+        -0.5
+    );
 }
-updateGraphMarker();
 
-/* ============================================================
-   SETUP SCENE  (source, S1/S2, screen, rays, wavefronts, fringe pattern)
-   ============================================================ */
+/* =========================================================
+   SETUP SCENE
+========================================================= */
 
-const setupWrap = document.getElementById('setupWrap');
-const S = makeOrbitScene(setupWrap, { theta: 0.75, phi: 1.2, radius: 12, ty: 0 });
+const setupWrap =
+    document.getElementById("setupWrap");
 
-const setupLabelsGroup = new THREE.Group();
+const S =
+    makeOrbitScene(
+        setupWrap,
+        {
+            theta: 0.70,
+            phi: 1.20,
+            radius: 12,
+            ty: 0
+        }
+    );
+
+const setupLabelsGroup =
+    new THREE.Group();
+
 S.scene.add(setupLabelsGroup);
 
-const SCHEMATIC_D = 6.5;
-let dScene = 1.0;
+/*
+    IMPORTANT GEOMETRY:
 
-// Coherent point source, behind the slit barrier
-const sourceMesh = new THREE.Mesh(new THREE.SphereGeometry(0.09,16,16), new THREE.MeshPhongMaterial({color:0xf59e0b}));
-sourceMesh.position.set(-2.2, 0, 0);
-S.scene.add(sourceMesh);
-const sourceLbl = makeTextSprite('Source', '#f59e0b', 34); sourceLbl.scale.set(1.3,0.35,1);
-setupLabelsGroup.add(sourceLbl);
+    Source is behind the slit barrier.
+    Waves travel in +Z direction.
 
-// Sources (slits)
-const s1Mesh = new THREE.Mesh(new THREE.SphereGeometry(0.1,16,16), new THREE.MeshPhongMaterial({color:0x2563eb}));
-const s2Mesh = new THREE.Mesh(new THREE.SphereGeometry(0.1,16,16), new THREE.MeshPhongMaterial({color:0x2563eb}));
-S.scene.add(s1Mesh); S.scene.add(s2Mesh);
-const s1Lbl = makeTextSprite('S1', '#2563eb', 55); s1Lbl.scale.set(0.55,0.35,1); setupLabelsGroup.add(s1Lbl);
-const s2Lbl = makeTextSprite('S2', '#2563eb', 55); s2Lbl.scale.set(0.55,0.35,1); setupLabelsGroup.add(s2Lbl);
+    Source: z = -3
+    Slits:  z = 0
+    Screen: z = +6.5
+*/
 
-// Line from source to barrier (illustrating the single coherent source illuminating both slits)
-const sourceRayGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3()]);
-const sourceRayMat = new THREE.LineBasicMaterial({ color: 0xf59e0b, transparent: true, opacity: 0.5 });
-const sourceRay1 = new THREE.Line(sourceRayGeo.clone(), sourceRayMat);
-const sourceRay2 = new THREE.Line(sourceRayGeo.clone(), sourceRayMat);
-S.scene.add(sourceRay1); S.scene.add(sourceRay2);
+const SOURCE_Z = -3.0;
 
-// Barrier (decorative)
-const barrierGeo = new THREE.PlaneGeometry(0.12, 3.5);
-const barrierMat = new THREE.MeshPhongMaterial({ color: 0x9ca3af, side: THREE.DoubleSide });
-const barrierMesh = new THREE.Mesh(barrierGeo, barrierMat);
-S.scene.add(barrierMesh);
+const SCREEN_Z = 6.5;
 
-// Screen (fringe intensity strip)
-const SCREEN_HALF_HEIGHT = 3.2;
-const SCREEN_SEGS = 90;
-const screenGeo = new THREE.PlaneGeometry(0.9, SCREEN_HALF_HEIGHT*2, 1, SCREEN_SEGS);
-const screenColors = new Float32Array((SCREEN_SEGS+1)*2*3);
-screenGeo.setAttribute('color', new THREE.BufferAttribute(screenColors, 3));
-const screenMat = new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.DoubleSide });
-const screenMesh = new THREE.Mesh(screenGeo, screenMat);
-screenMesh.position.z = SCHEMATIC_D;
-S.scene.add(screenMesh);
-const screenLbl = makeTextSprite('Screen', '#555', 34); screenLbl.scale.set(1.2,0.32,1);
-screenLbl.position.set(0, SCREEN_HALF_HEIGHT+0.4, SCHEMATIC_D);
-setupLabelsGroup.add(screenLbl);
-const dLbl = makeTextSprite('D', '#555', 44); dLbl.scale.set(0.4,0.32,1);
-setupLabelsGroup.add(dLbl);
-const dSepLbl = makeTextSprite('d', '#555', 44); dSepLbl.scale.set(0.4,0.32,1);
-setupLabelsGroup.add(dSepLbl);
+let slitSpacing = 1.0;
 
-// Rays S1P, S2P
-const ray1 = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3()]), new THREE.LineBasicMaterial({ color: 0x2563eb }));
-const ray2 = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3()]), new THREE.LineBasicMaterial({ color: 0xdc2626 }));
-S.scene.add(ray1); S.scene.add(ray2);
+/* =========================================================
+   SOURCE
+========================================================= */
 
-// Point P marker
-const pMarker = new THREE.Mesh(new THREE.SphereGeometry(0.13,16,16), new THREE.MeshPhongMaterial({color:0xf59e0b}));
-S.scene.add(pMarker);
-const pLbl = makeTextSprite('P (x)', '#f59e0b', 40); pLbl.scale.set(0.8,0.32,1); setupLabelsGroup.add(pLbl);
+const source =
+    new THREE.Mesh(
+        new THREE.SphereGeometry(
+            0.16,
+            20,
+            20
+        ),
+        new THREE.MeshBasicMaterial({
+            color: 0xf59e0b
+        })
+    );
 
-// Path difference label (near P)
-const deltaLbl = makeTextSprite('Δ', '#dc2626', 44); deltaLbl.scale.set(0.45,0.32,1); setupLabelsGroup.add(deltaLbl);
+source.position.set(
+    0,
+    0,
+    SOURCE_Z
+);
 
-// Fringe width double arrow (between central bright n=0 and 1st bright n=1)
-const arrowLine = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3()]), new THREE.LineBasicMaterial({ color: 0x16a34a }));
-S.scene.add(arrowLine);
-const arrowHead1 = new THREE.Mesh(new THREE.ConeGeometry(0.06,0.18,8), new THREE.MeshBasicMaterial({color:0x16a34a}));
-const arrowHead2 = new THREE.Mesh(new THREE.ConeGeometry(0.06,0.18,8), new THREE.MeshBasicMaterial({color:0x16a34a}));
-S.scene.add(arrowHead1); S.scene.add(arrowHead2);
-const betaLbl = makeTextSprite('β', '#16a34a', 60); betaLbl.scale.set(0.45,0.32,1); setupLabelsGroup.add(betaLbl);
+S.scene.add(source);
 
-// A handful of identification labels near the screen (kept concise so the 3D panel stays readable)
-const setupFringeDefs = [
-    [0, 'Central Bright', 0x16a34a],
-    [0.5, '1st Dark', 0x7c3aed],
-    [1, '1st Bright', 0x16a34a],
-    [1.5, '2nd Dark', 0x7c3aed],
-    [2, '2nd Bright', 0x16a34a]
-];
-const setupFringeLabels = [];
-setupFringeDefs.forEach(([mult,label,color]) => {
-    const s = makeTextSprite(label, '#'+color.toString(16).padStart(6,'0'), 32);
-    s.scale.set(1.6,0.36,1);
-    setupLabelsGroup.add(s);
-    setupFringeLabels.push({ mult, sprite: s });
-});
+const sourceLabel =
+    makeTextSprite(
+        "Coherent Source",
+        "#f59e0b",
+        30
+    );
 
-// Wavefronts (concentric rings emanating from each source, in the Y-Z plane)
-const RING_COUNT = 6;
+sourceLabel.scale.set(
+    1.7,
+    0.36,
+    1
+);
+
+sourceLabel.position.set(
+    0,
+    0.45,
+    SOURCE_Z
+);
+
+setupLabelsGroup.add(
+    sourceLabel
+);
+
+/* =========================================================
+   SLITS
+========================================================= */
+
+const slit1 =
+    new THREE.Mesh(
+        new THREE.SphereGeometry(
+            0.13,
+            16,
+            16
+        ),
+        new THREE.MeshBasicMaterial({
+            color: 0x70d5ff
+        })
+    );
+
+const slit2 =
+    new THREE.Mesh(
+        new THREE.SphereGeometry(
+            0.13,
+            16,
+            16
+        ),
+        new THREE.MeshBasicMaterial({
+            color: 0x70d5ff
+        })
+    );
+
+S.scene.add(slit1);
+S.scene.add(slit2);
+
+const slit1Label =
+    makeTextSprite(
+        "S₁",
+        "#70d5ff",
+        48
+    );
+
+const slit2Label =
+    makeTextSprite(
+        "S₂",
+        "#70d5ff",
+        48
+    );
+
+slit1Label.scale.set(
+    0.65,
+    0.38,
+    1
+);
+
+slit2Label.scale.set(
+    0.65,
+    0.38,
+    1
+);
+
+setupLabelsGroup.add(
+    slit1Label
+);
+
+setupLabelsGroup.add(
+    slit2Label
+);
+
+/* =========================================================
+   BARRIER
+========================================================= */
+
+const barrier =
+    new THREE.Mesh(
+        new THREE.BoxGeometry(
+            0.18,
+            5.8,
+            0.35
+        ),
+        new THREE.MeshStandardMaterial({
+            color: 0x253444,
+            metalness: 0.15,
+            roughness: 0.7
+        })
+    );
+
+barrier.position.set(
+    0,
+    0,
+    0
+);
+
+S.scene.add(barrier);
+
+/* =========================================================
+   SOURCE → SLITS RAYS
+========================================================= */
+
+function makeLine(color) {
+
+    return new THREE.Line(
+        new THREE.BufferGeometry(),
+        new THREE.LineBasicMaterial({
+            color,
+            transparent: true,
+            opacity: 0.65
+        })
+    );
+}
+
+const sourceRay1 =
+    makeLine(0xf59e0b);
+
+const sourceRay2 =
+    makeLine(0xf59e0b);
+
+S.scene.add(sourceRay1);
+S.scene.add(sourceRay2);
+
+/* =========================================================
+   SCREEN
+========================================================= */
+
+const SCREEN_HEIGHT = 5.6;
+
+const screenGeometry =
+    new THREE.PlaneGeometry(
+        0.35,
+        SCREEN_HEIGHT,
+        1,
+        120
+    );
+
+const screenColors =
+    new Float32Array(
+        (121 * 2) * 3
+    );
+
+screenGeometry.setAttribute(
+    "color",
+    new THREE.BufferAttribute(
+        screenColors,
+        3
+    )
+);
+
+const screenMaterial =
+    new THREE.MeshBasicMaterial({
+        vertexColors: true,
+        side: THREE.DoubleSide
+    });
+
+const screen =
+    new THREE.Mesh(
+        screenGeometry,
+        screenMaterial
+    );
+
+screen.position.set(
+    0,
+    0,
+    SCREEN_Z
+);
+
+S.scene.add(screen);
+
+const screenLabel =
+    makeTextSprite(
+        "Screen",
+        "#dce8f2",
+        32
+    );
+
+screenLabel.scale.set(
+    1.1,
+    0.32,
+    1
+);
+
+screenLabel.position.set(
+    0,
+    SCREEN_HEIGHT / 2 + 0.45,
+    SCREEN_Z
+);
+
+setupLabelsGroup.add(
+    screenLabel
+);
+
+/* =========================================================
+   SCREEN AXIS
+========================================================= */
+
+const axisLine =
+    makeLine(0x526777);
+
+axisLine.geometry.setFromPoints([
+    new THREE.Vector3(
+        -0.08,
+        -SCREEN_HEIGHT / 2,
+        SCREEN_Z + 0.02
+    ),
+
+    new THREE.Vector3(
+        -0.08,
+        SCREEN_HEIGHT / 2,
+        SCREEN_Z + 0.02
+    )
+]);
+
+S.scene.add(axisLine);
+
+/* =========================================================
+   POINT P
+========================================================= */
+
+const pointP =
+    new THREE.Mesh(
+        new THREE.SphereGeometry(
+            0.15,
+            16,
+            16
+        ),
+        new THREE.MeshBasicMaterial({
+            color: 0xf59e0b
+        })
+    );
+
+S.scene.add(pointP);
+
+const pLabel =
+    makeTextSprite(
+        "P (x)",
+        "#f59e0b",
+        34
+    );
+
+pLabel.scale.set(
+    0.85,
+    0.32,
+    1
+);
+
+setupLabelsGroup.add(
+    pLabel
+);
+
+/* =========================================================
+   PATH RAYS
+========================================================= */
+
+const ray1 =
+    makeLine(0x70d5ff);
+
+const ray2 =
+    makeLine(0xfb7185);
+
+S.scene.add(ray1);
+S.scene.add(ray2);
+
+/* =========================================================
+   D LABEL
+========================================================= */
+
+const dLabel =
+    makeTextSprite(
+        "d",
+        "#70d5ff",
+        40
+    );
+
+dLabel.scale.set(
+    0.4,
+    0.32,
+    1
+);
+
+setupLabelsGroup.add(
+    dLabel
+);
+
+const DLabel =
+    makeTextSprite(
+        "D",
+        "#91a2b5",
+        40
+    );
+
+DLabel.scale.set(
+    0.4,
+    0.32,
+    1
+);
+
+setupLabelsGroup.add(
+    DLabel
+);
+
+/* =========================================================
+   DELTA LABEL
+========================================================= */
+
+const deltaLabel =
+    makeTextSprite(
+        "Δ",
+        "#fb7185",
+        44
+    );
+
+deltaLabel.scale.set(
+    0.45,
+    0.32,
+    1
+);
+
+setupLabelsGroup.add(
+    deltaLabel
+);
+
+/* =========================================================
+   BETA LABEL
+========================================================= */
+
+const betaLabel =
+    makeTextSprite(
+        "β",
+        "#4ade80",
+        50
+    );
+
+betaLabel.scale.set(
+    0.45,
+    0.32,
+    1
+);
+
+setupLabelsGroup.add(
+    betaLabel
+);
+
+/* =========================================================
+   WAVEFRONTS
+========================================================= */
+
+const RING_COUNT = 7;
+
 let wavePhase = 0;
-function makeSimpleRingGroup(color) {
-    const group = new THREE.Group();
-    const circlePts = [];
-    const N = 56;
-    for (let j=0;j<=N;j++){
-        const a=(j/N)*Math.PI*2;
-        circlePts.push(new THREE.Vector3(0, Math.sin(a), Math.cos(a)));
-    }
-    const baseGeo = new THREE.BufferGeometry().setFromPoints(circlePts);
-    for (let i=0;i<RING_COUNT;i++){
-        const mat = new THREE.LineBasicMaterial({ color, transparent:true, opacity: 0.6 - i*0.09 });
-        const ring = new THREE.Line(baseGeo.clone(), mat);
+
+function createWavefrontGroup(color) {
+
+    const group =
+        new THREE.Group();
+
+    for (
+        let i = 0;
+        i < RING_COUNT;
+        i++
+    ) {
+
+        const points = [];
+
+        const segments = 64;
+
+        for (
+            let j = 0;
+            j <= segments;
+            j++
+        ) {
+
+            const a =
+                (j / segments) *
+                Math.PI * 2;
+
+            points.push(
+                new THREE.Vector3(
+                    0,
+                    Math.sin(a),
+                    Math.cos(a)
+                )
+            );
+        }
+
+        const geometry =
+            new THREE.BufferGeometry()
+                .setFromPoints(points);
+
+        const material =
+            new THREE.LineBasicMaterial({
+                color,
+                transparent: true,
+                opacity:
+                    0.55 - i * 0.055
+            });
+
+        const ring =
+            new THREE.Line(
+                geometry,
+                material
+            );
+
         group.add(ring);
     }
+
+    S.scene.add(group);
+
     return group;
 }
-const ringGroupS1 = makeSimpleRingGroup(0x2563eb);
-const ringGroupS2 = makeSimpleRingGroup(0xdc2626);
-S.scene.add(ringGroupS1);
-S.scene.add(ringGroupS2);
-const RING_SPACING = 0.85;
+
+const wavefront1 =
+    createWavefrontGroup(
+        0x70d5ff
+    );
+
+const wavefront2 =
+    createWavefrontGroup(
+        0xfb7185
+    );
+
+const WAVE_SPACING = 0.72;
 
 function updateWavefronts(dt) {
-    wavePhase += dt * (0.9 + state.speed*0.4);
-    [ringGroupS1, ringGroupS2].forEach((group, gi) => {
-        const srcPos = gi===0 ? s1Mesh.position : s2Mesh.position;
-        group.position.copy(srcPos);
-        group.children.forEach((ring, i) => {
-            let r = ((i*RING_SPACING + wavePhase) % (RING_SPACING*RING_COUNT));
-            ring.scale.set(1, r, r);
-        });
-    });
-    ringGroupS1.visible = state.showWavefronts;
-    ringGroupS2.visible = state.showWavefronts;
+
+    wavePhase +=
+        dt *
+        (0.9 + state.speed * 0.45);
+
+    const groups = [
+        [wavefront1, slit1],
+        [wavefront2, slit2]
+    ];
+
+    groups.forEach(
+        ([group, sourcePoint]) => {
+
+            group.position.copy(
+                sourcePoint.position
+            );
+
+            group.children.forEach(
+                (ring, index) => {
+
+                    const radius =
+                        (
+                            index *
+                            WAVE_SPACING +
+                            wavePhase
+                        ) %
+                        (WAVE_SPACING * RING_COUNT);
+
+                    ring.scale.set(
+                        1,
+                        radius,
+                        radius
+                    );
+                }
+            );
+
+            group.visible =
+                state.showWavefronts;
+        }
+    );
 }
+
+/* =========================================================
+   SETUP UPDATE
+========================================================= */
 
 function updateSetupScene(phys) {
-    dScene = Math.max(0.7, Math.min(2.0, state.d_mm * 2.2));
-    s1Mesh.position.set(0, dScene/2, 0);
-    s2Mesh.position.set(0, -dScene/2, 0);
-    s1Lbl.position.set(-0.45, dScene/2, 0);
-    s2Lbl.position.set(-0.45, -dScene/2, 0);
-    barrierMesh.position.set(0,0,0);
 
-    sourceRay1.geometry.setFromPoints([sourceMesh.position.clone(), s1Mesh.position.clone()]);
-    sourceRay2.geometry.setFromPoints([sourceMesh.position.clone(), s2Mesh.position.clone()]);
+    slitSpacing =
+        Math.max(
+            0.65,
+            Math.min(
+                1.8,
+                state.d_mm * 2.0
+            )
+        );
 
-    dSepLbl.position.set(-0.2, 0, 0);
-    dLbl.position.set(0, dScene/2+0.9, SCHEMATIC_D/2);
+    slit1.position.set(
+        0,
+        slitSpacing / 2,
+        0
+    );
 
-    const targetSpacing = 1.1;
-    let sceneUnitsPerMM = phys.beta_mm > 1e-6 ? (targetSpacing / phys.beta_mm) : 1;
-    sceneUnitsPerMM = Math.max(0.02, Math.min(80, sceneUnitsPerMM));
+    slit2.position.set(
+        0,
+        -slitSpacing / 2,
+        0
+    );
 
-    const colorAttr = screenGeo.attributes.color;
-    for (let row=0; row<=SCREEN_SEGS; row++){
-        const yLocal = -SCREEN_HALF_HEIGHT + (row/SCREEN_SEGS)*SCREEN_HALF_HEIGHT*2;
-        const x_mm = yLocal / sceneUnitsPerMM;
-        const x_m = x_mm/1000;
-        const delta_m = x_m * phys.d_m / phys.D_m;
-        const dphi = 2*Math.PI*delta_m/phys.lambda_m;
-        const I = Math.pow(Math.cos(dphi/2),2);
-        const r = 0.05 + I*0.9;
-        const g = 0.05 + I*0.85;
-        const b = 0.25 + I*0.55;
-        for (let col=0; col<2; col++){
-            colorAttr.setXYZ(row*2+col, r,g,b);
-        }
-    }
-    colorAttr.needsUpdate = true;
+    slit1Label.position.set(
+        -0.45,
+        slitSpacing / 2,
+        0
+    );
 
-    const x_scene = phys.x_mm * sceneUnitsPerMM;
-    const clampedX = Math.max(-SCREEN_HALF_HEIGHT, Math.min(SCREEN_HALF_HEIGHT, x_scene));
-    pMarker.position.set(0, clampedX, SCHEMATIC_D);
-    pLbl.position.set(0.4, clampedX, SCHEMATIC_D);
-    deltaLbl.position.set(0.4, clampedX*0.5, SCHEMATIC_D*0.6);
+    slit2Label.position.set(
+        -0.45,
+        -slitSpacing / 2,
+        0
+    );
 
-    let markerColor = 0xf59e0b;
-    if (phys.normI > 0.9) markerColor = 0x16a34a;
-    else if (phys.normI < 0.1) markerColor = 0x7c3aed;
-    pMarker.material.color.setHex(markerColor);
+    /*
+       Source rays travel from the source
+       to both slits.
+    */
 
-    ray1.geometry.setFromPoints([s1Mesh.position.clone(), pMarker.position.clone()]);
-    ray2.geometry.setFromPoints([s2Mesh.position.clone(), pMarker.position.clone()]);
-
-    const y0 = 0;
-    const y1 = Math.max(-SCREEN_HALF_HEIGHT, Math.min(SCREEN_HALF_HEIGHT, phys.beta_mm*sceneUnitsPerMM));
-    const arrowX = -0.9;
-    arrowLine.geometry.setFromPoints([
-        new THREE.Vector3(arrowX, y0, SCHEMATIC_D),
-        new THREE.Vector3(arrowX, y1, SCHEMATIC_D)
+    sourceRay1.geometry.setFromPoints([
+        source.position.clone(),
+        slit1.position.clone()
     ]);
-    arrowHead1.position.set(arrowX, y0, SCHEMATIC_D);
-    arrowHead1.rotation.z = Math.PI;
-    arrowHead2.position.set(arrowX, y1, SCHEMATIC_D);
-    betaLbl.position.set(arrowX-0.55, (y0+y1)/2, SCHEMATIC_D);
 
-    setupFringeLabels.forEach(({mult, sprite}) => {
-        const x_mm_lbl = mult*phys.beta_mm;
-        const yScene = Math.max(-SCREEN_HALF_HEIGHT, Math.min(SCREEN_HALF_HEIGHT, x_mm_lbl*sceneUnitsPerMM));
-        sprite.position.set(1.2, yScene, SCHEMATIC_D);
-    });
+    sourceRay2.geometry.setFromPoints([
+        source.position.clone(),
+        slit2.position.clone()
+    ]);
+
+    /*
+       Scale the screen so several fringes
+       are visible without becoming unreadable.
+    */
+
+    const targetSpacing = 0.78;
+
+    let unitsPerMM =
+        phys.beta_mm > 0
+            ? targetSpacing / phys.beta_mm
+            : 1;
+
+    unitsPerMM =
+        Math.max(
+            0.03,
+            Math.min(
+                100,
+                unitsPerMM
+            )
+        );
+
+    /* ================= SCREEN INTENSITY ================= */
+
+    const colors =
+        screenGeometry.attributes.color;
+
+    for (
+        let row = 0;
+        row <= 120;
+        row++
+    ) {
+
+        const y =
+            -SCREEN_HEIGHT / 2 +
+            (row / 120) *
+            SCREEN_HEIGHT;
+
+        const x_mm =
+            y / unitsPerMM;
+
+        const delta =
+            (x_mm / 1000) *
+            phys.d_m /
+            phys.D_m;
+
+        const phase =
+            2 *
+            Math.PI *
+            delta /
+            phys.lambda_m;
+
+        const intensity =
+            Math.pow(
+                Math.cos(phase / 2),
+                2
+            );
+
+        /*
+           Dark blue base with bright cyan-white
+           maxima.
+        */
+
+        const r =
+            0.025 +
+            intensity * 0.70;
+
+        const g =
+            0.06 +
+            intensity * 0.82;
+
+        const b =
+            0.14 +
+            intensity * 0.86;
+
+        colors.setXYZ(
+            row * 2,
+            r,
+            g,
+            b
+        );
+
+        colors.setXYZ(
+            row * 2 + 1,
+            r,
+            g,
+            b
+        );
+    }
+
+    colors.needsUpdate = true;
+
+    /* ================= POINT P ================= */
+
+    const screenY =
+        phys.x_mm *
+        unitsPerMM;
+
+    const clampedY =
+        Math.max(
+            -SCREEN_HEIGHT / 2,
+            Math.min(
+                SCREEN_HEIGHT / 2,
+                screenY
+            )
+        );
+
+    pointP.position.set(
+        0,
+        clampedY,
+        SCREEN_Z + 0.15
+    );
+
+    pLabel.position.set(
+        0.55,
+        clampedY,
+        SCREEN_Z + 0.2
+    );
+
+    /* ================= RAYS ================= */
+
+    ray1.geometry.setFromPoints([
+        slit1.position.clone(),
+
+        pointP.position.clone()
+    ]);
+
+    ray2.geometry.setFromPoints([
+        slit2.position.clone(),
+
+        pointP.position.clone()
+    ]);
+
+    /* ================= LABELS ================= */
+
+    dLabel.position.set(
+        -0.45,
+        0,
+        0.2
+    );
+
+    DLabel.position.set(
+        0.4,
+        0,
+        SCREEN_Z / 2
+    );
+
+    deltaLabel.position.set(
+        0.65,
+        clampedY * 0.5,
+        SCREEN_Z * 0.55
+    );
+
+    betaLabel.position.set(
+        -0.65,
+        0.6,
+        SCREEN_Z
+    );
 }
 
-/* ============================================================
-   UI WIRING
-   ============================================================ */
+/* =========================================================
+   DOM REFERENCES
+========================================================= */
 
-const lambdaInput = document.getElementById('lambda');
-const dSlitInput = document.getElementById('dSlit');
-const DscreenInput = document.getElementById('Dscreen');
-const speedInput = document.getElementById('speed');
+const lambdaInput =
+    document.getElementById("lambda");
 
-const lambdaVal = document.getElementById('lambdaVal');
-const dSlitVal = document.getElementById('dSlitVal');
-const DscreenVal = document.getElementById('DscreenVal');
-const speedVal = document.getElementById('speedVal');
-const betaVal = document.getElementById('betaVal');
+const dSlitInput =
+    document.getElementById("dSlit");
 
-const thetaVal = document.getElementById('thetaVal');
-const dphiVal = document.getElementById('dphiVal');
-const deltaVal = document.getElementById('deltaVal');
-const intensityVal = document.getElementById('intensityVal');
-const statusBanner = document.getElementById('statusBanner');
+const DscreenInput =
+    document.getElementById("Dscreen");
 
-const playBtn = document.getElementById('playBtn');
-const pauseBtn = document.getElementById('pauseBtn');
-const resetBtn = document.getElementById('resetBtn');
-const wavefrontBtn = document.getElementById('wavefrontBtn');
-const eqBtn = document.getElementById('eqBtn');
-const labelsBtn = document.getElementById('labelsBtn');
-const brightBtn = document.getElementById('brightBtn');
-const darkBtn = document.getElementById('darkBtn');
-const stepBtn = document.getElementById('stepBtn');
+const speedInput =
+    document.getElementById("speed");
 
-const eqPanel = document.getElementById('eqPanel');
-const stepPanel = document.getElementById('stepPanel');
-const stepTitle = document.getElementById('stepTitle');
-const stepText = document.getElementById('stepText');
-const stepPrev = document.getElementById('stepPrev');
-const stepNext = document.getElementById('stepNext');
-const stepExit = document.getElementById('stepExit');
+const lambdaVal =
+    document.getElementById("lambdaVal");
+
+const dSlitVal =
+    document.getElementById("dSlitVal");
+
+const DscreenVal =
+    document.getElementById("DscreenVal");
+
+const speedVal =
+    document.getElementById("speedVal");
+
+const betaVal =
+    document.getElementById("betaVal");
+
+const thetaVal =
+    document.getElementById("thetaVal");
+
+const dphiVal =
+    document.getElementById("dphiVal");
+
+const deltaVal =
+    document.getElementById("deltaVal");
+
+const intensityVal =
+    document.getElementById("intensityVal");
+
+const statusBanner =
+    document.getElementById("statusBanner");
+
+const playBtn =
+    document.getElementById("playBtn");
+
+const pauseBtn =
+    document.getElementById("pauseBtn");
+
+const resetBtn =
+    document.getElementById("resetBtn");
+
+const wavefrontBtn =
+    document.getElementById("wavefrontBtn");
+
+const eqBtn =
+    document.getElementById("eqBtn");
+
+const labelsBtn =
+    document.getElementById("labelsBtn");
+
+const brightBtn =
+    document.getElementById("brightBtn");
+
+const darkBtn =
+    document.getElementById("darkBtn");
+
+const stepBtn =
+    document.getElementById("stepBtn");
+
+const eqPanel =
+    document.getElementById("eqPanel");
+
+const stepPanel =
+    document.getElementById("stepPanel");
+
+const stepTitle =
+    document.getElementById("stepTitle");
+
+const stepText =
+    document.getElementById("stepText");
+
+const stepPrev =
+    document.getElementById("stepPrev");
+
+const stepNext =
+    document.getElementById("stepNext");
+
+const stepExit =
+    document.getElementById("stepExit");
+
+/* =========================================================
+   SLIDER LABELS
+========================================================= */
 
 function syncSliderLabels() {
-    lambdaVal.textContent = state.lambda_um.toFixed(2) + ' µm';
-    dSlitVal.textContent = state.d_mm.toFixed(2) + ' mm';
-    DscreenVal.textContent = state.D_m.toFixed(2) + ' m';
-    speedVal.textContent = state.speed.toFixed(1) + '×';
+
+    lambdaVal.textContent =
+        state.lambda_um.toFixed(2) +
+        " µm";
+
+    dSlitVal.textContent =
+        state.d_mm.toFixed(2) +
+        " mm";
+
+    DscreenVal.textContent =
+        state.D_m.toFixed(2) +
+        " m";
+
+    speedVal.textContent =
+        state.speed.toFixed(1) +
+        "×";
 }
 
+/* =========================================================
+   UPDATE EVERYTHING
+========================================================= */
+
 function updateAll() {
-    const phys = computePhysics();
-    thetaVal.textContent = state.theta.toFixed(2);
-    dphiVal.textContent = phys.dphi.toFixed(2);
-    deltaVal.textContent = phys.delta_nm.toFixed(1);
-    intensityVal.textContent = phys.normI.toFixed(2);
-    betaVal.textContent = phys.beta_mm.toFixed(3) + ' mm';
+
+    const phys =
+        computePhysics();
+
+    thetaVal.textContent =
+        state.theta.toFixed(2);
+
+    dphiVal.textContent =
+        phys.dphi.toFixed(2);
+
+    deltaVal.textContent =
+        phys.delta_nm.toFixed(1);
+
+    intensityVal.textContent =
+        phys.normI.toFixed(2);
+
+    betaVal.textContent =
+        phys.beta_mm.toFixed(3) +
+        " mm";
 
     if (phys.normI > 0.9) {
-        statusBanner.textContent = '● Constructive interference — near a bright fringe (Δ ≈ nλ, Δφ ≈ 2nπ, θ ≈ nπ)';
-        statusBanner.style.background = '#dcfce7';
-        statusBanner.style.color = '#166534';
+
+        statusBanner.textContent =
+            "● Constructive interference — near a bright fringe";
+
+        statusBanner.style.background =
+            "rgba(74,222,128,0.12)";
+
+        statusBanner.style.color =
+            "#86efac";
+
+        statusBanner.style.borderColor =
+            "rgba(74,222,128,0.25)";
+
     } else if (phys.normI < 0.1) {
-        statusBanner.textContent = '● Destructive interference — near a dark fringe (Δ ≈ (2n+1)λ/2, θ ≈ (2n+1)π/2)';
-        statusBanner.style.background = '#ede9fe';
-        statusBanner.style.color = '#5b21b6';
+
+        statusBanner.textContent =
+            "● Destructive interference — near a dark fringe";
+
+        statusBanner.style.background =
+            "rgba(167,139,250,0.12)";
+
+        statusBanner.style.color =
+            "#c4b5fd";
+
+        statusBanner.style.borderColor =
+            "rgba(167,139,250,0.25)";
+
     } else {
-        statusBanner.textContent = '● Intermediate intensity — between a bright and dark fringe';
-        statusBanner.style.background = '#fef9c3';
-        statusBanner.style.color = '#854d0e';
+
+        statusBanner.textContent =
+            "● Intermediate intensity — between bright and dark";
+
+        statusBanner.style.background =
+            "rgba(234,179,8,0.10)";
+
+        statusBanner.style.color =
+            "#fde68a";
+
+        statusBanner.style.borderColor =
+            "rgba(234,179,8,0.20)";
     }
 
     updateCurves();
+
     updateGraphMarker();
+
     updateSetupScene(phys);
 }
 
-lambdaInput.addEventListener('input', () => { state.lambda_um = parseFloat(lambdaInput.value); syncSliderLabels(); updateAll(); });
-dSlitInput.addEventListener('input', () => { state.d_mm = parseFloat(dSlitInput.value); syncSliderLabels(); updateAll(); });
-DscreenInput.addEventListener('input', () => { state.D_m = parseFloat(DscreenInput.value); syncSliderLabels(); updateAll(); });
-speedInput.addEventListener('input', () => { state.speed = parseFloat(speedInput.value); syncSliderLabels(); });
+/* =========================================================
+   INPUT EVENTS
+========================================================= */
 
-function setPlaying(p) { state.playing = p; }
-playBtn.addEventListener('click', () => setPlaying(true));
-pauseBtn.addEventListener('click', () => setPlaying(false));
+lambdaInput.addEventListener(
+    "input",
+    () => {
 
-resetBtn.addEventListener('click', () => {
-    state.lambda_um = 0.50; state.d_mm = 0.50; state.D_m = 1.00; state.speed = 1.0; state.theta = THETA_MIN;
-    lambdaInput.value = state.lambda_um; dSlitInput.value = state.d_mm; DscreenInput.value = state.D_m; speedInput.value = state.speed;
-    syncSliderLabels();
-    setPlaying(true);
-    brightBtn.classList.remove('active');
-    darkBtn.classList.remove('active');
-    G.resetCam(); S.resetCam();
-    updateAll();
-});
+        state.lambda_um =
+            parseFloat(
+                lambdaInput.value
+            );
 
-wavefrontBtn.addEventListener('click', () => {
-    state.showWavefronts = !state.showWavefronts;
-    wavefrontBtn.textContent = state.showWavefronts ? 'Hide Wavefronts' : 'Show Wavefronts';
-});
+        syncSliderLabels();
+        updateAll();
+    }
+);
 
-eqBtn.addEventListener('click', () => {
-    state.showEquations = !state.showEquations;
-    eqPanel.classList.toggle('hidden', !state.showEquations);
-    eqBtn.textContent = state.showEquations ? 'Hide Equations' : 'Show Equations';
-});
+dSlitInput.addEventListener(
+    "input",
+    () => {
 
-labelsBtn.addEventListener('click', () => {
-    state.showLabels = !state.showLabels;
-    graphLabelsGroup.visible = state.showLabels;
-    setupLabelsGroup.visible = state.showLabels;
-    labelsBtn.textContent = state.showLabels ? 'Hide Labels' : 'Show Labels';
-});
+        state.d_mm =
+            parseFloat(
+                dSlitInput.value
+            );
 
-function nearestBright() { return Math.round(state.theta/Math.PI)*Math.PI; }
-function nearestDark() { return (2*Math.round((state.theta - Math.PI/2)/Math.PI)+1)*Math.PI/2; }
+        syncSliderLabels();
+        updateAll();
+    }
+);
 
-brightBtn.addEventListener('click', () => {
-    setPlaying(false);
-    state.theta = Math.max(THETA_MIN, Math.min(THETA_MAX, nearestBright()));
-    brightBtn.classList.add('active');
-    darkBtn.classList.remove('active');
-    updateAll();
-});
-darkBtn.addEventListener('click', () => {
-    setPlaying(false);
-    state.theta = Math.max(THETA_MIN, Math.min(THETA_MAX, nearestDark()));
-    darkBtn.classList.add('active');
-    brightBtn.classList.remove('active');
-    updateAll();
-});
+DscreenInput.addEventListener(
+    "input",
+    () => {
 
-/* ---------- Step-by-step derivation (8 steps) ---------- */
+        state.D_m =
+            parseFloat(
+                DscreenInput.value
+            );
+
+        syncSliderLabels();
+        updateAll();
+    }
+);
+
+speedInput.addEventListener(
+    "input",
+    () => {
+
+        state.speed =
+            parseFloat(
+                speedInput.value
+            );
+
+        syncSliderLabels();
+    }
+);
+
+/* =========================================================
+   PLAY / PAUSE
+========================================================= */
+
+function setPlaying(value) {
+    state.playing = value;
+}
+
+playBtn.addEventListener(
+    "click",
+    () => setPlaying(true)
+);
+
+pauseBtn.addEventListener(
+    "click",
+    () => setPlaying(false)
+);
+
+/* =========================================================
+   RESET
+========================================================= */
+
+resetBtn.addEventListener(
+    "click",
+    () => {
+
+        state.lambda_um = 0.50;
+        state.d_mm = 0.50;
+        state.D_m = 1.00;
+        state.speed = 1.0;
+        state.theta = 0;
+
+        lambdaInput.value =
+            state.lambda_um;
+
+        dSlitInput.value =
+            state.d_mm;
+
+        DscreenInput.value =
+            state.D_m;
+
+        speedInput.value =
+            state.speed;
+
+        brightBtn.classList.remove(
+            "active"
+        );
+
+        darkBtn.classList.remove(
+            "active"
+        );
+
+        G.resetCam();
+        S.resetCam();
+
+        setPlaying(true);
+
+        syncSliderLabels();
+
+        updateAll();
+    }
+);
+
+/* =========================================================
+   WAVEFRONTS
+========================================================= */
+
+wavefrontBtn.addEventListener(
+    "click",
+    () => {
+
+        state.showWavefronts =
+            !state.showWavefronts;
+
+        wavefrontBtn.textContent =
+            state.showWavefronts
+                ? "Hide Wavefronts"
+                : "Show Wavefronts";
+    }
+);
+
+/* =========================================================
+   EQUATIONS
+========================================================= */
+
+eqBtn.addEventListener(
+    "click",
+    () => {
+
+        state.showEquations =
+            !state.showEquations;
+
+        eqPanel.classList.toggle(
+            "hidden",
+            !state.showEquations
+        );
+
+        eqBtn.textContent =
+            state.showEquations
+                ? "Hide Equations"
+                : "Show Equations";
+    }
+);
+
+/* =========================================================
+   LABELS
+========================================================= */
+
+labelsBtn.addEventListener(
+    "click",
+    () => {
+
+        state.showLabels =
+            !state.showLabels;
+
+        graphLabelsGroup.visible =
+            state.showLabels;
+
+        setupLabelsGroup.visible =
+            state.showLabels;
+
+        labelsBtn.textContent =
+            state.showLabels
+                ? "Hide Labels"
+                : "Show Labels";
+    }
+);
+
+/* =========================================================
+   BRIGHT / DARK MODES
+========================================================= */
+
+function nearestBright() {
+
+    return Math.round(
+        state.theta / Math.PI
+    ) * Math.PI;
+}
+
+function nearestDark() {
+
+    return (
+        2 *
+        Math.round(
+            (
+                state.theta -
+                Math.PI / 2
+            ) / Math.PI
+        ) +
+        1
+    ) *
+    Math.PI / 2;
+}
+
+brightBtn.addEventListener(
+    "click",
+    () => {
+
+        setPlaying(false);
+
+        state.theta =
+            Math.max(
+                THETA_MIN,
+                Math.min(
+                    THETA_MAX,
+                    nearestBright()
+                )
+            );
+
+        brightBtn.classList.add(
+            "active"
+        );
+
+        darkBtn.classList.remove(
+            "active"
+        );
+
+        updateAll();
+    }
+);
+
+darkBtn.addEventListener(
+    "click",
+    () => {
+
+        setPlaying(false);
+
+        state.theta =
+            Math.max(
+                THETA_MIN,
+                Math.min(
+                    THETA_MAX,
+                    nearestDark()
+                )
+            );
+
+        darkBtn.classList.add(
+            "active"
+        );
+
+        brightBtn.classList.remove(
+            "active"
+        );
+
+        updateAll();
+    }
+);
+
+/* =========================================================
+   STEP-BY-STEP
+========================================================= */
 
 const steps = [
-    { title: 'Step 1 of 8 — Path Difference', formula: 'Δ = xd / D',
-      text: 'Light from the two slits travels slightly different distances to reach point P at position x on the screen. This extra distance is the path difference Δ.' },
-    { title: 'Step 2 of 8 — Phase Difference', formula: 'Δφ = 2πΔ / λ',
-      text: 'A path difference Δ corresponds to a phase difference Δφ, since one full wavelength λ corresponds to a phase of 2π.' },
-    { title: 'Step 3 of 8 — Substituting Δ', formula: 'Δφ = 2πxd / (λD)',
-      text: 'Substituting Δ = xd/D into the phase-difference relation expresses Δφ directly in terms of the screen position x.' },
-    { title: 'Step 4 of 8 — Interference Intensity', formula: 'I = 4I₀ cos²(Δφ/2)',
-      text: 'For two coherent waves of equal intensity I₀, the resulting intensity depends on their phase difference through this cos² relation.' },
-    { title: 'Step 5 of 8 — Substituting Δφ', formula: 'I = 4I₀ cos²(πdx / λD)',
-      text: 'Substituting the expression for Δφ gives the intensity directly as a function of screen position x. Writing θ = Δφ/2 = πdx/λD, this becomes I = 4I₀cos²θ.' },
-    { title: 'Step 6 of 8 — Bright Fringes', formula: 'Δ = nλ  →  xₙ = nλD/d',
-      text: 'When the path difference is a whole number of wavelengths, the waves add constructively (θ = nπ), giving maximum intensity I = 4I₀.' },
-    { title: 'Step 7 of 8 — Dark Fringes', formula: 'Δ = (2n+1)λ/2  →  xₙ = (2n+1)λD/2d',
-      text: 'When the path difference is a half-integer number of wavelengths, the waves cancel completely (θ = (2n+1)π/2), giving zero intensity.' },
-    { title: 'Step 8 of 8 — Fringe Width', formula: 'β = λD / d',
-      text: 'The spacing between consecutive bright (or dark) fringes is constant, called the fringe width β. It grows with λ and D, and shrinks as d increases.' }
+
+    {
+        title:
+            "Step 1 of 8 — Path Difference",
+
+        formula:
+            "Δ = xd / D",
+
+        text:
+            "Light from the two slits travels slightly different distances to reach point P. This extra distance is called the path difference Δ."
+    },
+
+    {
+        title:
+            "Step 2 of 8 — Phase Difference",
+
+        formula:
+            "Δφ = 2πΔ / λ",
+
+        text:
+            "A path difference Δ produces a phase difference Δφ. One complete wavelength corresponds to a phase change of 2π."
+    },
+
+    {
+        title:
+            "Step 3 of 8 — Substitute Δ",
+
+        formula:
+            "Δφ = 2πxd / (λD)",
+
+        text:
+            "Substituting Δ = xd/D gives the phase difference directly in terms of the screen position x."
+    },
+
+    {
+        title:
+            "Step 4 of 8 — Interference Intensity",
+
+        formula:
+            "I = 4I₀ cos²(Δφ/2)",
+
+        text:
+            "For two coherent waves of equal intensity I₀, the resultant intensity depends on their phase difference."
+    },
+
+    {
+        title:
+            "Step 5 of 8 — Substitute Δφ",
+
+        formula:
+            "I = 4I₀ cos²(πdx / λD)",
+
+        text:
+            "Using θ = Δφ/2 = πdx/λD, the intensity relation becomes I = 4I₀ cos²θ."
+    },
+
+    {
+        title:
+            "Step 6 of 8 — Bright Fringes",
+
+        formula:
+            "Δ = nλ  →  xₙ = nλD/d",
+
+        text:
+            "When the path difference is an integral multiple of wavelength, constructive interference occurs and intensity is maximum."
+    },
+
+    {
+        title:
+            "Step 7 of 8 — Dark Fringes",
+
+        formula:
+            "Δ = (2n+1)λ/2",
+
+        text:
+            "When the path difference is an odd multiple of λ/2, destructive interference occurs and the intensity becomes zero."
+    },
+
+    {
+        title:
+            "Step 8 of 8 — Fringe Width",
+
+        formula:
+            "β = λD / d",
+
+        text:
+            "The distance between consecutive bright fringes, or consecutive dark fringes, is called the fringe width β."
+    }
 ];
 
 function renderStep() {
-    const s = steps[state.stepIndex];
-    stepTitle.textContent = s.title;
-    stepText.innerHTML = '<div style="font-family:\'Times New Roman\',serif; font-size:16px; margin-bottom:6px;">' + s.formula + '</div>' + s.text;
-    document.querySelectorAll('.eqline').forEach(el => {
-        el.classList.toggle('active', parseInt(el.dataset.step) === state.stepIndex+1);
-    });
+
+    const step =
+        steps[state.stepIndex];
+
+    stepTitle.textContent =
+        step.title;
+
+    stepText.innerHTML =
+        '<div class="stepFormula">' +
+        step.formula +
+        "</div>" +
+        step.text;
+
+    document
+        .querySelectorAll(".eqline")
+        .forEach(element => {
+
+            element.classList.toggle(
+                "active",
+
+                parseInt(
+                    element.dataset.step
+                ) ===
+                state.stepIndex + 1
+            );
+        });
 }
 
-stepBtn.addEventListener('click', () => {
-    state.stepMode = !state.stepMode;
-    stepPanel.classList.toggle('hidden', !state.stepMode);
-    stepBtn.textContent = state.stepMode ? 'Exit Step-by-Step Mode' : 'Start Step-by-Step Mode';
-    if (state.stepMode) {
-        state.showEquations = true;
-        eqPanel.classList.remove('hidden');
-        eqBtn.textContent = 'Hide Equations';
-        state.stepIndex = 0;
-        renderStep();
-    } else {
-        document.querySelectorAll('.eqline').forEach(el => el.classList.remove('active'));
+stepBtn.addEventListener(
+    "click",
+    () => {
+
+        state.stepMode =
+            !state.stepMode;
+
+        stepPanel.classList.toggle(
+            "hidden",
+            !state.stepMode
+        );
+
+        stepBtn.textContent =
+            state.stepMode
+                ? "Exit Step-by-Step Mode"
+                : "Start Step-by-Step Mode";
+
+        if (state.stepMode) {
+
+            state.showEquations = true;
+
+            eqPanel.classList.remove(
+                "hidden"
+            );
+
+            eqBtn.textContent =
+                "Hide Equations";
+
+            state.stepIndex = 0;
+
+            renderStep();
+        } else {
+
+            document
+                .querySelectorAll(".eqline")
+                .forEach(
+                    element =>
+                        element.classList.remove(
+                            "active"
+                        )
+                );
+        }
     }
-});
-stepPrev.addEventListener('click', () => { state.stepIndex = (state.stepIndex+steps.length-1)%steps.length; renderStep(); });
-stepNext.addEventListener('click', () => { state.stepIndex = (state.stepIndex+1)%steps.length; renderStep(); });
-stepExit.addEventListener('click', () => { stepBtn.click(); });
+);
 
-/* ============================================================
-   ANIMATION LOOP
-   ============================================================ */
+stepPrev.addEventListener(
+    "click",
+    () => {
 
-let lastTime = performance.now();
-state.theta = THETA_MIN;
+        state.stepIndex =
+            (
+                state.stepIndex +
+                steps.length -
+                1
+            ) %
+            steps.length;
+
+        renderStep();
+    }
+);
+
+stepNext.addEventListener(
+    "click",
+    () => {
+
+        state.stepIndex =
+            (
+                state.stepIndex +
+                1
+            ) %
+            steps.length;
+
+        renderStep();
+    }
+);
+
+stepExit.addEventListener(
+    "click",
+    () => stepBtn.click()
+);
+
+/* =========================================================
+   ANIMATION
+========================================================= */
+
+let lastTime =
+    performance.now();
 
 function animate(now) {
-    const dt = Math.min((now - lastTime)/1000, 0.1);
+
+    const dt =
+        Math.min(
+            (now - lastTime) / 1000,
+            0.1
+        );
+
     lastTime = now;
 
     if (state.playing) {
-        state.theta += dt * BASE_RATE * state.speed;
-        if (state.theta > THETA_MAX) state.theta = THETA_MIN; // loop back to -4π
+
+        state.theta +=
+            dt *
+            BASE_RATE *
+            state.speed;
+
+        if (
+            state.theta >
+            THETA_MAX
+        ) {
+            state.theta =
+                THETA_MIN;
+        }
+
         updateAll();
     }
+
     updateWavefronts(dt);
 
-    G.renderer.render(G.scene, G.camera);
-    S.renderer.render(S.scene, S.camera);
+    G.renderer.render(
+        G.scene,
+        G.camera
+    );
 
-    requestAnimationFrame(animate);
+    S.renderer.render(
+        S.scene,
+        S.camera
+    );
+
+    requestAnimationFrame(
+        animate
+    );
 }
 
+/* =========================================================
+   START
+========================================================= */
+
+state.theta = 0;
+
 syncSliderLabels();
+
 updateAll();
-requestAnimationFrame(animate);
+
+requestAnimationFrame(
+    animate
+);
 
 })();
 </script>
