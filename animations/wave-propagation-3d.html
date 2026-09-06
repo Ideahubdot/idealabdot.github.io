@@ -49,6 +49,23 @@ body {
 }
 
 /* ---------- TOP AREA ---------- */
+   .back-link {
+    display: inline-block;
+    margin-right: 18px;
+    padding: 7px 12px;
+    border: 1px solid rgba(112, 213, 255, 0.22);
+    border-radius: 8px;
+    color: #70d5ff;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: 0.25s ease;
+}
+
+.back-link:hover {
+    background: rgba(112, 213, 255, 0.08);
+    border-color: rgba(112, 213, 255, 0.45);
+}
 
 .topbar {
     max-width: 1100px;
@@ -406,7 +423,10 @@ button:active {
 </head>
 <body>
 
-<div class="topbar">3D Wave Simulator</div>
+<div class="topbar">
+    <a href="../index.html" class="back-link">← IDEA LAB</a>
+    <span>3D Wave Simulator</span>
+</div>
 <div class="eq" id="eqDisplay">y = A sin(kx &minus; &omega;t + &phi;)</div>
 <div class="legend">
     <span><i class="dot" style="background:#e11d48"></i>X (propagation)</span>
