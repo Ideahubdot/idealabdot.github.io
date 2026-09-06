@@ -45,6 +45,23 @@
 html {
     background: var(--bg);
 }
+    .back-link {
+    display: inline-block;
+    margin-bottom: 16px;
+    padding: 7px 12px;
+    border: 1px solid rgba(112, 213, 255, 0.22);
+    border-radius: 8px;
+    color: #70d5ff;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: 0.25s ease;
+}
+
+.back-link:hover {
+    background: rgba(112, 213, 255, 0.08);
+    border-color: rgba(112, 213, 255, 0.45);
+}
 
 body {
     margin: 0;
@@ -562,10 +579,11 @@ button.wide {
 <body>
 
 <header>
+    <a href="../index.html" class="back-link">← IDEA LAB</a>
+
     <h1>Young's Double-Slit Experiment <span>· IDEA LAB</span></h1>
     <p>Interactive interference simulator • small-angle / far-screen approximation</p>
 </header>
-
 <!-- ================= GRAPH ================= -->
 
 <div class="card">
