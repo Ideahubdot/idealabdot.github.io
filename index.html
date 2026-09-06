@@ -1,28 +1,35 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <title>IDEA LAB — Interactive Physics Simulations & Experiments</title>
 
-     <meta name="description" content="IDEA LAB is an interactive physics laboratory where you can explore waves, interference, optics and other physics concepts through interactive simulations and experiments.">
+    <title>IDEA LAB — Interactive Physics Simulations & Experiments</title>
 
-     <meta name="keywords" content="interactive physics simulations, physics experiments, physics animation, wave simulation, Young's double slit experiment, interference simulation, optics simulation">
+    <meta name="description"
+        content="IDEA LAB is an interactive physics laboratory where you can explore waves, interference, optics, mechanics and other physics concepts through interactive simulations and experiments.">
 
-     <meta name="author" content="IDEA LAB">
+    <meta name="keywords"
+        content="interactive physics simulations, physics experiments, physics animation, wave simulation, Young's double slit experiment, interference simulation, optics simulation, SHM simulation">
 
-     <link rel="canonical" href="https://ideahubdot.github.io/idealabdot.github.io/">
-    
-     <meta property="og:title" content="IDEA LAB — Interactive Physics Simulations">
-     <meta property="og:description" content="Explore physics through interactive simulations and experiments. See waves, interference and physical phenomena come alive.">
-     <meta property="og:type" content="website">
-     <meta property="og:url" content="https://ideahubdot.github.io/idealabdot.github.io/">
+    <meta name="author" content="IDEA LAB">
 
-     <meta name="twitter:card" content="summary">
-     <meta name="twitter:title" content="IDEA LAB — Interactive Physics Simulations">
-     <meta name="twitter:description" content="Explore physics through interactive simulations and experiments.">
-    
-      <style>
+    <link rel="canonical" href="https://ideahubdot.github.io/idealabdot.github.io/">
+
+    <meta property="og:title" content="IDEA LAB — Interactive Physics Simulations">
+    <meta property="og:description"
+        content="Explore physics through interactive simulations and experiments. See waves, interference, mechanics and physical phenomena come alive.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ideahubdot.github.io/idealabdot.github.io/">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="IDEA LAB — Interactive Physics Simulations">
+    <meta name="twitter:description"
+        content="Explore physics through interactive simulations and experiments.">
+
+    <style>
         * {
             margin: 0;
             padding: 0;
@@ -38,11 +45,17 @@
             background: #07111f;
             color: #eef6ff;
             line-height: 1.6;
+            overflow-x: hidden;
         }
 
         a {
             color: inherit;
             text-decoration: none;
+        }
+
+        button,
+        input {
+            font: inherit;
         }
 
         /* =========================
@@ -55,6 +68,7 @@
             z-index: 1000;
 
             height: 72px;
+
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -64,7 +78,7 @@
             background: rgba(7, 17, 31, 0.88);
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 
-            backdrop-filter: blur(14px);
+            backdrop-filter: blur(16px);
         }
 
         .brand {
@@ -91,6 +105,8 @@
             background: rgba(50, 150, 220, 0.12);
 
             font-size: 19px;
+
+            box-shadow: 0 0 25px rgba(80, 190, 255, 0.06);
         }
 
         .nav-links {
@@ -115,29 +131,30 @@
 
         .hero {
             position: relative;
-            min-height: 650px;
+            min-height: 680px;
 
             display: flex;
             align-items: center;
 
-            padding: 90px 7% 100px;
+            padding: 90px 7% 105px;
 
             overflow: hidden;
 
             background:
-                radial-gradient(circle at 80% 25%, rgba(37, 139, 214, 0.18), transparent 32%),
-                radial-gradient(circle at 15% 80%, rgba(86, 70, 180, 0.12), transparent 28%),
+                radial-gradient(circle at 82% 25%, rgba(37, 139, 214, 0.20), transparent 32%),
+                radial-gradient(circle at 12% 80%, rgba(86, 70, 180, 0.14), transparent 30%),
                 #07111f;
         }
 
         .hero::before {
             content: "";
+
             position: absolute;
             inset: 0;
 
             background-image:
-                linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+                linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
 
             background-size: 50px 50px;
 
@@ -177,24 +194,29 @@
             border-radius: 50%;
 
             background: #66d6ff;
+
             box-shadow: 0 0 12px rgba(102, 214, 255, 0.9);
         }
 
         .hero h1 {
             margin-top: 25px;
 
-             font-size: clamp(58px, 10vw, 118px);
+            font-size: clamp(58px, 10vw, 118px);
             line-height: 0.88;
 
             letter-spacing: -6px;
             font-weight: 800;
+
             color: #ffffff;
-             text-shadow: 0 0 40px rgba(112, 213, 255, 0.08);
+
+            text-shadow: 0 0 40px rgba(112, 213, 255, 0.08);
         }
 
         .hero h1 span {
             color: #70d5ff;
-            text-shadow: 0 0 30px rgba(112, 213, 255, 0.18);
+
+            text-shadow:
+                0 0 30px rgba(112, 213, 255, 0.18);
         }
 
         .hero-subtitle {
@@ -203,10 +225,9 @@
             max-width: 690px;
 
             font-size: clamp(18px, 2.2vw, 25px);
-            color: #d7e4ef;
 
+            color: #d7e4ef;
             font-weight: 400;
-            letter-spacing: 0.2px;
         }
 
         .hero-description {
@@ -215,6 +236,7 @@
             max-width: 650px;
 
             color: #8fa3b8;
+
             font-size: 15px;
             line-height: 1.7;
         }
@@ -231,122 +253,173 @@
         .primary-button,
         .secondary-button {
             padding: 14px 22px;
+
             border-radius: 10px;
+
             font-size: 14px;
             font-weight: 600;
-           transition: 0.25s ease;
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
+
+            transition: 0.25s ease;
+
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
         }
 
         .primary-button {
             background: #72d6ff;
             color: #04111c;
 
-            box-shadow: 0 0 25px rgba(114, 214, 255, 0.16);
+            box-shadow:
+                0 0 25px rgba(114, 214, 255, 0.16);
         }
 
         .primary-button:hover {
-               transform: translateY(-3px);
-               box-shadow: 0 0 35px rgba(114, 214, 255, 0.3);
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 0 35px rgba(114, 214, 255, 0.30);
         }
 
         .secondary-button {
-           border: 1px solid rgba(255,255,255,0.14);
-           background: rgba(255,255,255,0.035);
-           color: #d9e7f4;
-           backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+
+            background: rgba(255, 255, 255, 0.035);
+
+            color: #d9e7f4;
+
+            backdrop-filter: blur(8px);
         }
 
         .secondary-button:hover {
-            background: rgba(255,255,255,0.08);
+            background: rgba(255, 255, 255, 0.08);
+
+            transform: translateY(-3px);
         }
 
+        /* =========================
+           HERO VISUAL
+        ========================= */
+
         .hero-visual {
-    position: absolute;
-    right: 3%;
-    top: 50%;
-    width: 360px;
-    height: 360px;
-    transform: translateY(-50%);
-    opacity: 0.75;
-    pointer-events: none;
-}
+            position: absolute;
 
-.wave-line {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border: 1px solid rgba(112, 213, 255, 0.22);
-    border-radius: 50%;
-    transform: perspective(500px) rotateX(65deg);
-}
+            right: 4%;
+            top: 50%;
 
-.wave-1 {
-    transform: perspective(500px) rotateX(65deg) scale(1);
-}
+            width: 390px;
+            height: 390px;
 
-.wave-2 {
-    transform: perspective(500px) rotateX(65deg) scale(0.72);
-}
+            transform: translateY(-50%);
 
-.wave-3 {
-    transform: perspective(500px) rotateX(65deg) scale(0.45);
-}
+            opacity: 0.78;
 
-.wave-core {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 14px;
-    height: 14px;
-    transform: translate(-50%, -50%);
-    border-radius: 50%;
-    background: #70d5ff;
-    box-shadow:
-        0 0 20px rgba(112, 213, 255, 0.8),
-        0 0 50px rgba(112, 213, 255, 0.35);
-}
+            pointer-events: none;
+        }
+
+        .wave-line {
+            position: absolute;
+
+            width: 100%;
+            height: 100%;
+
+            border: 1px solid rgba(112, 213, 255, 0.22);
+
+            border-radius: 50%;
+
+            transform:
+                perspective(500px)
+                rotateX(65deg);
+        }
+
+        .wave-1 {
+            transform:
+                perspective(500px)
+                rotateX(65deg)
+                scale(1);
+        }
+
+        .wave-2 {
+            transform:
+                perspective(500px)
+                rotateX(65deg)
+                scale(0.72);
+        }
+
+        .wave-3 {
+            transform:
+                perspective(500px)
+                rotateX(65deg)
+                scale(0.45);
+        }
+
+        .wave-core {
+            position: absolute;
+
+            left: 50%;
+            top: 50%;
+
+            width: 15px;
+            height: 15px;
+
+            transform: translate(-50%, -50%);
+
+            border-radius: 50%;
+
+            background: #70d5ff;
+
+            box-shadow:
+                0 0 20px rgba(112, 213, 255, 0.8),
+                0 0 50px rgba(112, 213, 255, 0.35);
+        }
 
         /* =========================
-           SECTION
+           GENERAL SECTIONS
         ========================= */
 
         .section {
-            padding: 90px 7%;
+            padding: 100px 7%;
         }
 
         .section-header {
             display: flex;
+
             justify-content: space-between;
             align-items: end;
 
             gap: 30px;
 
-            margin-bottom: 38px;
+            margin-bottom: 42px;
         }
 
         .section-label {
             color: #72d6ff;
+
             font-size: 12px;
             letter-spacing: 2px;
+
             text-transform: uppercase;
+
             font-weight: 700;
         }
 
         .section-title {
-               margin-top: 8px;
-               font-size: clamp(30px, 4vw, 48px);
-               line-height: 1.08;
-               letter-spacing: -1.5px;
-               font-weight: 700;
+            margin-top: 8px;
+
+            font-size: clamp(30px, 4vw, 48px);
+
+            line-height: 1.08;
+
+            letter-spacing: -1.5px;
+
+            font-weight: 700;
         }
 
         .section-description {
             max-width: 520px;
 
             color: #8294a8;
+
             font-size: 14px;
         }
 
@@ -356,6 +429,7 @@
 
         .search-box {
             max-width: 700px;
+
             margin: 0 auto 45px;
 
             position: relative;
@@ -363,31 +437,47 @@
 
         .search-box input {
             width: 100%;
+
             padding: 18px 22px 18px 50px;
-            border: 1px solid rgba(255,255,255,0.12);
+
+            border: 1px solid rgba(255, 255, 255, 0.12);
+
             border-radius: 13px;
+
             outline: none;
-            background: rgba(255,255,255,0.045);
+
+            background: rgba(255, 255, 255, 0.045);
+
             color: white;
+
             font-size: 15px;
+
             transition: 0.25s ease;
+
             backdrop-filter: blur(10px);
+        }
+
+        .search-box input::placeholder {
+            color: #718398;
         }
 
         .search-box input:focus {
             border-color: rgba(112, 213, 255, 0.5);
 
-            box-shadow: 0 0 25px rgba(112, 213, 255, 0.08);
+            box-shadow:
+                0 0 25px rgba(112, 213, 255, 0.08);
         }
 
         .search-icon {
             position: absolute;
+
             left: 19px;
             top: 50%;
 
             transform: translateY(-50%);
 
             color: #8294a8;
+
             font-size: 18px;
         }
 
@@ -397,6 +487,7 @@
 
         .categories {
             display: flex;
+
             gap: 10px;
 
             flex-wrap: wrap;
@@ -405,47 +496,69 @@
         }
 
         .category {
-          padding: 9px 16px;
-          border-radius: 999px;
-          border: 1px solid rgba(255,255,255,0.1);
-          background: rgba(255,255,255,0.035);
-          color: #9eb0c4;
-          font-size: 13px;
-          cursor: pointer;
-          transition: 0.25s ease;
+            padding: 9px 16px;
+
+            border-radius: 999px;
+
+            border: 1px solid rgba(255, 255, 255, 0.1);
+
+            background: rgba(255, 255, 255, 0.035);
+
+            color: #9eb0c4;
+
+            font-size: 13px;
+
+            cursor: pointer;
+
+            transition: 0.25s ease;
         }
 
         .category:hover,
         .category.active {
             color: #07111f;
+
             background: #72d6ff;
+
             border-color: #72d6ff;
         }
 
         /* =========================
-           ANIMATION CARD
+           ANIMATION CARDS
         ========================= */
 
         .animation-grid {
             display: grid;
 
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns:
+                repeat(auto-fit, minmax(280px, 1fr));
 
             gap: 20px;
         }
 
         .animation-card {
-           position: relative;
-           padding: 30px;
-           min-height: 285px;
-           display: flex;
-           flex-direction: column;
-           border: 1px solid rgba(255,255,255,0.09);
-           border-radius: 16px;
-           background:
-               linear-gradient(145deg, rgba(255,255,255,0.055), rgba(255,255,255,0.018));
-           overflow: hidden;
-          transition: 0.3s ease;
+            position: relative;
+
+            padding: 30px;
+
+            min-height: 300px;
+
+            display: flex;
+            flex-direction: column;
+
+            border: 1px solid rgba(255, 255, 255, 0.09);
+
+            border-radius: 16px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(255, 255, 255, 0.055),
+                    rgba(255, 255, 255, 0.018)
+                );
+
+            overflow: hidden;
+
+            transition: 0.3s ease;
         }
 
         .animation-card::before {
@@ -468,93 +581,403 @@
 
         .animation-card:hover {
             transform: translateY(-6px);
-            border-color: rgba(112, 213, 255, 0.3);
-            box-shadow: 0 20px 55px rgba(0,0,0,0.28);
+
+            border-color:
+                rgba(112, 213, 255, 0.3);
+
+            box-shadow:
+                0 20px 55px rgba(0, 0, 0, 0.28);
         }
 
         .card-number {
             color: #72d6ff;
 
             font-size: 12px;
+
             letter-spacing: 1px;
         }
 
         .card-icon {
             width: 48px;
             height: 48px;
+
             display: flex;
+
             align-items: center;
             justify-content: center;
+
             margin: 18px 0 20px;
 
-            border: 1px solid rgba(112, 213, 255, 0.18);
+            border:
+                1px solid rgba(112, 213, 255, 0.18);
+
             border-radius: 12px;
-            background: rgba(112, 213, 255, 0.06);
 
-           color: #72d6ff;
-           font-size: 26px;
-           line-height: 1;
+            background:
+                rgba(112, 213, 255, 0.06);
 
-           box-shadow: 0 0 25px rgba(112, 213, 255, 0.06);
+            color: #72d6ff;
+
+            font-size: 26px;
+
+            line-height: 1;
+
+            box-shadow:
+                0 0 25px rgba(112, 213, 255, 0.06);
         }
 
         .animation-card h3 {
-                font-size: 21px;
-               line-height: 1.3;
-               margin-bottom: 10px;
-               letter-spacing: -0.3px;
-        }
-      .card-tags {
-             display: flex;
-             gap: 7px;
-             flex-wrap: wrap;
-             margin-bottom: 18px;
+            font-size: 21px;
+
+            line-height: 1.3;
+
+            margin-bottom: 10px;
+
+            letter-spacing: -0.3px;
         }
 
-      .card-tags span {
-             padding: 5px 9px;
-             border: 1px solid rgba(112, 213, 255, 0.16);
-             border-radius: 999px;
-             background: rgba(112, 213, 255, 0.06);
-             color: #9edfff;
-             font-size: 11px;
-             font-weight: 600;
+        .card-tags {
+            display: flex;
+
+            gap: 7px;
+
+            flex-wrap: wrap;
+
+            margin-bottom: 18px;
+        }
+
+        .card-tags span {
+            padding: 5px 9px;
+
+            border:
+                1px solid rgba(112, 213, 255, 0.16);
+
+            border-radius: 999px;
+
+            background:
+                rgba(112, 213, 255, 0.06);
+
+            color: #9edfff;
+
+            font-size: 11px;
+
+            font-weight: 600;
         }
 
         .animation-card p {
             color: #8294a8;
+
             font-size: 13px;
         }
 
         .card-link {
             margin-top: auto;
+
             padding-top: 25px;
 
             color: #72d6ff;
 
             font-size: 13px;
+
             font-weight: 700;
+
+            transition: 0.2s ease;
+        }
+
+        .card-link:hover {
+            letter-spacing: 0.2px;
         }
 
         /* =========================
-           INFO STRIP
+           TOPICS
         ========================= */
 
-        .info-strip {
-            margin: 20px 7% 90px;
+        .topics-section {
+            position: relative;
 
-            padding: 35px;
+            padding-top: 85px;
+            padding-bottom: 100px;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    rgba(255,255,255,0.012),
+                    rgba(255,255,255,0.025)
+                );
+
+            border-top:
+                1px solid rgba(255,255,255,0.05);
+
+            border-bottom:
+                1px solid rgba(255,255,255,0.05);
+        }
+
+        .topic-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fit, minmax(220px, 1fr));
+
+            gap: 16px;
+        }
+
+        .topic-card {
+            position: relative;
+
+            padding: 26px;
+
+            min-height: 190px;
+
+            border:
+                1px solid rgba(255,255,255,0.08);
+
+            border-radius: 15px;
+
+            background:
+                rgba(255,255,255,0.025);
+
+            transition: 0.3s ease;
+
+            overflow: hidden;
+        }
+
+        .topic-card:hover {
+            transform: translateY(-5px);
+
+            border-color:
+                rgba(112,213,255,0.25);
+
+            background:
+                rgba(112,213,255,0.035);
+        }
+
+        .topic-symbol {
+            font-size: 25px;
+
+            color: #72d6ff;
+
+            margin-bottom: 20px;
+        }
+
+        .topic-card h3 {
+            font-size: 18px;
+
+            margin-bottom: 8px;
+        }
+
+        .topic-card p {
+            color: #8294a8;
+
+            font-size: 13px;
+
+            line-height: 1.65;
+        }
+
+        .topic-number {
+            position: absolute;
+
+            right: 20px;
+            top: 18px;
+
+            color: rgba(255,255,255,0.15);
+
+            font-size: 12px;
+
+            letter-spacing: 1px;
+        }
+
+        /* =========================
+           LEARNING SECTION
+        ========================= */
+
+        .learn-layout {
+            display: grid;
+
+            grid-template-columns:
+                1.1fr 0.9fr;
+
+            gap: 55px;
+
+            align-items: center;
+        }
+
+        .learn-text h2 {
+            margin-top: 8px;
+
+            font-size: clamp(32px, 4vw, 52px);
+
+            line-height: 1.08;
+
+            letter-spacing: -2px;
+        }
+
+        .learn-text > p {
+            margin-top: 20px;
+
+            max-width: 620px;
+
+            color: #8294a8;
+
+            font-size: 14px;
+
+            line-height: 1.8;
+        }
+
+        .learn-points {
+            margin-top: 30px;
 
             display: grid;
 
-            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .learn-point {
+            display: flex;
+
+            gap: 14px;
+
+            align-items: flex-start;
+        }
+
+        .learn-point-icon {
+            flex-shrink: 0;
+
+            width: 30px;
+            height: 30px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border:
+                1px solid rgba(112,213,255,0.2);
+
+            border-radius: 8px;
+
+            color: #72d6ff;
+
+            background:
+                rgba(112,213,255,0.06);
+
+            font-size: 13px;
+        }
+
+        .learn-point h4 {
+            font-size: 14px;
+
+            margin-bottom: 2px;
+        }
+
+        .learn-point p {
+            color: #718398;
+
+            font-size: 12px;
+        }
+
+        .formula-box {
+            position: relative;
+
+            min-height: 340px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border:
+                1px solid rgba(112,213,255,0.14);
+
+            border-radius: 20px;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(80,180,240,0.10),
+                    transparent 62%
+                ),
+                rgba(255,255,255,0.025);
+
+            overflow: hidden;
+        }
+
+        .formula-box::before,
+        .formula-box::after {
+            content: "";
+
+            position: absolute;
+
+            border: 1px solid rgba(112,213,255,0.12);
+
+            border-radius: 50%;
+        }
+
+        .formula-box::before {
+            width: 260px;
+            height: 260px;
+        }
+
+        .formula-box::after {
+            width: 180px;
+            height: 180px;
+        }
+
+        .formula {
+            position: relative;
+
+            z-index: 2;
+
+            color: #ffffff;
+
+            font-size: clamp(24px, 3vw, 38px);
+
+            font-weight: 600;
+
+            letter-spacing: 1px;
+
+            text-align: center;
+
+            text-shadow:
+                0 0 25px rgba(112,213,255,0.25);
+        }
+
+        .formula small {
+            display: block;
+
+            margin-top: 15px;
+
+            color: #72d6ff;
+
+            font-size: 11px;
+
+            letter-spacing: 2px;
+
+            text-transform: uppercase;
+        }
+
+        /* =========================
+           PROJECT INFO
+        ========================= */
+
+        .info-strip {
+            margin: 0 7% 100px;
+
+            padding: 38px 30px;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
 
             gap: 25px;
 
-            border: 1px solid rgba(255,255,255,0.08);
+            border:
+                1px solid rgba(255,255,255,0.08);
+
             border-radius: 16px;
 
-            background: rgba(255,255,255,0.025);
+            background:
+                rgba(255,255,255,0.025);
         }
 
         .info-item {
@@ -562,7 +985,8 @@
         }
 
         .info-number {
-            font-size: 30px;
+            font-size: 31px;
+
             font-weight: 700;
 
             color: #ffffff;
@@ -570,6 +994,7 @@
 
         .info-text {
             color: #8294a8;
+
             font-size: 12px;
 
             margin-top: 5px;
@@ -580,56 +1005,87 @@
         ========================= */
 
         footer {
-            padding: 35px 7%;
+            padding: 38px 7%;
 
-            border-top: 1px solid rgba(255,255,255,0.08);
+            border-top:
+                1px solid rgba(255,255,255,0.08);
 
             display: flex;
+
             justify-content: space-between;
+
             align-items: center;
 
             gap: 20px;
 
             color: #708296;
+
             font-size: 12px;
         }
 
         .footer-brand {
             color: #dbe9f5;
+
             font-weight: 700;
+
             letter-spacing: 1.5px;
+        }
+
+        /* =========================
+           TABLET
+        ========================= */
+
+        @media (max-width: 1000px) and (min-width: 701px) {
+
+            .hero-visual {
+                width: 280px;
+                height: 280px;
+
+                right: 1%;
+
+                opacity: 0.45;
+            }
+
+            .hero-content {
+                max-width: 650px;
+            }
+
+            .learn-layout {
+                grid-template-columns: 1fr;
+            }
         }
 
         /* =========================
            MOBILE
         ========================= */
-        @media (max-width: 1000px) and (min-width: 701px) {
-       .hero-visual {
-        width: 280px;
-        height: 280px;
-        right: 2%;
-        opacity: 0.55;
-        }
 
-    .hero-content {
-            max-width: 650px;
-       }
-        }
-    
         @media (max-width: 700px) {
 
             .navbar {
                 padding: 0 5%;
+
+                height: 66px;
             }
 
             .nav-links {
                 display: none;
             }
 
-            .hero {
-                min-height: 600px;
-                padding: 75px 5%;
+            .brand {
+                font-size: 17px;
             }
+
+            .brand-symbol {
+                width: 34px;
+                height: 34px;
+            }
+
+            .hero {
+                min-height: 620px;
+
+                padding: 75px 5% 85px;
+            }
+
             .hero-visual {
                 display: none;
             }
@@ -638,13 +1094,46 @@
                 letter-spacing: -3px;
             }
 
+            .hero-description {
+                font-size: 14px;
+            }
+
             .section {
-                padding: 70px 5%;
+                padding: 75px 5%;
             }
 
             .section-header {
                 flex-direction: column;
-                align-items: start;
+
+                align-items: flex-start;
+
+                margin-bottom: 35px;
+            }
+
+            .section-description {
+                max-width: 100%;
+            }
+
+            .animation-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .topic-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .learn-layout {
+                grid-template-columns: 1fr;
+
+                gap: 35px;
+            }
+
+            .learn-text h2 {
+                letter-spacing: -1px;
+            }
+
+            .formula-box {
+                min-height: 270px;
             }
 
             .info-strip {
@@ -652,15 +1141,22 @@
                 margin-right: 5%;
 
                 grid-template-columns: 1fr;
+
+                padding: 30px 20px;
             }
 
             footer {
                 flex-direction: column;
-                align-items: start;
+
+                align-items: flex-start;
+
+                padding-left: 5%;
+                padding-right: 5%;
             }
         }
     </style>
 </head>
+
 
 <body>
 
@@ -671,14 +1167,34 @@
     <nav class="navbar">
 
         <a href="#" class="brand">
-            <div class="brand-symbol">⚛</div>
+
+            <div class="brand-symbol">
+                ⚛
+            </div>
+
             IDEA LAB
+
         </a>
 
+
         <div class="nav-links">
-            <a href="#home">Home</a>
-            <a href="#library">Animations</a>
-            <a href="#topics">Topics</a>
+
+            <a href="#home">
+                Home
+            </a>
+
+            <a href="#library">
+                Simulations
+            </a>
+
+            <a href="#topics">
+                Topics
+            </a>
+
+            <a href="#learn">
+                Learn
+            </a>
+
         </div>
 
     </nav>
@@ -693,25 +1209,39 @@
         <div class="hero-content">
 
             <div class="eyebrow">
+
                 <span class="eyebrow-dot"></span>
+
                 Interactive Physics Laboratory
+
             </div>
 
+
             <h1>
+
                 IDEA<br>
+
                 <span>LAB.</span>
+
             </h1>
+
 
             <p class="hero-subtitle">
                 See physics come alive.
             </p>
 
+
             <p class="hero-description">
-               Explore interactive simulations that turn equations, concepts and
-                physical phenomena into something you can see, control and understand.
+
+                Explore interactive simulations that turn equations,
+                concepts and physical phenomena into something you can
+                see, control and understand.
+
             </p>
 
+
             <div class="hero-buttons">
+
                 <a href="#library" class="primary-button">
                     Explore Simulations →
                 </a>
@@ -719,20 +1249,29 @@
                 <a href="#topics" class="secondary-button">
                     Browse Topics
                 </a>
+
             </div>
 
-           <div class="hero-visual">
-               <div class="wave-line wave-1"></div>
-               <div class="wave-line wave-2"></div>
-               <div class="wave-line wave-3"></div>
-               <div class="wave-core"></div>
-           </div>
+        </div>
 
-          </header>
+
+        <div class="hero-visual">
+
+            <div class="wave-line wave-1"></div>
+
+            <div class="wave-line wave-2"></div>
+
+            <div class="wave-line wave-3"></div>
+
+            <div class="wave-core"></div>
+
+        </div>
+
+    </header>
 
 
     <!-- =========================
-         LIBRARY
+         SIMULATION LIBRARY
     ========================== -->
 
     <section class="section" id="library">
@@ -740,16 +1279,24 @@
         <div class="section-header">
 
             <div>
-                <div class="section-label">Simulation Library</div>
+
+                <div class="section-label">
+                    Simulation Library
+                </div>
 
                 <h2 class="section-title">
                     Explore. Experiment. Understand.
                 </h2>
+
             </div>
 
+
             <p class="section-description">
-                Explore interactive experiments, change parameters, observe physical
-                behaviour and build an intuitive understanding of the physics behind it.
+
+                Change physical parameters, observe the results
+                and build an intuitive understanding of the physics
+                behind each phenomenon.
+
             </p>
 
         </div>
@@ -759,7 +1306,9 @@
 
         <div class="search-box">
 
-            <span class="search-icon">⌕</span>
+            <span class="search-icon">
+                ⌕
+            </span>
 
             <input
                 type="text"
@@ -775,202 +1324,513 @@
 
         <div class="categories" id="topics">
 
-            <button class="category active" onclick="filterCategory('all', this)">
+            <button
+                class="category active"
+                onclick="filterCategory('all', this)"
+            >
                 All
             </button>
 
-            <button class="category" onclick="filterCategory('waves', this)">
+            <button
+                class="category"
+                onclick="filterCategory('waves', this)"
+            >
                 Waves
             </button>
 
-            <button class="category" onclick="filterCategory('optics', this)">
+            <button
+                class="category"
+                onclick="filterCategory('optics', this)"
+            >
                 Optics
             </button>
 
-            <button class="category" onclick="filterCategory('interference', this)">
+            <button
+                class="category"
+                onclick="filterCategory('interference', this)"
+            >
                 Interference
             </button>
 
-            <button class="category" onclick="filterCategory('mechanics', this)">
+            <button
+                class="category"
+                onclick="filterCategory('mechanics', this)"
+            >
                 Mechanics
             </button>
 
-            <button class="category" onclick="filterCategory('electricity', this)">
+            <button
+                class="category"
+                onclick="filterCategory('electricity', this)"
+            >
                 Electricity
             </button>
 
         </div>
 
-<!-- =========================
-     ANIMATION CARDS
-========================== -->
 
-<div class="animation-grid" id="animationGrid">
+        <!-- =========================
+             ANIMATION CARDS
+        ========================== -->
+
+        <div class="animation-grid" id="animationGrid">
 
 
-    <!-- WAVE PROPAGATION -->
+            <!-- WAVE -->
 
-    <article
-        class="animation-card"
-        data-category="waves"
-        data-title="Wave Propagation Simulation in 3D"
-    >
+            <article
+                class="animation-card"
+                data-category="waves"
+                data-title="Wave Propagation Simulation in 3D"
+            >
 
-        <div class="card-number">
-            001 / WAVES
+                <div class="card-number">
+                    001 / WAVES
+                </div>
+
+                <div class="card-icon">
+                    ∿
+                </div>
+
+                <div class="card-tags">
+
+                    <span>Waves</span>
+                    <span>3D</span>
+                    <span>Interactive</span>
+
+                </div>
+
+                <h3>
+                    Wave Propagation Simulation in 3D
+                </h3>
+
+                <p>
+
+                    Explore how waves propagate through space in
+                    three dimensions. Adjust amplitude, wavelength,
+                    frequency and phase and observe the wave in real time.
+
+                </p>
+
+                <a
+                    href="animations/wave-propagation-3d.html"
+                    class="card-link"
+                >
+                    Launch Simulation →
+                </a>
+
+            </article>
+
+
+            <!-- YDSE -->
+
+            <article
+                class="animation-card"
+                data-category="interference optics"
+                data-title="Young's Double-Slit Experiment"
+            >
+
+                <div class="card-number">
+                    002 / INTERFERENCE
+                </div>
+
+                <div class="card-icon">
+                    ∿
+                </div>
+
+                <div class="card-tags">
+
+                    <span>Optics</span>
+                    <span>Interference</span>
+                    <span>Interactive</span>
+
+                </div>
+
+                <h3>
+                    Young's Double-Slit Experiment
+                </h3>
+
+                <p>
+
+                    Explore interference of coherent light waves
+                    and observe bright and dark fringes by changing
+                    wavelength, slit separation and screen distance.
+
+                </p>
+
+                <a
+                    href="animations/young-double-slit.html"
+                    class="card-link"
+                >
+                    Launch Simulation →
+                </a>
+
+            </article>
+
+
+            <!-- SHM -->
+
+            <article
+                class="animation-card"
+                data-category="mechanics"
+                data-title="Simple Harmonic Motion"
+            >
+
+                <div class="card-number">
+                    003 / MECHANICS
+                </div>
+
+                <div class="card-icon">
+                    ↔
+                </div>
+
+                <div class="card-tags">
+
+                    <span>Mechanics</span>
+                    <span>3D</span>
+                    <span>Interactive</span>
+
+                </div>
+
+                <h3>
+                    Simple Harmonic Motion
+                </h3>
+
+                <p>
+
+                    Explore oscillatory motion using an interactive
+                    3D spring-mass system. Observe displacement,
+                    velocity and acceleration as the mass moves.
+
+                </p>
+
+                <a
+                    href="animations/simple-harmonic-motion.html"
+                    class="card-link"
+                >
+                    Launch Simulation →
+                </a>
+
+            </article>
+
+
+            <!-- COMING SOON -->
+
+            <article
+                class="animation-card"
+                data-category="waves optics interference mechanics electricity"
+                data-title="More Experiments"
+            >
+
+                <div class="card-number">
+                    004 / COMING SOON
+                </div>
+
+                <div class="card-icon">
+                    +
+                </div>
+
+                <div class="card-tags">
+
+                    <span>Physics</span>
+                    <span>Coming Soon</span>
+
+                </div>
+
+                <h3>
+                    More Experiments
+                </h3>
+
+                <p>
+
+                    New interactive physics simulations will be added
+                    to the IDEA LAB library as the project grows.
+
+                </p>
+
+                <span class="card-link">
+                    Coming soon
+                </span>
+
+            </article>
+
         </div>
 
-        <div class="card-icon">
-            ∿
+    </section>
+
+
+    <!-- =========================
+         PHYSICS TOPICS
+    ========================== -->
+
+    <section class="section topics-section" id="physics-topics">
+
+        <div class="section-header">
+
+            <div>
+
+                <div class="section-label">
+                    Physics Topics
+                </div>
+
+                <h2 class="section-title">
+                    A laboratory for every idea.
+                </h2>
+
+            </div>
+
+            <p class="section-description">
+
+                Explore major areas of physics and connect
+                mathematical ideas with visual experiments.
+
+            </p>
+
         </div>
 
-        <div class="card-tags">
-            <span>Waves</span>
-            <span>3D</span>
-            <span>Interactive</span>
+
+        <div class="topic-grid">
+
+
+            <article class="topic-card">
+
+                <div class="topic-number">
+                    01
+                </div>
+
+                <div class="topic-symbol">
+                    ∿
+                </div>
+
+                <h3>
+                    Waves
+                </h3>
+
+                <p>
+                    Wave motion, amplitude, wavelength, frequency,
+                    phase and propagation.
+                </p>
+
+            </article>
+
+
+            <article class="topic-card">
+
+                <div class="topic-number">
+                    02
+                </div>
+
+                <div class="topic-symbol">
+                    ◉
+                </div>
+
+                <h3>
+                    Optics
+                </h3>
+
+                <p>
+                    Light, wave behaviour, interference,
+                    diffraction and optical phenomena.
+                </p>
+
+            </article>
+
+
+            <article class="topic-card">
+
+                <div class="topic-number">
+                    03
+                </div>
+
+                <div class="topic-symbol">
+                    ↔
+                </div>
+
+                <h3>
+                    Mechanics
+                </h3>
+
+                <p>
+                    Motion, oscillations, forces, energy and
+                    physical systems in motion.
+                </p>
+
+            </article>
+
+
+            <article class="topic-card">
+
+                <div class="topic-number">
+                    04
+                </div>
+
+                <div class="topic-symbol">
+                    ⚡
+                </div>
+
+                <h3>
+                    Electricity
+                </h3>
+
+                <p>
+                    Electric fields, potential, current,
+                    circuits and electromagnetic ideas.
+                </p>
+
+            </article>
+
+
+            <article class="topic-card">
+
+                <div class="topic-number">
+                    05
+                </div>
+
+                <div class="topic-symbol">
+                    λ
+                </div>
+
+                <h3>
+                    Modern Physics
+                </h3>
+
+                <p>
+                    Atoms, quantum ideas, relativity and
+                    the physics of the microscopic world.
+                </p>
+
+            </article>
+
+
         </div>
 
-        <h3>
-            Wave Propagation Simulation in 3D
-        </h3>
-
-        <p>
-            Explore how waves propagate through space in three dimensions.
-            Adjust parameters and observe the behaviour of the wave in real time.
-        </p>
-
-        <a
-            href="animations/wave-propagation-3d.html"
-            class="card-link"
-        >
-            Launch Simulation →
-        </a>
-
-    </article>
+    </section>
 
 
-    <!-- YOUNG'S DOUBLE-SLIT -->
+    <!-- =========================
+         LEARNING SECTION
+    ========================== -->
 
-    <article
-        class="animation-card"
-        data-category="interference optics"
-        data-title="Young's Double-Slit Experiment"
-    >
+    <section class="section" id="learn">
 
-        <div class="card-number">
-            002 / INTERFERENCE
+        <div class="learn-layout">
+
+
+            <div class="learn-text">
+
+                <div class="section-label">
+                    Learn Through Experiment
+                </div>
+
+                <h2>
+                    Don't just read physics.
+                    <br>
+                    <span style="color:#72d6ff;">
+                        Interact with it.
+                    </span>
+                </h2>
+
+                <p>
+
+                    Physics becomes easier to understand when you can
+                    see what the equations are actually describing.
+                    IDEA LAB connects theory with interactive visual
+                    experiments so concepts become easier to explore.
+
+                </p>
+
+
+                <div class="learn-points">
+
+
+                    <div class="learn-point">
+
+                        <div class="learn-point-icon">
+                            01
+                        </div>
+
+                        <div>
+
+                            <h4>
+                                Change the variables
+                            </h4>
+
+                            <p>
+                                Adjust physical parameters and see
+                                how the system responds.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="learn-point">
+
+                        <div class="learn-point-icon">
+                            02
+                        </div>
+
+                        <div>
+
+                            <h4>
+                                Observe the behaviour
+                            </h4>
+
+                            <p>
+                                Watch motion, waves and interference
+                                happen visually.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="learn-point">
+
+                        <div class="learn-point-icon">
+                            03
+                        </div>
+
+                        <div>
+
+                            <h4>
+                                Connect theory with reality
+                            </h4>
+
+                            <p>
+                                Understand the equations behind
+                                what you see on screen.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <div class="formula-box">
+
+                <div class="formula">
+
+                    y = A sin(kx − ωt + φ)
+
+                    <small>
+                        Mathematics → Visual Physics
+                    </small>
+
+                </div>
+
+            </div>
+
+
         </div>
 
-        <div class="card-icon">
-            ∿
-        </div>
-
-        <div class="card-tags">
-            <span>Optics</span>
-            <span>Interference</span>
-            <span>Interactive</span>
-        </div>
-
-        <h3>
-            Young's Double-Slit Experiment
-        </h3>
-
-        <p>
-            Explore interference of coherent light waves and observe
-            bright and dark fringes by changing wavelength, slit separation
-            and screen distance.
-        </p>
-
-        <a
-            href="animations/young-double-slit.html"
-            class="card-link"
-        >
-            Launch Simulation →
-        </a>
-
-    </article>
-
-
-    <!-- SIMPLE HARMONIC MOTION -->
-
-    <article
-        class="animation-card"
-        data-category="mechanics"
-        data-title="Simple Harmonic Motion"
-    >
-
-        <div class="card-number">
-            003 / MECHANICS
-        </div>
-
-        <div class="card-icon">
-            ↔
-        </div>
-
-        <div class="card-tags">
-            <span>Mechanics</span>
-            <span>3D</span>
-            <span>Interactive</span>
-        </div>
-
-        <h3>
-            Simple Harmonic Motion
-        </h3>
-
-        <p>
-            Explore oscillatory motion using an interactive 3D
-            spring-mass system. Observe displacement, velocity and
-            acceleration as the mass moves.
-        </p>
-
-        <a
-            href="animations/simple-harmonic-motion.html"
-            class="card-link"
-        >
-            Launch Simulation →
-        </a>
-
-    </article>
-
-
-    <!-- FUTURE SIMULATIONS -->
-
-    <article
-        class="animation-card"
-        data-category="waves optics interference mechanics electricity"
-        data-title="More Experiments"
-    >
-
-        <div class="card-number">
-            004 / COMING SOON
-        </div>
-
-        <div class="card-icon">
-            +
-        </div>
-
-        <div class="card-tags">
-            <span>Physics</span>
-            <span>Coming Soon</span>
-        </div>
-
-        <h3>
-            More Experiments
-        </h3>
-
-        <p>
-            New interactive physics simulations will be added
-            to the IDEA LAB library as the project grows.
-        </p>
-
-        <span class="card-link">
-            Coming soon
-        </span>
-
-    </article>
-
-
-</div>
     </section>
 
 
@@ -983,11 +1843,24 @@
         <div class="info-item">
 
             <div class="info-number">
-                01
+                03
             </div>
 
             <div class="info-text">
-                Interactive Simulation
+                Interactive Simulations
+            </div>
+
+        </div>
+
+
+        <div class="info-item">
+
+            <div class="info-number">
+                05+
+            </div>
+
+            <div class="info-text">
+                Physics Topics
             </div>
 
         </div>
@@ -1000,20 +1873,7 @@
             </div>
 
             <div class="info-text">
-                Physics Concepts
-            </div>
-
-        </div>
-
-
-        <div class="info-item">
-
-            <div class="info-number">
-                01
-            </div>
-
-            <div class="info-text">
-                Growing Laboratory
+                Ideas to Explore
             </div>
 
         </div>
@@ -1047,12 +1907,15 @@
         function searchAnimations() {
 
             const search =
-                document.getElementById("searchInput")
-                .value
-                .toLowerCase();
+                document
+                    .getElementById("searchInput")
+                    .value
+                    .toLowerCase()
+                    .trim();
 
             const cards =
                 document.querySelectorAll(".animation-card");
+
 
             cards.forEach(card => {
 
@@ -1061,6 +1924,7 @@
 
                 const category =
                     card.dataset.category.toLowerCase();
+
 
                 if (
                     title.includes(search) ||
@@ -1085,9 +1949,13 @@
             const buttons =
                 document.querySelectorAll(".category");
 
+
             buttons.forEach(btn => {
+
                 btn.classList.remove("active");
+
             });
+
 
             button.classList.add("active");
 
@@ -1105,7 +1973,7 @@
                 } else {
 
                     const categories =
-                        card.dataset.category;
+                        card.dataset.category.toLowerCase();
 
                     if (categories.includes(category)) {
 
@@ -1129,4 +1997,6 @@
     </script>
 
 </body>
+
 </html>
+```
