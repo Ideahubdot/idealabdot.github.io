@@ -1114,7 +1114,141 @@
     font-weight: 600;
 }
 
+/* =========================
+   IDEA LAB ASSISTANT
+========================= */
 
+.assistant-button {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 2000;
+
+    width: 54px;
+    height: 54px;
+
+    border: 1px solid rgba(112,213,255,0.35);
+    border-radius: 50%;
+
+    background: #0c1d2e;
+    color: #72d6ff;
+
+    font-size: 22px;
+    cursor: pointer;
+
+    box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+    transition: 0.25s ease;
+}
+
+.assistant-button:hover {
+    transform: translateY(-3px);
+}
+
+.assistant-panel {
+    position: fixed;
+    right: 24px;
+    bottom: 90px;
+    z-index: 1999;
+
+    width: min(360px, calc(100vw - 30px));
+    height: 470px;
+
+    display: none;
+    flex-direction: column;
+
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 18px;
+
+    background: rgba(7,17,31,0.97);
+
+    box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+
+    overflow: hidden;
+    backdrop-filter: blur(18px);
+}
+
+.assistant-header {
+    padding: 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.assistant-header strong {
+    display: block;
+    color: #ffffff;
+    font-size: 14px;
+}
+
+.assistant-header span {
+    color: #718398;
+    font-size: 11px;
+}
+
+.assistant-messages {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+}
+
+.assistant-message {
+    margin-bottom: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+
+    color: #cddbea;
+    background: rgba(255,255,255,0.05);
+
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.assistant-input {
+    display: flex;
+    gap: 8px;
+
+    padding: 12px;
+
+    border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.assistant-input input {
+    flex: 1;
+
+    padding: 10px 12px;
+
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 9px;
+    outline: none;
+
+    background: rgba(255,255,255,0.04);
+    color: white;
+
+    font-size: 12px;
+}
+
+.assistant-input button {
+    padding: 10px 13px;
+
+    border: 0;
+    border-radius: 9px;
+
+    background: #72d6ff;
+    color: #04111c;
+
+    cursor: pointer;
+    font-weight: 700;
+}
+
+@media (max-width: 700px) {
+    .assistant-button {
+        right: 16px;
+        bottom: 16px;
+    }
+
+    .assistant-panel {
+        right: 15px;
+        bottom: 82px;
+    }
+}
 /* =========================
    TABLET
 ========================= */
@@ -2037,7 +2171,92 @@
     <!-- =========================
          JAVASCRIPT
     ========================== -->
+    function toggleAssistant() {
+    const panel = document.getElementById("assistantPanel");
 
+    panel.style.display =
+        panel.style.display === "flex" ? "none" : "flex";
+}
+
+function addAssistantMessage(text) {
+    const messages =
+        document.getElementById("assistantMessages");
+
+    const message =
+        document.createElement("div");
+
+    message.className = "assistant-message";
+    message.textContent = text;
+
+    messages.appendChild(message);
+    messages.scrollTop = messages.scrollHeight;
+}
+
+function askAssistant() {
+
+    const input =
+        document.getElementById("assistantInput");
+
+    const question =
+        input.value.trim().toLowerCase();
+
+    if (!question) return;
+
+    addAssistantMessage("You: " + input.value);
+
+    input.value = "";
+
+    let answer =
+        "I can help with physics concepts, simulations, and using the IDEA LAB website.";
+
+    if (
+        question.includes("interference") ||
+        question.includes("double slit") ||
+        question.includes("young")
+    ) {
+        answer =
+            "The Young's Double-Slit Experiment demonstrates interference between coherent light waves, producing bright and dark fringes.";
+    }
+
+    else if (
+        question.includes("frequency") ||
+        question.includes("wavelength") ||
+        question.includes("amplitude")
+    ) {
+        answer =
+            "These are wave parameters. Change them in the simulation and observe how the wave behaviour changes.";
+    }
+
+    else if (
+        question.includes("open") ||
+        question.includes("launch") ||
+        question.includes("simulation")
+    ) {
+        answer =
+            "Go to the Simulation Library and click 'Launch Simulation' on the experiment you want to explore.";
+    }
+
+    else if (
+        question.includes("problem") ||
+        question.includes("bug") ||
+        question.includes("not working")
+    ) {
+        answer =
+            "You can report the problem through the Contact section at the bottom of IDEA LAB.";
+    }
+
+    else if (
+        question.includes("contact") ||
+        question.includes("email")
+    ) {
+        answer =
+            "Use the Contact button at the bottom of the website to reach IDEA LAB.";
+    }
+
+    setTimeout(() => {
+        addAssistantMessage(answer);
+    }, 250);
+}
     <script>
        const SITE_CONFIG = {
     creatorName: "Aster Vale",
