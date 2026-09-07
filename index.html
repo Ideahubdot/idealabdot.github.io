@@ -2286,19 +2286,31 @@ document.getElementById("creatorName").textContent =
     }
 }
 
-function addAssistantMessage(text) {
+function addChatMessage(text, sender) {
+
     const messages =
         document.getElementById("assistantMessages");
 
-    const message =
+    const wrapper =
         document.createElement("div");
 
-    message.className = "assistant-message";
-    message.textContent = text;
+    wrapper.className =
+        "chat-message " + sender;
 
-    messages.appendChild(message);
+    const bubble =
+        document.createElement("div");
+
+    bubble.className = "chat-bubble";
+
+    bubble.textContent = text;
+
+    wrapper.appendChild(bubble);
+
+    messages.appendChild(wrapper);
+
     messages.scrollTop = messages.scrollHeight;
 }
+   
 
 function askAssistant() {
     const input =
@@ -2309,7 +2321,7 @@ function askAssistant() {
 
     if (!question) return;
 
-    addAssistantMessage("You: " + input.value);
+   addChatMessage(input.value, "user");
 
     input.value = "";
 
@@ -2361,8 +2373,8 @@ function askAssistant() {
     }
 
     setTimeout(() => {
-        addAssistantMessage(answer);
-    }, 250);
+    addChatMessage(answer, "bot");
+}, 250);
 }
     </script>
 <button
@@ -2375,16 +2387,30 @@ function askAssistant() {
 <div class="assistant-panel" id="assistantPanel">
 
     <div class="assistant-header">
-        <strong>IDEA LAB Assistant</strong>
-        <span>Physics + Website Help</span>
+
+        <div class="assistant-identity">
+
+            <div class="assistant-avatar">
+                ✦
+            </div>
+
+            <div>
+                <strong>IDEA LAB Assistant</strong>
+                <span>Physics & Website Guide</span>
+            </div>
+
+        </div>
+
     </div>
 
     <div class="assistant-messages" id="assistantMessages">
 
-        <div class="assistant-message">
-            Hi! I'm the IDEA LAB Assistant.
-            Ask me about a physics concept,
-            a simulation, or how to use IDEA LAB.
+        <div class="chat-message bot">
+            <div class="chat-bubble">
+                Hi! I'm the IDEA LAB Assistant.
+                I can help you understand physics,
+                use the simulations, or find your way around IDEA LAB.
+            </div>
         </div>
 
     </div>
@@ -2405,7 +2431,3 @@ function askAssistant() {
     </div>
 
 </div>
-</body>
-
-</html>
-```
