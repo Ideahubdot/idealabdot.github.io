@@ -2171,92 +2171,7 @@
     <!-- =========================
          JAVASCRIPT
     ========================== -->
-    function toggleAssistant() {
-    const panel = document.getElementById("assistantPanel");
-
-    panel.style.display =
-        panel.style.display === "flex" ? "none" : "flex";
-}
-
-function addAssistantMessage(text) {
-    const messages =
-        document.getElementById("assistantMessages");
-
-    const message =
-        document.createElement("div");
-
-    message.className = "assistant-message";
-    message.textContent = text;
-
-    messages.appendChild(message);
-    messages.scrollTop = messages.scrollHeight;
-}
-
-function askAssistant() {
-
-    const input =
-        document.getElementById("assistantInput");
-
-    const question =
-        input.value.trim().toLowerCase();
-
-    if (!question) return;
-
-    addAssistantMessage("You: " + input.value);
-
-    input.value = "";
-
-    let answer =
-        "I can help with physics concepts, simulations, and using the IDEA LAB website.";
-
-    if (
-        question.includes("interference") ||
-        question.includes("double slit") ||
-        question.includes("young")
-    ) {
-        answer =
-            "The Young's Double-Slit Experiment demonstrates interference between coherent light waves, producing bright and dark fringes.";
-    }
-
-    else if (
-        question.includes("frequency") ||
-        question.includes("wavelength") ||
-        question.includes("amplitude")
-    ) {
-        answer =
-            "These are wave parameters. Change them in the simulation and observe how the wave behaviour changes.";
-    }
-
-    else if (
-        question.includes("open") ||
-        question.includes("launch") ||
-        question.includes("simulation")
-    ) {
-        answer =
-            "Go to the Simulation Library and click 'Launch Simulation' on the experiment you want to explore.";
-    }
-
-    else if (
-        question.includes("problem") ||
-        question.includes("bug") ||
-        question.includes("not working")
-    ) {
-        answer =
-            "You can report the problem through the Contact section at the bottom of IDEA LAB.";
-    }
-
-    else if (
-        question.includes("contact") ||
-        question.includes("email")
-    ) {
-        answer =
-            "Use the Contact button at the bottom of the website to reach IDEA LAB.";
-    }
-
-    setTimeout(() => {
-        addAssistantMessage(answer);
-    }, 250);
-}
+   
     <script>
        const SITE_CONFIG = {
     creatorName: "Aster Vale",
@@ -2361,9 +2276,135 @@ document.getElementById("creatorName").textContent =
             document.getElementById("searchInput").value = "";
 
         }
+   function toggleAssistant() {
+    const panel = document.getElementById("assistantPanel");
 
+    if (panel.style.display === "flex") {
+        panel.style.display = "none";
+    } else {
+        panel.style.display = "flex";
+    }
+}
+
+function addAssistantMessage(text) {
+    const messages =
+        document.getElementById("assistantMessages");
+
+    const message =
+        document.createElement("div");
+
+    message.className = "assistant-message";
+    message.textContent = text;
+
+    messages.appendChild(message);
+    messages.scrollTop = messages.scrollHeight;
+}
+
+function askAssistant() {
+    const input =
+        document.getElementById("assistantInput");
+
+    const question =
+        input.value.trim().toLowerCase();
+
+    if (!question) return;
+
+    addAssistantMessage("You: " + input.value);
+
+    input.value = "";
+
+    let answer =
+        "I can help with physics concepts, simulations, and using the IDEA LAB website.";
+
+    if (
+        question.includes("interference") ||
+        question.includes("double slit") ||
+        question.includes("young")
+    ) {
+        answer =
+            "The Young's Double-Slit Experiment demonstrates interference between coherent light waves, producing bright and dark fringes.";
+    }
+
+    else if (
+        question.includes("frequency") ||
+        question.includes("wavelength") ||
+        question.includes("amplitude")
+    ) {
+        answer =
+            "These are wave parameters. Change them in the simulation and observe how the wave behaviour changes.";
+    }
+
+    else if (
+        question.includes("open") ||
+        question.includes("launch") ||
+        question.includes("simulation")
+    ) {
+        answer =
+            "Go to the Simulation Library and click 'Launch Simulation' on the experiment you want to explore.";
+    }
+
+    else if (
+        question.includes("problem") ||
+        question.includes("bug") ||
+        question.includes("not working")
+    ) {
+        answer =
+            "You can report the problem through the Contact section at the bottom of IDEA LAB.";
+    }
+
+    else if (
+        question.includes("contact") ||
+        question.includes("email")
+    ) {
+        answer =
+            "Use the Contact button at the bottom of the website to reach IDEA LAB.";
+    }
+
+    setTimeout(() => {
+        addAssistantMessage(answer);
+    }, 250);
+}
     </script>
+<button
+    class="assistant-button"
+    onclick="toggleAssistant()"
+    aria-label="Open IDEA LAB Assistant">
+    ✦
+</button>
 
+<div class="assistant-panel" id="assistantPanel">
+
+    <div class="assistant-header">
+        <strong>IDEA LAB Assistant</strong>
+        <span>Physics + Website Help</span>
+    </div>
+
+    <div class="assistant-messages" id="assistantMessages">
+
+        <div class="assistant-message">
+            Hi! I'm the IDEA LAB Assistant.
+            Ask me about a physics concept,
+            a simulation, or how to use IDEA LAB.
+        </div>
+
+    </div>
+
+    <div class="assistant-input">
+
+        <input
+            id="assistantInput"
+            type="text"
+            placeholder="Ask something..."
+            onkeydown="if(event.key === 'Enter') askAssistant()"
+        >
+
+        <button onclick="askAssistant()">
+            Send
+        </button>
+
+    </div>
+
+</div>
 </body>
 
 </html>
