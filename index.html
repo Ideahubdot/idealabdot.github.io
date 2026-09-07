@@ -1993,9 +1993,13 @@
 
         <div class="contact-links">
 
-            <a id="contactEmail" class="contact-link">
-              ✉ Contact
-            </a>
+            <a
+              href="https://mail.google.com/mail/?view=cm&fs=1&to=tim472478@gmail.com"
+              class="contact-link"
+              target="_blank"
+              rel="noopener">
+                ✉ Contact
+           </a>
                <a id="contactGithub"
                   class="contact-link"
                   target="_blank"
@@ -2041,7 +2045,8 @@
     github: "https://github.com/Ideahubdot/idealabdot.github.io"
 };
    document.getElementById("contactEmail").href =
-    "mailto:" + SITE_CONFIG.email;
+    "https://mail.google.com/mail/?view=cm&fs=1&to=" +
+    encodeURIComponent(SITE_CONFIG.email);
 
 document.getElementById("contactGithub").href =
     SITE_CONFIG.github;
