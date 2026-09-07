@@ -11,7 +11,7 @@
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
-  gtag('config', ''G-S1T0Q5ZHPJ');
+  gtag('config', 'G-S1T0Q5ZHPJ');
 </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1040,7 +1040,84 @@
 
             letter-spacing: 1.5px;
         }
+         /* =========================
+   CONTACT
+========================= */
 
+.contact-section {
+    padding: 95px 7%;
+    background:
+        radial-gradient(circle at 20% 50%, rgba(112,213,255,0.07), transparent 35%),
+        rgba(255,255,255,0.012);
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.contact-card {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 45px;
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 20px;
+    background: rgba(255,255,255,0.025);
+    text-align: center;
+}
+
+.contact-card h2 {
+    margin-top: 8px;
+    font-size: clamp(30px, 4vw, 46px);
+    letter-spacing: -1.5px;
+}
+
+.contact-card > p {
+    max-width: 620px;
+    margin: 18px auto 30px;
+    color: #8294a8;
+    font-size: 14px;
+}
+
+.contact-links {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.contact-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 17px;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    background: rgba(255,255,255,0.035);
+    color: #dceaf5;
+    font-size: 13px;
+    transition: 0.25s ease;
+}
+
+.contact-link:hover {
+    transform: translateY(-3px);
+    border-color: rgba(112,213,255,0.35);
+    background: rgba(112,213,255,0.07);
+}
+
+.creator-note {
+    margin-top: 32px;
+    padding-top: 22px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    color: #718398;
+    font-size: 12px;
+}
+
+.creator-note strong {
+    color: #dceaf5;
+    font-weight: 600;
+}
+
+
+/* =========================
+   TABLET
+========================= */
         /* =========================
            TABLET
         ========================= */
@@ -1204,7 +1281,10 @@
             <a href="#learn">
                 Learn
             </a>
-
+           
+            <a href="#contact">
+             Contact
+            </a>
         </div>
 
     </nav>
@@ -1890,7 +1970,50 @@
 
     </div>
 
+      <!-- =========================
+     CONTACT
+========================= -->
 
+<section class="contact-section" id="contact">
+
+    <div class="contact-card">
+
+        <div class="section-label">
+            Connect with IDEA LAB
+        </div>
+
+        <h2>
+            Have an idea?
+        </h2>
+
+        <p>
+            Found a problem, have a question, or want to suggest
+            a new simulation? I'd love to hear from you.
+        </p>
+
+        <div class="contact-links">
+
+            <a href="mailto:tim472478@gmail.com" class="contact-link">
+                ✉ Contact
+            </a>
+
+            <a href="https://github.com/Ideahubdot/idealabdot.github.io"
+               class="contact-link"
+               target="_blank"
+               rel="noopener">
+                ◇ GitHub
+            </a>
+
+        </div>
+
+        <div class="creator-note">
+            IDEA LAB · Created and maintained by
+            <strong>Aster Vale</strong>
+        </div>
+
+    </div>
+
+</section>
     <!-- =========================
          FOOTER
     ========================== -->
