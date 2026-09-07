@@ -1993,14 +1993,13 @@
 
         <div class="contact-links">
 
-            <a href="mailto:tim472478@gmail.com" class="contact-link">
-                ✉ Contact
+            <a id="contactEmail" class="contact-link">
+              ✉ Contact
             </a>
-
-            <a href="https://github.com/Ideahubdot/idealabdot.github.io"
-               class="contact-link"
-               target="_blank"
-               rel="noopener">
+               <a id="contactGithub"
+                  class="contact-link"
+                  target="_blank"
+                  rel="noopener">
                 ◇ GitHub
             </a>
 
@@ -2008,7 +2007,7 @@
 
         <div class="creator-note">
             IDEA LAB · Created and maintained by
-            <strong>Aster Vale</strong>
+           <strong id="creatorName">Aster Vale</strong>
         </div>
 
     </div>
@@ -2036,7 +2035,19 @@
     ========================== -->
 
     <script>
+       const SITE_CONFIG = {
+    creatorName: "Aster Vale",
+    email: "tim472478@gmail.com",
+    github: "https://github.com/Ideahubdot/idealabdot.github.io"
+};
+   document.getElementById("contactEmail").href =
+    "mailto:" + SITE_CONFIG.email;
 
+document.getElementById("contactGithub").href =
+    SITE_CONFIG.github;
+
+document.getElementById("creatorName").textContent =
+    SITE_CONFIG.creatorName;
         function searchAnimations() {
 
             const search =
