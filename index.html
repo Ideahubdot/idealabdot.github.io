@@ -1118,36 +1118,234 @@
    IDEA LAB ASSISTANT
 ========================= */
 
-.assistant-button {
+.assistant-float {
     position: fixed;
     right: 24px;
     bottom: 24px;
     z-index: 2000;
 
-    width: 54px;
-    height: 54px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
 
-    border: 1px solid rgba(112,213,255,0.35);
-    border-radius: 50%;
+    touch-action: none;
+    user-select: none;
+}
 
-    background: #0c1d2e;
+.assistant-hint {
+    padding: 7px 11px;
+
+    border: 1px solid rgba(112,213,255,0.18);
+    border-radius: 999px;
+
+    background: rgba(7,17,31,0.88);
+    color: #9edfff;
+
+    font-size: 11px;
+    letter-spacing: 0.3px;
+
+    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+
+    opacity: 0;
+    transform: translateY(5px);
+
+    pointer-events: none;
+
+    transition: 0.3s ease;
+}
+
+.assistant-float:hover .assistant-hint {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.assistant-robot {
+    position: relative;
+
+    width: 58px;
+    height: 58px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid rgba(112,213,255,0.38);
+    border-radius: 17px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(26,53,76,0.95),
+            rgba(8,22,37,0.98)
+        );
+
     color: #72d6ff;
 
-    font-size: 22px;
-    cursor: pointer;
+    box-shadow:
+        0 10px 35px rgba(0,0,0,0.38),
+        0 0 28px rgba(112,213,255,0.09);
 
-    box-shadow: 0 8px 30px rgba(0,0,0,0.35);
-    transition: 0.25s ease;
+    cursor: grab;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
 }
 
-.assistant-button:hover {
-    transform: translateY(-3px);
+.assistant-robot:hover {
+    transform: translateY(-3px) scale(1.03);
+
+    border-color: rgba(112,213,255,0.55);
+
+    box-shadow:
+        0 14px 40px rgba(0,0,0,0.42),
+        0 0 35px rgba(112,213,255,0.14);
 }
+
+.assistant-robot.dragging {
+    cursor: grabbing;
+
+    transform: scale(1.08);
+
+    border-color: rgba(112,213,255,0.7);
+
+    box-shadow:
+        0 18px 45px rgba(0,0,0,0.45),
+        0 0 45px rgba(112,213,255,0.18);
+}
+
+.robot-face {
+    position: relative;
+
+    width: 31px;
+    height: 24px;
+
+    border: 1px solid rgba(114,214,255,0.55);
+    border-radius: 8px;
+
+    background: rgba(112,213,255,0.07);
+}
+
+.robot-eye {
+    position: absolute;
+
+    top: 8px;
+
+    width: 5px;
+    height: 5px;
+
+    border-radius: 50%;
+
+    background: #72d6ff;
+
+    box-shadow:
+        0 0 8px rgba(112,213,255,0.8);
+}
+
+.robot-eye.left {
+    left: 7px;
+}
+
+.robot-eye.right {
+    right: 7px;
+}
+
+.robot-mouth {
+    position: absolute;
+
+    left: 50%;
+    bottom: 4px;
+
+    width: 9px;
+    height: 3px;
+
+    transform: translateX(-50%);
+
+    border-radius: 999px;
+
+    background: rgba(114,214,255,0.75);
+}
+
+.robot-antenna {
+    position: absolute;
+
+    left: 50%;
+    top: -8px;
+
+    width: 1px;
+    height: 7px;
+
+    transform: translateX(-50%);
+
+    background: rgba(114,214,255,0.55);
+}
+
+.robot-antenna-dot {
+    position: absolute;
+
+    left: 50%;
+    top: -12px;
+
+    width: 5px;
+    height: 5px;
+
+    transform: translateX(-50%);
+
+    border-radius: 50%;
+
+    background: #72d6ff;
+
+    box-shadow:
+        0 0 10px rgba(112,213,255,0.9);
+}
+
+/* Idle floating motion */
+
+.assistant-float:not(.drag-active) .assistant-robot {
+    animation: robotFloat 3.2s ease-in-out infinite;
+}
+
+@keyframes robotFloat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Small signal rings */
+
+.assistant-robot::before,
+.assistant-robot::after {
+    content: "";
+
+    position: absolute;
+
+    inset: -5px;
+
+    border: 1px solid rgba(112,213,255,0.08);
+    border-radius: 20px;
+
+    pointer-events: none;
+}
+
+.assistant-robot::after {
+    inset: -10px;
+    opacity: 0.5;
+}
+
+/* =========================
+   ASSISTANT CHAT PANEL
+========================= */
 
 .assistant-panel {
     position: fixed;
     right: 24px;
-    bottom: 90px;
+    bottom: 94px;
     z-index: 1999;
 
     width: min(360px, calc(100vw - 30px));
@@ -1161,48 +1359,126 @@
 
     background: rgba(7,17,31,0.97);
 
-    box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+    box-shadow:
+        0 20px 60px rgba(0,0,0,0.45);
 
     overflow: hidden;
+
     backdrop-filter: blur(18px);
 }
 
 .assistant-header {
-    padding: 18px;
+    padding: 16px 18px;
+
     border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.assistant-identity {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+
+.assistant-avatar {
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid rgba(112,213,255,0.3);
+    border-radius: 11px;
+
+    background: rgba(112,213,255,0.08);
+
+    color: #72d6ff;
+
+    font-size: 17px;
+
+    animation: assistantFloat 3s ease-in-out infinite;
+}
+
+@keyframes assistantFloat {
+    0%,100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-3px);
+    }
 }
 
 .assistant-header strong {
     display: block;
+
     color: #ffffff;
+
     font-size: 14px;
 }
 
 .assistant-header span {
     color: #718398;
+
     font-size: 11px;
 }
 
 .assistant-messages {
     flex: 1;
+
     padding: 16px;
+
     overflow-y: auto;
 }
 
-.assistant-message {
-    margin-bottom: 10px;
-    padding: 10px 12px;
-    border-radius: 10px;
+.chat-message {
+    display: flex;
 
-    color: #cddbea;
-    background: rgba(255,255,255,0.05);
+    margin-bottom: 12px;
+}
+
+.chat-message.user {
+    justify-content: flex-end;
+}
+
+.chat-message.bot {
+    justify-content: flex-start;
+}
+
+.chat-bubble {
+    max-width: 82%;
+
+    padding: 10px 13px;
+
+    border-radius: 13px;
 
     font-size: 12px;
     line-height: 1.6;
 }
 
+.chat-message.user .chat-bubble {
+    background: rgba(112,213,255,0.16);
+
+    border: 1px solid rgba(112,213,255,0.22);
+
+    color: #eaf8ff;
+
+    border-bottom-right-radius: 4px;
+}
+
+.chat-message.bot .chat-bubble {
+    background: rgba(255,255,255,0.045);
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    color: #cddbea;
+
+    border-bottom-left-radius: 4px;
+}
+
 .assistant-input {
     display: flex;
+
     gap: 8px;
 
     padding: 12px;
@@ -1217,6 +1493,7 @@
 
     border: 1px solid rgba(255,255,255,0.1);
     border-radius: 9px;
+
     outline: none;
 
     background: rgba(255,255,255,0.04);
@@ -1235,19 +1512,25 @@
     color: #04111c;
 
     cursor: pointer;
+
     font-weight: 700;
 }
 
 @media (max-width: 700px) {
-    .assistant-button {
+
+    .assistant-float {
         right: 16px;
         bottom: 16px;
     }
 
     .assistant-panel {
         right: 15px;
-        bottom: 82px;
+        bottom: 86px;
+
+        width: calc(100vw - 30px);
+        height: 470px;
     }
+
 }
 /* =========================
    TABLET
@@ -2167,11 +2450,164 @@
 
     </footer>
 
+<div class="assistant-float" id="assistantFloat">
 
+    <div class="assistant-hint">
+        Ask me
+    </div>
+
+    <button
+        class="assistant-robot"
+        id="assistantRobot"
+        onclick="toggleAssistant()"
+        aria-label="Open IDEA LAB Assistant">
+
+        <span class="robot-face">
+
+            <span class="robot-eye left"></span>
+            <span class="robot-eye right"></span>
+
+            <span class="robot-mouth"></span>
+
+        </span>
+
+        <span class="robot-antenna"></span>
+        <span class="robot-antenna-dot"></span>
+
+    </button>
+
+</div>
+
+<div class="assistant-panel" id="assistantPanel">
+
+    <div class="assistant-header">
+
+        <div class="assistant-identity">
+
+            <div class="assistant-avatar">
+                ✦
+            </div>
+
+            <div>
+                <strong>IDEA LAB Assistant</strong>
+                <span>Physics & Website Guide</span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="assistant-messages" id="assistantMessages">
+
+        <div class="chat-message bot">
+            <div class="chat-bubble">
+                Hi! I'm the IDEA LAB Assistant.
+                I can help you understand physics,
+                use the simulations, or find your way around IDEA LAB.
+            </div>
+        </div>
+
+    </div>
+
+    <div class="assistant-input">
+
+        <input
+            id="assistantInput"
+            type="text"
+            placeholder="Ask something..."
+            onkeydown="if(event.key === 'Enter') askAssistant()"
+        >
+
+        <button onclick="askAssistant()">
+            Send
+        </button>
+
+    </div>
+
+</div>
     <!-- =========================
          JAVASCRIPT
     ========================== -->
-   
+   <div class="assistant-float" id="assistantFloat">
+
+    <div class="assistant-hint">
+        Ask me
+    </div>
+
+    <button
+        class="assistant-robot"
+        id="assistantRobot"
+        onclick="toggleAssistant()"
+        aria-label="Open IDEA LAB Assistant">
+
+        <span class="robot-face">
+
+            <span class="robot-eye left"></span>
+            <span class="robot-eye right"></span>
+
+            <span class="robot-mouth"></span>
+
+        </span>
+
+        <span class="robot-antenna"></span>
+        <span class="robot-antenna-dot"></span>
+
+    </button>
+
+</div>
+
+
+<div class="assistant-panel" id="assistantPanel">
+
+    <div class="assistant-header">
+
+        <div class="assistant-identity">
+
+            <div class="assistant-avatar">
+                ✦
+            </div>
+
+            <div>
+                <strong>IDEA LAB Assistant</strong>
+                <span>Physics & Website Guide</span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="assistant-messages" id="assistantMessages">
+
+        <div class="chat-message bot">
+
+            <div class="chat-bubble">
+                Hi! I'm the IDEA LAB Assistant.
+                I can help you understand physics,
+                use the simulations, or find your way around IDEA LAB.
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="assistant-input">
+
+        <input
+            id="assistantInput"
+            type="text"
+            placeholder="Ask something..."
+            onkeydown="if(event.key === 'Enter') askAssistant()"
+        >
+
+        <button onclick="askAssistant()">
+            Send
+        </button>
+
+    </div>
+
+</div>
     <script>
        const SITE_CONFIG = {
     creatorName: "Aster Vale",
@@ -2276,13 +2712,19 @@ document.getElementById("creatorName").textContent =
             document.getElementById("searchInput").value = "";
 
         }
-   function toggleAssistant() {
-    const panel = document.getElementById("assistantPanel");
+ function toggleAssistant() {
+
+    const panel =
+        document.getElementById("assistantPanel");
 
     if (panel.style.display === "flex") {
+
         panel.style.display = "none";
+
     } else {
+
         panel.style.display = "flex";
+
     }
 }
 
@@ -2376,58 +2818,158 @@ function askAssistant() {
     addChatMessage(answer, "bot");
 }, 250);
 }
+/* =========================
+   FLOATING ROBOT DRAG
+========================= */
+
+const assistantFloat =
+    document.getElementById("assistantFloat");
+
+const assistantRobot =
+    document.getElementById("assistantRobot");
+
+let draggingAssistant = false;
+
+let startX = 0;
+let startY = 0;
+
+let startLeft = 0;
+let startTop = 0;
+
+function startAssistantDrag(event) {
+
+    event.preventDefault();
+
+    draggingAssistant = true;
+
+    assistantRobot.classList.add("dragging");
+    assistantFloat.classList.add("drag-active");
+
+    const point =
+        event.touches
+            ? event.touches[0]
+            : event;
+
+    startX = point.clientX;
+    startY = point.clientY;
+
+    const rect =
+        assistantFloat.getBoundingClientRect();
+
+    startLeft = rect.left;
+    startTop = rect.top;
+
+    assistantFloat.style.right = "auto";
+    assistantFloat.style.bottom = "auto";
+
+    assistantFloat.style.left =
+        startLeft + "px";
+
+    assistantFloat.style.top =
+        startTop + "px";
+}
+
+function moveAssistantDrag(event) {
+
+    if (!draggingAssistant) return;
+
+    event.preventDefault();
+
+    const point =
+        event.touches
+            ? event.touches[0]
+            : event;
+
+    const deltaX =
+        point.clientX - startX;
+
+    const deltaY =
+        point.clientY - startY;
+
+    let newLeft =
+        startLeft + deltaX;
+
+    let newTop =
+        startTop + deltaY;
+
+    const robotWidth =
+        assistantFloat.offsetWidth;
+
+    const robotHeight =
+        assistantFloat.offsetHeight;
+
+    const margin = 10;
+
+    newLeft =
+        Math.max(
+            margin,
+            Math.min(
+                window.innerWidth -
+                robotWidth -
+                margin,
+                newLeft
+            )
+        );
+
+    newTop =
+        Math.max(
+            margin,
+            Math.min(
+                window.innerHeight -
+                robotHeight -
+                margin,
+                newTop
+            )
+        );
+
+    assistantFloat.style.left =
+        newLeft + "px";
+
+    assistantFloat.style.top =
+        newTop + "px";
+}
+
+function endAssistantDrag() {
+
+    if (!draggingAssistant) return;
+
+    draggingAssistant = false;
+
+    assistantRobot.classList.remove("dragging");
+    assistantFloat.classList.remove("drag-active");
+}
+
+assistantRobot.addEventListener(
+    "mousedown",
+    startAssistantDrag
+);
+
+window.addEventListener(
+    "mousemove",
+    moveAssistantDrag
+);
+
+window.addEventListener(
+    "mouseup",
+    endAssistantDrag
+);
+
+assistantRobot.addEventListener(
+    "touchstart",
+    startAssistantDrag,
+    { passive: false }
+);
+
+window.addEventListener(
+    "touchmove",
+    moveAssistantDrag,
+    { passive: false }
+);
+
+window.addEventListener(
+    "touchend",
+    endAssistantDrag
+);
     </script>
-<button
-    class="assistant-button"
-    onclick="toggleAssistant()"
-    aria-label="Open IDEA LAB Assistant">
-    ✦
-</button>
-
-<div class="assistant-panel" id="assistantPanel">
-
-    <div class="assistant-header">
-
-        <div class="assistant-identity">
-
-            <div class="assistant-avatar">
-                ✦
-            </div>
-
-            <div>
-                <strong>IDEA LAB Assistant</strong>
-                <span>Physics & Website Guide</span>
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="assistant-messages" id="assistantMessages">
-
-        <div class="chat-message bot">
-            <div class="chat-bubble">
-                Hi! I'm the IDEA LAB Assistant.
-                I can help you understand physics,
-                use the simulations, or find your way around IDEA LAB.
-            </div>
-        </div>
-
-    </div>
-
-    <div class="assistant-input">
-
-        <input
-            id="assistantInput"
-            type="text"
-            placeholder="Ask something..."
-            onkeydown="if(event.key === 'Enter') askAssistant()"
-        >
-
-        <button onclick="askAssistant()">
-            Send
-        </button>
-
-    </div>
-
-</div>
+</body>
+</html>
