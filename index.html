@@ -2675,69 +2675,75 @@ function addChatMessage(text, sender) {
 }
    
 
-function askAssistant() {
-    const input =
-        document.getElementById("assistantInput");
-
-    const question =
-        input.value.trim().toLowerCase();
+async function askAssistant() {
+    const input = document.getElementById("assistantInput");
+    const question = input.value.trim();
 
     if (!question) return;
 
-   addChatMessage(input.value, "user");
-
+    addChatMessage(question, "user");
     input.value = "";
 
-    let answer =
-        "I can help with physics concepts, simulations, and using the IDEA LAB website.";
+    // Temporary message while the AI is thinking
+    const loadingId = "assistantLoading";
 
-    if (
-        question.includes("interference") ||
-        question.includes("double slit") ||
-        question.includes("young")
-    ) {
-        answer =
-            "The Young's Double-Slit Experiment demonstrates interference between coherent light waves, producing bright and dark fringes.";
+    const messages = document.getElementById("assistantMessages");
+
+    const loadingWrapper = document.createElement("div");
+    loadingWrapper.className = "chat-message bot";
+    loadingWrapper.id = loadingId;
+
+    const loadingBubble = document.createElement("div");
+    loadingBubble.className = "chat-bubble";
+    loadingBubble.textContent = "Thinking...";
+
+    loadingWrapper.appendChild(loadingBubble);
+    messages.appendChild(loadingWrapper);
+    messages.scrollTop = messages.scrollHeight;
+
+    try {
+        const response = await fetch("YOUR_AI_ENDPOINT_HERE", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                message: question,
+                site: "IDEA LAB"
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error("AI request failed");
+        }
+
+        const data = await response.json();
+
+        const loadingMessage = document.getElementById(loadingId);
+        if (loadingMessage) {
+            loadingMessage.remove();
+        }
+
+        const answer =
+            data.answer ||
+            "Sorry, I couldn't generate a response right now.";
+
+        addChatMessage(answer, "bot");
+
+    } catch (error) {
+
+        const loadingMessage = document.getElementById(loadingId);
+        if (loadingMessage) {
+            loadingMessage.remove();
+        }
+
+        addChatMessage(
+            "I'm having trouble connecting to the IDEA LAB AI service right now. Please try again in a moment.",
+            "bot"
+        );
+
+        console.error("IDEA LAB Assistant error:", error);
     }
-
-    else if (
-        question.includes("frequency") ||
-        question.includes("wavelength") ||
-        question.includes("amplitude")
-    ) {
-        answer =
-            "These are wave parameters. Change them in the simulation and observe how the wave behaviour changes.";
-    }
-
-    else if (
-        question.includes("open") ||
-        question.includes("launch") ||
-        question.includes("simulation")
-    ) {
-        answer =
-            "Go to the Simulation Library and click 'Launch Simulation' on the experiment you want to explore.";
-    }
-
-    else if (
-        question.includes("problem") ||
-        question.includes("bug") ||
-        question.includes("not working")
-    ) {
-        answer =
-            "You can report the problem through the Contact section at the bottom of IDEA LAB.";
-    }
-
-    else if (
-        question.includes("contact") ||
-        question.includes("email")
-    ) {
-        answer =
-            "Use the Contact button at the bottom of the website to reach IDEA LAB.";
-    }
-
-    setTimeout(() => {
-    addChatMessage(answer, "bot");
-}, 250);
 }
 /* =========================
    FLOATING ROBOT
@@ -2857,17 +2863,6 @@ assistantRobot.addEventListener("pointermove", function (event) {
    DRAG END
 ========================= */
 
-assistantRobot.addEventListener("pointerup", function (event) {
-
-    draggingAssistant = false;
-
-    assistantRobot.releasePointerCapture(
-        event.pointerId
-    );
-
-    assistantRobot.classList.remove("dragging");
-    assistantFloat.classList.remove("drag-active");
-});
 
 assistantRobot.addEventListener("pointerup", function (event) {
 
