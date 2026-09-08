@@ -2459,7 +2459,7 @@
     <button
         class="assistant-robot"
         id="assistantRobot"
-        onclick="toggleAssistant()"
+        onclick="if (!this.dataset.justDragged) toggleAssistant()"
         aria-label="Open IDEA LAB Assistant">
 
         <span class="robot-face">
@@ -2528,86 +2528,7 @@
     <!-- =========================
          JAVASCRIPT
     ========================== -->
-   <div class="assistant-float" id="assistantFloat">
-
-    <div class="assistant-hint">
-        Ask me
-    </div>
-
-    <button
-        class="assistant-robot"
-        id="assistantRobot"
-        onclick="toggleAssistant()"
-        aria-label="Open IDEA LAB Assistant">
-
-        <span class="robot-face">
-
-            <span class="robot-eye left"></span>
-            <span class="robot-eye right"></span>
-
-            <span class="robot-mouth"></span>
-
-        </span>
-
-        <span class="robot-antenna"></span>
-        <span class="robot-antenna-dot"></span>
-
-    </button>
-
-</div>
-
-
-<div class="assistant-panel" id="assistantPanel">
-
-    <div class="assistant-header">
-
-        <div class="assistant-identity">
-
-            <div class="assistant-avatar">
-                ✦
-            </div>
-
-            <div>
-                <strong>IDEA LAB Assistant</strong>
-                <span>Physics & Website Guide</span>
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <div class="assistant-messages" id="assistantMessages">
-
-        <div class="chat-message bot">
-
-            <div class="chat-bubble">
-                Hi! I'm the IDEA LAB Assistant.
-                I can help you understand physics,
-                use the simulations, or find your way around IDEA LAB.
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <div class="assistant-input">
-
-        <input
-            id="assistantInput"
-            type="text"
-            placeholder="Ask something..."
-            onkeydown="if(event.key === 'Enter') askAssistant()"
-        >
-
-        <button onclick="askAssistant()">
-            Send
-        </button>
-
-    </div>
-
-</div>
+  
     <script>
        const SITE_CONFIG = {
     creatorName: "Aster Vale",
@@ -2819,7 +2740,7 @@ function askAssistant() {
 }, 250);
 }
 /* =========================
-   FLOATING ROBOT DRAG
+   FLOATING ROBOT
 ========================= */
 
 const assistantFloat =
@@ -2836,25 +2757,27 @@ let startY = 0;
 let startLeft = 0;
 let startTop = 0;
 
-function startAssistantDrag(event) {
+
+/* =========================
+   DRAG START
+========================= */
+
+assistantRobot.addEventListener("pointerdown", function (event) {
 
     event.preventDefault();
 
     draggingAssistant = true;
 
+    assistantRobot.setPointerCapture(event.pointerId);
+
     assistantRobot.classList.add("dragging");
     assistantFloat.classList.add("drag-active");
 
-    const point =
-        event.touches
-            ? event.touches[0]
-            : event;
-
-    startX = point.clientX;
-    startY = point.clientY;
-
     const rect =
         assistantFloat.getBoundingClientRect();
+
+    startX = event.clientX;
+    startY = event.clientY;
 
     startLeft = rect.left;
     startTop = rect.top;
@@ -2867,30 +2790,24 @@ function startAssistantDrag(event) {
 
     assistantFloat.style.top =
         startTop + "px";
-}
+});
 
-function moveAssistantDrag(event) {
+
+/* =========================
+   DRAG MOVE
+========================= */
+
+assistantRobot.addEventListener("pointermove", function (event) {
 
     if (!draggingAssistant) return;
 
     event.preventDefault();
 
-    const point =
-        event.touches
-            ? event.touches[0]
-            : event;
-
     const deltaX =
-        point.clientX - startX;
+        event.clientX - startX;
 
     const deltaY =
-        point.clientY - startY;
-
-    let newLeft =
-        startLeft + deltaX;
-
-    let newTop =
-        startTop + deltaY;
+        event.clientY - startY;
 
     const robotWidth =
         assistantFloat.offsetWidth;
@@ -2899,6 +2816,12 @@ function moveAssistantDrag(event) {
         assistantFloat.offsetHeight;
 
     const margin = 10;
+
+    let newLeft =
+        startLeft + deltaX;
+
+    let newTop =
+        startTop + deltaY;
 
     newLeft =
         Math.max(
@@ -2927,48 +2850,55 @@ function moveAssistantDrag(event) {
 
     assistantFloat.style.top =
         newTop + "px";
-}
+});
 
-function endAssistantDrag() {
 
-    if (!draggingAssistant) return;
+/* =========================
+   DRAG END
+========================= */
+
+assistantRobot.addEventListener("pointerup", function (event) {
 
     draggingAssistant = false;
 
+    assistantRobot.releasePointerCapture(
+        event.pointerId
+    );
+
     assistantRobot.classList.remove("dragging");
     assistantFloat.classList.remove("drag-active");
-}
+});
+
+assistantRobot.addEventListener("pointerup", function (event) {
+
+    const wasDragging = draggingAssistant;
+
+    draggingAssistant = false;
+
+    assistantRobot.releasePointerCapture(
+        event.pointerId
+    );
+
+    assistantRobot.classList.remove("dragging");
+    assistantFloat.classList.remove("drag-active");
+
+    if (wasDragging) {
+        assistantRobot.dataset.justDragged = "true";
+
+        setTimeout(() => {
+            delete assistantRobot.dataset.justDragged;
+        }, 100);
+    }
+});
+
+
+/* =========================
+   PREVENT TEXT SELECTION
+========================= */
 
 assistantRobot.addEventListener(
-    "mousedown",
-    startAssistantDrag
-);
-
-window.addEventListener(
-    "mousemove",
-    moveAssistantDrag
-);
-
-window.addEventListener(
-    "mouseup",
-    endAssistantDrag
-);
-
-assistantRobot.addEventListener(
-    "touchstart",
-    startAssistantDrag,
-    { passive: false }
-);
-
-window.addEventListener(
-    "touchmove",
-    moveAssistantDrag,
-    { passive: false }
-);
-
-window.addEventListener(
-    "touchend",
-    endAssistantDrag
+    "dragstart",
+    event => event.preventDefault()
 );
     </script>
 </body>
