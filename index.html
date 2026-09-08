@@ -2535,6 +2535,98 @@
     email: "tim472478@gmail.com",
     github: "https://github.com/Ideahubdot/idealabdot.github.io"
 };
+       /* =========================
+   IDEA LAB ASSISTANT KNOWLEDGE
+========================= */
+
+const IDEA_LAB_CONTEXT = {
+    siteName: "IDEA LAB",
+
+    description:
+        "IDEA LAB is an interactive physics laboratory where users can explore physics through visual simulations and experiments.",
+
+    sections: [
+        {
+            name: "Home",
+            purpose: "The main landing section of IDEA LAB.",
+            id: "home"
+        },
+        {
+            name: "Simulation Library",
+            purpose: "Contains the interactive physics simulations.",
+            id: "library"
+        },
+        {
+            name: "Physics Topics",
+            purpose: "Shows major physics areas including Waves, Optics, Mechanics, Electricity and Modern Physics.",
+            id: "physics-topics"
+        },
+        {
+            name: "Learn Through Experiment",
+            purpose: "Explains the idea of learning physics through interactive visual experiments.",
+            id: "learn"
+        },
+        {
+            name: "Contact",
+            purpose: "Used for contacting IDEA LAB and accessing the GitHub project link.",
+            id: "contact"
+        }
+    ],
+
+    simulations: [
+        {
+            name: "Wave Propagation Simulation in 3D",
+            category: "Waves",
+            url: "animations/wave-propagation-3d.html",
+            controls:
+                "Amplitude, wavelength, frequency and phase.",
+            description:
+                "Shows how waves propagate through space in three dimensions."
+        },
+        {
+            name: "Young's Double-Slit Experiment",
+            category: "Optics / Interference",
+            url: "animations/young-double-slit.html",
+            controls:
+                "Wavelength, slit separation and screen distance.",
+            description:
+                "Shows interference of coherent light waves and bright and dark fringes."
+        },
+        {
+            name: "Simple Harmonic Motion",
+            category: "Mechanics",
+            url: "animations/simple-harmonic-motion.html",
+            controls:
+                "Simulation-dependent controls.",
+            description:
+                "Shows oscillatory motion using an interactive 3D spring-mass system and displays displacement, velocity and acceleration behaviour."
+        }
+    ],
+
+    websiteFeatures: [
+        "Simulation search",
+        "Simulation category filtering",
+        "Simulation launch buttons",
+        "Physics topic sections",
+        "Learn section",
+        "Contact section",
+        "IDEA LAB Assistant"
+    ],
+
+    categories: [
+        "All",
+        "Waves",
+        "Optics",
+        "Interference",
+        "Mechanics",
+        "Electricity"
+    ],
+
+    creator: "Aster Vale"
+};
+
+/* Conversation history for the current page session */
+const assistantHistory = [];
    document.getElementById("contactEmail").href =
     "https://mail.google.com/mail/?view=cm&fs=1&to=" +
     encodeURIComponent(SITE_CONFIG.email);
@@ -2676,73 +2768,232 @@ function addChatMessage(text, sender) {
    
 
 async function askAssistant() {
-    const input = document.getElementById("assistantInput");
-    const question = input.value.trim();
+
+    const input =
+        document.getElementById("assistantInput");
+
+    const question =
+        input.value.trim();
 
     if (!question) return;
 
+
+    /* Prevent multiple requests at the same time */
+
+    input.disabled = true;
+
+
+    /* Show user's message */
+
     addChatMessage(question, "user");
+
     input.value = "";
 
-    // Temporary message while the AI is thinking
-    const loadingId = "assistantLoading";
 
-    const messages = document.getElementById("assistantMessages");
+    /* Save user message */
 
-    const loadingWrapper = document.createElement("div");
-    loadingWrapper.className = "chat-message bot";
-    loadingWrapper.id = loadingId;
+    assistantHistory.push({
+        role: "user",
+        content: question
+    });
 
-    const loadingBubble = document.createElement("div");
-    loadingBubble.className = "chat-bubble";
-    loadingBubble.textContent = "Thinking...";
 
-    loadingWrapper.appendChild(loadingBubble);
-    messages.appendChild(loadingWrapper);
-    messages.scrollTop = messages.scrollHeight;
+    /* =========================
+       LOADING MESSAGE
+    ========================= */
+
+    const loadingId =
+        "assistantLoading";
+
+    const messages =
+        document.getElementById("assistantMessages");
+
+    const loadingWrapper =
+        document.createElement("div");
+
+    loadingWrapper.className =
+        "chat-message bot";
+
+    loadingWrapper.id =
+        loadingId;
+
+    const loadingBubble =
+        document.createElement("div");
+
+    loadingBubble.className =
+        "chat-bubble";
+
+    loadingBubble.textContent =
+        "Thinking...";
+
+    loadingWrapper.appendChild(
+        loadingBubble
+    );
+
+    messages.appendChild(
+        loadingWrapper
+    );
+
+    messages.scrollTop =
+        messages.scrollHeight;
+
+
+    /* =========================
+       AI REQUEST
+    ========================= */
 
     try {
-        const response = await fetch("YOUR_AI_ENDPOINT_HERE", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                message: question,
-                site: "IDEA LAB"
-            })
-        });
+
+        const response =
+            await fetch(
+                "YOUR_AI_ENDPOINT_HERE",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        site:
+                            "IDEA LAB",
+
+                        message:
+                            question,
+
+                        history:
+                            assistantHistory,
+
+                        siteContext:
+                            IDEA_LAB_CONTEXT,
+
+                        instructions: `
+You are IDEA LAB Assistant.
+
+You are the official AI assistant built into the IDEA LAB website.
+
+Your responsibilities are:
+1. Help users understand physics.
+2. Explain IDEA LAB simulations.
+3. Help users find sections, simulations and website features.
+4. Explain available simulation controls.
+5. Help users troubleshoot normal website usage.
+6. Maintain conversational context.
+
+IMPORTANT WEBSITE RULE:
+Only describe features that are present in the supplied IDEA LAB context.
+Never invent buttons, menus, controls, simulations or settings.
+
+PHYSICS RULE:
+Give accurate explanations.
+Use simple language first.
+Use equations when they genuinely help.
+For numerical problems, show clear steps.
+
+WEBSITE NAVIGATION RULE:
+When someone cannot find something, tell them exactly where to look on IDEA LAB.
+
+IDENTITY:
+Your name is IDEA LAB Assistant.
+Do not claim to be ChatGPT.
+Do not claim that IDEA LAB created the underlying AI model.
+You are the AI assistant integrated into IDEA LAB.
+
+If information is not available in your supplied IDEA LAB context,
+say that you are not certain rather than inventing it.
+`
+                    })
+                }
+            );
+
+
+        /* =========================
+           CHECK RESPONSE
+        ========================= */
 
         if (!response.ok) {
-            throw new Error("AI request failed");
+            throw new Error(
+                "AI request failed with status " +
+                response.status
+            );
         }
 
-        const data = await response.json();
 
-        const loadingMessage = document.getElementById(loadingId);
+        const data =
+            await response.json();
+
+
+        /* Remove loading message */
+
+        const loadingMessage =
+            document.getElementById(
+                loadingId
+            );
+
         if (loadingMessage) {
             loadingMessage.remove();
         }
+
+
+        /* Read AI answer */
 
         const answer =
             data.answer ||
+            data.response ||
+            data.text ||
             "Sorry, I couldn't generate a response right now.";
 
-        addChatMessage(answer, "bot");
+
+        /* Save assistant reply */
+
+        assistantHistory.push({
+            role: "assistant",
+            content: answer
+        });
+
+
+        /* Show assistant reply */
+
+        addChatMessage(
+            answer,
+            "bot"
+        );
+
 
     } catch (error) {
 
-        const loadingMessage = document.getElementById(loadingId);
+        /* Remove loading message */
+
+        const loadingMessage =
+            document.getElementById(
+                loadingId
+            );
+
         if (loadingMessage) {
             loadingMessage.remove();
         }
+
+
+        /* Show friendly error */
 
         addChatMessage(
             "I'm having trouble connecting to the IDEA LAB AI service right now. Please try again in a moment.",
             "bot"
         );
 
-        console.error("IDEA LAB Assistant error:", error);
+
+        console.error(
+            "IDEA LAB Assistant error:",
+            error
+        );
+
+    } finally {
+
+        input.disabled = false;
+
+        input.focus();
     }
 }
 /* =========================
