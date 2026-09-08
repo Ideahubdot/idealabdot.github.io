@@ -2459,7 +2459,7 @@
     <button
         class="assistant-robot"
         id="assistantRobot"
-        onclick="if (!this.dataset.justDragged) toggleAssistant()"
+        onclick="if (this.dataset.justDragged) return; toggleAssistant()"
         aria-label="Open IDEA LAB Assistant">
 
         <span class="robot-face">
@@ -2756,6 +2756,7 @@ const assistantRobot =
     document.getElementById("assistantRobot");
 
 let draggingAssistant = false;
+let assistantMoved = false;
 
 let startX = 0;
 let startY = 0;
@@ -2773,6 +2774,7 @@ assistantRobot.addEventListener("pointerdown", function (event) {
     event.preventDefault();
 
     draggingAssistant = true;
+    assistantMoved = false;
 
     assistantRobot.setPointerCapture(event.pointerId);
 
@@ -2814,6 +2816,16 @@ assistantRobot.addEventListener("pointermove", function (event) {
 
     const deltaY =
         event.clientY - startY;
+
+    /* Consider it a real drag only after
+       the pointer has moved a few pixels. */
+
+    if (
+        Math.abs(deltaX) > 5 ||
+        Math.abs(deltaY) > 5
+    ) {
+        assistantMoved = true;
+    }
 
     const robotWidth =
         assistantFloat.offsetWidth;
@@ -2858,15 +2870,12 @@ assistantRobot.addEventListener("pointermove", function (event) {
         newTop + "px";
 });
 
-
 /* =========================
    DRAG END
 ========================= */
 
 
 assistantRobot.addEventListener("pointerup", function (event) {
-
-    const wasDragging = draggingAssistant;
 
     draggingAssistant = false;
 
@@ -2877,13 +2886,21 @@ assistantRobot.addEventListener("pointerup", function (event) {
     assistantRobot.classList.remove("dragging");
     assistantFloat.classList.remove("drag-active");
 
-    if (wasDragging) {
+    /*
+       Only treat it as a drag if the robot
+       actually moved.
+    */
+
+    if (assistantMoved) {
+
         assistantRobot.dataset.justDragged = "true";
 
         setTimeout(() => {
             delete assistantRobot.dataset.justDragged;
-        }, 100);
+        }, 120);
     }
+
+    assistantMoved = false;
 });
 
 
