@@ -2777,76 +2777,47 @@ async function askAssistant() {
 
     if (!question) return;
 
-
-    /* Prevent multiple requests at the same time */
-
     input.disabled = true;
-
-
-    /* Show user's message */
 
     addChatMessage(question, "user");
 
     input.value = "";
-
-
-    /* Save user message */
 
     assistantHistory.push({
         role: "user",
         content: question
     });
 
-
-    /* =========================
-       LOADING MESSAGE
-    ========================= */
-
-    const loadingId =
-        "assistantLoading";
-
     const messages =
         document.getElementById("assistantMessages");
 
-    const loadingWrapper =
+    const botWrapper =
         document.createElement("div");
 
-    loadingWrapper.className =
+    botWrapper.className =
         "chat-message bot";
 
-    loadingWrapper.id =
-        loadingId;
-
-    const loadingBubble =
+    const botBubble =
         document.createElement("div");
 
-    loadingBubble.className =
+    botBubble.className =
         "chat-bubble";
 
-    loadingBubble.textContent =
+    botBubble.textContent =
         "Thinking...";
 
-    loadingWrapper.appendChild(
-        loadingBubble
-    );
+    botWrapper.appendChild(botBubble);
 
-    messages.appendChild(
-        loadingWrapper
-    );
+    messages.appendChild(botWrapper);
 
     messages.scrollTop =
         messages.scrollHeight;
-
-
-    /* =========================
-       AI REQUEST
-    ========================= */
 
     try {
 
         const response =
             await fetch(
-                "YOUR_AI_ENDPOINT_HERE",
+                "https://idea-lab-assistant.akhilawasthi1383.workers.dev/assistant",
                 {
                     method: "POST",
 
@@ -2857,144 +2828,172 @@ async function askAssistant() {
 
                     body: JSON.stringify({
 
-                        site:
-                            "IDEA LAB",
-
                         message:
                             question,
 
                         history:
                             assistantHistory,
 
+                        site:
+                            "IDEA LAB",
+
                         siteContext:
-                            IDEA_LAB_CONTEXT,
+                            IDEA_LAB_CONTEXT
 
-                        instructions: `
-You are IDEA LAB Assistant.
-
-You are the official AI assistant built into the IDEA LAB website.
-
-Your responsibilities are:
-1. Help users understand physics.
-2. Explain IDEA LAB simulations.
-3. Help users find sections, simulations and website features.
-4. Explain available simulation controls.
-5. Help users troubleshoot normal website usage.
-6. Maintain conversational context.
-
-IMPORTANT WEBSITE RULE:
-Only describe features that are present in the supplied IDEA LAB context.
-Never invent buttons, menus, controls, simulations or settings.
-
-PHYSICS RULE:
-Give accurate explanations.
-Use simple language first.
-Use equations when they genuinely help.
-For numerical problems, show clear steps.
-
-WEBSITE NAVIGATION RULE:
-When someone cannot find something, tell them exactly where to look on IDEA LAB.
-
-IDENTITY:
-Your name is IDEA LAB Assistant.
-Do not claim to be ChatGPT.
-Do not claim that IDEA LAB created the underlying AI model.
-You are the AI assistant integrated into IDEA LAB.
-
-If information is not available in your supplied IDEA LAB context,
-say that you are not certain rather than inventing it.
-`
                     })
                 }
             );
 
-
-        /* =========================
-           CHECK RESPONSE
-        ========================= */
-
         if (!response.ok) {
+
             throw new Error(
                 "AI request failed with status " +
                 response.status
             );
         }
 
+        if (!response.body) {
 
-        const data =
-            await response.json();
-
-
-        /* Remove loading message */
-
-        const loadingMessage =
-            document.getElementById(
-                loadingId
+            throw new Error(
+                "Streaming response is unavailable."
             );
-
-        if (loadingMessage) {
-            loadingMessage.remove();
         }
 
+        const reader =
+            response.body.getReader();
 
-        /* Read AI answer */
+        const decoder =
+            new TextDecoder();
 
-        const answer =
-            data.answer ||
-            data.response ||
-            data.text ||
-            "Sorry, I couldn't generate a response right now.";
+        let buffer = "";
+        let answer = "";
 
+        botBubble.textContent = "";
 
-        /* Save assistant reply */
+        while (true) {
+
+            const { value, done } =
+                await reader.read();
+
+            if (done) break;
+
+            buffer +=
+                decoder.decode(
+                    value,
+                    { stream: true }
+                );
+
+            const lines =
+                buffer.split("\n");
+
+            buffer =
+                lines.pop() || "";
+
+            for (const line of lines) {
+
+                const trimmed =
+                    line.trim();
+
+                if (!trimmed) continue;
+
+                if (!trimmed.startsWith("data:")) {
+                    continue;
+                }
+
+                const dataText =
+                    trimmed.slice(5).trim();
+
+                if (dataText === "[DONE]") {
+                    continue;
+                }
+
+                try {
+
+                    const chunk =
+                        JSON.parse(dataText);
+
+                    let text = "";
+
+                    if (
+                        chunk.response &&
+                        typeof chunk.response === "string"
+                    ) {
+
+                        text =
+                            chunk.response;
+
+                    } else if (
+                        chunk.response &&
+                        typeof chunk.response.text === "string"
+                    ) {
+
+                        text =
+                            chunk.response.text;
+
+                    } else if (
+                        chunk.choices &&
+                        chunk.choices[0] &&
+                        chunk.choices[0].delta &&
+                        typeof chunk.choices[0].delta.content === "string"
+                    ) {
+
+                        text =
+                            chunk.choices[0].delta.content;
+                    }
+
+                    if (text) {
+
+                        answer += text;
+
+                        botBubble.textContent =
+                            answer;
+
+                        messages.scrollTop =
+                            messages.scrollHeight;
+                    }
+
+                } catch (parseError) {
+
+                    console.warn(
+                        "IDEA LAB stream chunk could not be parsed:",
+                        dataText
+                    );
+                }
+            }
+        }
+
+        buffer +=
+            decoder.decode();
+
+        if (!answer.trim()) {
+
+            throw new Error(
+                "The AI returned an empty response."
+            );
+        }
 
         assistantHistory.push({
             role: "assistant",
             content: answer
         });
 
-
-        /* Show assistant reply */
-
-        addChatMessage(
-            answer,
-            "bot"
-        );
-
-
     } catch (error) {
-
-        /* Remove loading message */
-
-        const loadingMessage =
-            document.getElementById(
-                loadingId
-            );
-
-        if (loadingMessage) {
-            loadingMessage.remove();
-        }
-
-
-        /* Show friendly error */
-
-        addChatMessage(
-            "I'm having trouble connecting to the IDEA LAB AI service right now. Please try again in a moment.",
-            "bot"
-        );
-
 
         console.error(
             "IDEA LAB Assistant error:",
             error
         );
 
-    } finally {
-
-        input.disabled = false;
-
-        input.focus();
+        botBubble.textContent =
+            "I'm having trouble connecting to the IDEA LAB AI service right now. Please try again in a moment.";
     }
+
+    input.disabled = false;
+
+    input.focus();
+
+    messages.scrollTop =
+        messages.scrollHeight;
 }
 /* =========================
    FLOATING ROBOT
