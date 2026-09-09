@@ -383,6 +383,193 @@
                 0 0 20px rgba(112, 213, 255, 0.8),
                 0 0 50px rgba(112, 213, 255, 0.35);
         }
+       /* =========================
+   FEATURED EXPERIMENT
+========================= */
+
+.featured-experiment {
+    position: relative;
+
+    width: 86%;
+    max-width: 1100px;
+
+    min-height: 260px;
+
+    margin: 30px auto 20px;
+    padding: 42px 45px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 30px;
+
+    overflow: hidden;
+
+    border: 1px solid rgba(112,213,255,0.16);
+    border-radius: 20px;
+
+    background:
+        radial-gradient(
+            circle at 82% 50%,
+            rgba(112,213,255,0.10),
+            transparent 32%
+        ),
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.045),
+            rgba(255,255,255,0.018)
+        );
+
+    box-shadow:
+        0 20px 55px rgba(0,0,0,0.24);
+}
+
+.featured-content {
+    position: relative;
+    z-index: 2;
+
+    max-width: 650px;
+}
+
+.featured-label {
+    color: #72d6ff;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    letter-spacing: 2px;
+}
+
+.featured-content h2 {
+    margin-top: 9px;
+
+    font-size: clamp(25px, 4vw, 40px);
+
+    line-height: 1.1;
+    letter-spacing: -1px;
+}
+
+.featured-content p {
+    margin-top: 14px;
+
+    max-width: 610px;
+
+    color: #8294a8;
+
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.featured-button {
+    display: inline-flex;
+
+    align-items: center;
+
+    margin-top: 22px;
+
+    padding: 11px 16px;
+
+    border-radius: 9px;
+
+    background: #72d6ff;
+
+    color: #04111c;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    transition: 0.25s ease;
+}
+
+.featured-button:hover {
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 10px 30px rgba(112,213,255,0.20);
+}
+
+.featured-visual {
+    position: relative;
+
+    width: 190px;
+    height: 190px;
+
+    flex-shrink: 0;
+}
+
+.featured-orbit {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 170px;
+    height: 70px;
+
+    transform:
+        translate(-50%, -50%)
+        rotate(28deg);
+
+    border:
+        1px solid rgba(112,213,255,0.18);
+
+    border-radius: 50%;
+}
+
+.orbit-two {
+    transform:
+        translate(-50%, -50%)
+        rotate(-28deg);
+}
+
+.featured-core {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 12px;
+    height: 12px;
+
+    transform: translate(-50%, -50%);
+
+    border-radius: 50%;
+
+    background: #72d6ff;
+
+    box-shadow:
+        0 0 18px rgba(112,213,255,0.75),
+        0 0 40px rgba(112,213,255,0.25);
+}
+
+@media (max-width: 700px) {
+
+    .featured-experiment {
+        width: calc(100% - 30px);
+
+        min-height: auto;
+
+        padding: 30px 24px;
+
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+    .featured-visual {
+        align-self: center;
+
+        width: 150px;
+        height: 150px;
+
+        margin-top: 5px;
+    }
+
+    .featured-orbit {
+        width: 135px;
+    }
+}
 
         /* =========================
            GENERAL SECTIONS
@@ -1906,7 +2093,44 @@
 
     </header>
 
+    <!-- =========================
+     FEATURED EXPERIMENT
+========================= -->
 
+<section class="featured-experiment">
+
+    <div class="featured-content">
+
+        <div class="featured-label">
+            FEATURED EXPERIMENT
+        </div>
+
+        <h2>
+            Young's Double-Slit Experiment
+        </h2>
+
+        <p>
+            Explore interference of coherent light and watch
+            bright and dark fringes emerge as you change the
+            experimental conditions.
+        </p>
+
+        <a
+            href="animations/young-double-slit.html"
+            class="featured-button"
+        >
+            Launch Experiment →
+        </a>
+
+    </div>
+
+    <div class="featured-visual">
+        <div class="featured-orbit orbit-one"></div>
+        <div class="featured-orbit orbit-two"></div>
+        <div class="featured-core"></div>
+    </div>
+
+</section>
     <!-- =========================
          SIMULATION LIBRARY
     ========================== -->
