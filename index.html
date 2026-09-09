@@ -2601,79 +2601,127 @@
        /* =========================
    IDEA LAB ASSISTANT KNOWLEDGE
 ========================= */
-
 const IDEA_LAB_CONTEXT = {
+
     siteName: "IDEA LAB",
 
     description:
-        "IDEA LAB is an interactive physics laboratory where users can explore physics through visual simulations and experiments.",
+        "IDEA LAB is an interactive physics laboratory where users explore physics through visual simulations and experiments.",
 
     sections: [
+
         {
             name: "Home",
-            purpose: "The main landing section of IDEA LAB.",
-            id: "home"
+            id: "home",
+            purpose:
+                "The main landing section of IDEA LAB. It introduces the project and provides buttons to explore simulations or browse physics topics."
         },
+
         {
             name: "Simulation Library",
-            purpose: "Contains the interactive physics simulations.",
-            id: "library"
+            id: "library",
+            purpose:
+                "The main section containing the available interactive physics simulations.",
+            navigation:
+                "Click the 'Simulations' link in the top navigation bar or use the 'Explore Simulations' button on the Home section."
         },
+
         {
             name: "Physics Topics",
-            purpose: "Shows major physics areas including Waves, Optics, Mechanics, Electricity and Modern Physics.",
-            id: "physics-topics"
+            id: "physics-topics",
+            purpose:
+                "Displays physics areas covered by IDEA LAB, including Waves, Optics, Mechanics, Electricity and Modern Physics.",
+            navigation:
+                "Click the 'Topics' link in the top navigation bar or the 'Browse Topics' button on the Home section."
         },
+
         {
             name: "Learn Through Experiment",
-            purpose: "Explains the idea of learning physics through interactive visual experiments.",
-            id: "learn"
+            id: "learn",
+            purpose:
+                "Explains IDEA LAB's approach of connecting physics theory with interactive visual experiments.",
+            navigation:
+                "Click the 'Learn' link in the top navigation bar."
         },
+
         {
             name: "Contact",
-            purpose: "Used for contacting IDEA LAB and accessing the GitHub project link.",
-            id: "contact"
+            id: "contact",
+            purpose:
+                "Contains the IDEA LAB contact option, GitHub project link and creator information.",
+            navigation:
+                "Click the 'Contact' link in the top navigation bar or scroll to the bottom of the page."
         }
     ],
 
     simulations: [
+
         {
             name: "Wave Propagation Simulation in 3D",
-            category: "Waves",
+            category: ["Waves"],
             url: "animations/wave-propagation-3d.html",
-            controls:
-                "Amplitude, wavelength, frequency and phase.",
-            description:
-                "Shows how waves propagate through space in three dimensions."
+
+            location:
+                "Simulation Library",
+
+            controls: [
+                "Amplitude",
+                "Wavelength",
+                "Frequency",
+                "Phase"
+            ],
+
+            purpose:
+                "Shows how waves propagate through space in three dimensions.",
+
+            navigation:
+                "Open the Simulation Library and select 'Wave Propagation Simulation in 3D'."
         },
+
         {
             name: "Young's Double-Slit Experiment",
-            category: "Optics / Interference",
+            category: ["Optics", "Interference"],
             url: "animations/young-double-slit.html",
-            controls:
-                "Wavelength, slit separation and screen distance.",
-            description:
-                "Shows interference of coherent light waves and bright and dark fringes."
+
+            location:
+                "Simulation Library",
+
+            controls: [
+                "Wavelength",
+                "Slit separation",
+                "Screen distance"
+            ],
+
+            purpose:
+                "Shows interference of coherent light waves and the formation of bright and dark fringes.",
+
+            navigation:
+                "Open the Simulation Library and select 'Young's Double-Slit Experiment'."
         },
+
         {
             name: "Simple Harmonic Motion",
-            category: "Mechanics",
+            category: ["Mechanics"],
             url: "animations/simple-harmonic-motion.html",
+
+            location:
+                "Simulation Library",
+
             controls:
-                "Simulation-dependent controls.",
-            description:
-                "Shows oscillatory motion using an interactive 3D spring-mass system and displays displacement, velocity and acceleration behaviour."
+                "The available controls depend on the simulation.",
+
+            purpose:
+                "Shows oscillatory motion using an interactive 3D spring-mass system and helps visualize displacement, velocity and acceleration.",
+
+            navigation:
+                "Open the Simulation Library and select 'Simple Harmonic Motion'."
         }
     ],
 
-    websiteFeatures: [
+    libraryFeatures: [
         "Simulation search",
         "Simulation category filtering",
-        "Simulation launch buttons",
-        "Physics topic sections",
-        "Learn section",
-        "Contact section",
-        "IDEA LAB Assistant"
+        "Simulation launch buttons"
     ],
 
     categories: [
@@ -2685,7 +2733,33 @@ const IDEA_LAB_CONTEXT = {
         "Electricity"
     ],
 
-    creator: "Aster Vale"
+    physicsTopics: [
+        "Waves",
+        "Optics",
+        "Mechanics",
+        "Electricity",
+        "Modern Physics"
+    ],
+
+    websiteFeatures: [
+        "Simulation search",
+        "Simulation category filtering",
+        "Simulation launch buttons",
+        "Physics topic sections",
+        "Learn Through Experiment section",
+        "Contact section",
+        "IDEA LAB Assistant"
+    ],
+
+    creator: "Aster Vale",
+
+    navigationRules: [
+        "The top navigation contains Home, Simulations, Topics, Learn and Contact.",
+        "Simulation cards are located in the Simulation Library.",
+        "Do not claim that a simulation exists unless it is listed in the simulations array.",
+        "Do not claim a control exists unless it is listed for that simulation.",
+        "When giving navigation instructions, use only the sections and navigation information provided here."
+    ]
 };
 
 /* Conversation history for the current page session */
