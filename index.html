@@ -1827,6 +1827,44 @@
 
     border-color: rgba(112,213,255,0.28);
 }
+       .assistant-error {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.assistant-error-text {
+    color: #cddbea;
+}
+
+.assistant-retry {
+    align-self: flex-start;
+
+    padding: 6px 10px;
+
+    border: 1px solid rgba(112,213,255,0.20);
+    border-radius: 7px;
+
+    background: rgba(112,213,255,0.06);
+    color: #9edfff;
+
+    font-size: 10.5px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.assistant-retry:hover {
+    background: rgba(112,213,255,0.10);
+    border-color: rgba(112,213,255,0.30);
+}
+
+.retrying-text {
+    color: #91a2b5;
+    font-size: 11px;
+}
 .assistant-input {
     display: flex;
 
@@ -3438,6 +3476,50 @@ function addChatMessage(text, sender) {
 
     askAssistant();
 }
+       function retryAssistantMessage(button) {
+
+    const input =
+        document.getElementById("assistantInput");
+
+    const errorBox =
+        button.closest(".assistant-error");
+
+    if (errorBox) {
+        errorBox.innerHTML =
+            '<span class="retrying-text">Retrying...</span>';
+    }
+
+    /*
+       Reuse the latest user question.
+       It is the last user message in assistantHistory.
+    */
+
+    const lastUserMessage =
+        [...assistantHistory]
+            .reverse()
+            .find(item => item.role === "user");
+
+    if (!lastUserMessage) {
+        return;
+    }
+
+    input.value =
+        lastUserMessage.content;
+
+    /*
+       Remove the failed user message from history
+       because askAssistant() will add it again.
+    */
+
+    const index =
+        assistantHistory.lastIndexOf(lastUserMessage);
+
+    if (index !== -1) {
+        assistantHistory.splice(index, 1);
+    }
+
+    askAssistant();
+}
 async function askAssistant() {
 
     const input =
@@ -3666,14 +3748,27 @@ assistantHistory.push({
 });
     } catch (error) {
 
-        console.error(
-            "IDEA LAB Assistant error:",
-            error
-        );
+    console.error(
+        "IDEA LAB Assistant error:",
+        error
+    );
 
-        botBubble.textContent =
-            "I'm having trouble connecting to the IDEA LAB AI service right now. Please try again in a moment.";
-    }
+    botBubble.innerHTML = `
+        <div class="assistant-error">
+            <div class="assistant-error-text">
+                I'm having trouble connecting right now.
+            </div>
+
+            <button
+                type="button"
+                class="assistant-retry"
+                onclick="retryAssistantMessage(this)"
+            >
+                Try again
+            </button>
+        </div>
+    `;
+}
 document
     .getElementById("assistantRobot")
     .classList.remove("thinking");
