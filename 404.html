@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>404 — IDEA LAB</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 24px;
+
+            background: #07111f;
+            color: #eaf3f9;
+
+            font-family:
+                Inter,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+        }
+
+        .error-page {
+            width: min(620px, 100%);
+            text-align: center;
+        }
+
+        .error-code {
+            margin-bottom: 10px;
+
+            color: #72d6ff;
+
+            font-size: clamp(64px, 16vw, 120px);
+            font-weight: 800;
+            line-height: 0.9;
+
+            letter-spacing: -5px;
+
+            text-shadow:
+                0 0 30px rgba(112,213,255,0.12);
+        }
+
+        .error-title {
+            margin: 0 0 14px;
+
+            font-size: clamp(24px, 5vw, 38px);
+        }
+
+        .error-text {
+            max-width: 520px;
+            margin: 0 auto 28px;
+
+            color: #91a2b5;
+
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .error-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 11px 18px;
+
+            border: 1px solid rgba(112,213,255,0.28);
+            border-radius: 10px;
+
+            background: rgba(112,213,255,0.08);
+            color: #9edfff;
+
+            text-decoration: none;
+
+            font-size: 13px;
+            font-weight: 600;
+
+            transition:
+                transform 0.2s ease,
+                background 0.2s ease,
+                border-color 0.2s ease;
+        }
+
+        .error-button:hover {
+            transform: translateY(-2px);
+
+            background: rgba(112,213,255,0.12);
+            border-color: rgba(112,213,255,0.42);
+        }
+
+        .error-orbit {
+            position: relative;
+
+            width: 120px;
+            height: 120px;
+
+            margin: 0 auto 28px;
+
+            border: 1px solid rgba(112,213,255,0.12);
+            border-radius: 50%;
+        }
+
+        .error-orbit::before,
+        .error-orbit::after {
+            content: "";
+
+            position: absolute;
+
+            inset: 18px;
+
+            border: 1px solid rgba(112,213,255,0.10);
+            border-radius: 50%;
+        }
+
+        .error-orbit::after {
+            inset: 46px;
+
+            background: rgba(112,213,255,0.08);
+            box-shadow:
+                0 0 24px rgba(112,213,255,0.16);
+        }
+
+        @media (max-width: 700px) {
+
+            .error-page {
+                padding: 10px;
+            }
+
+            .error-text {
+                font-size: 13px;
+            }
+
+            .error-orbit {
+                width: 100px;
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="error-page">
+
+        <div class="error-orbit"></div>
+
+        <div class="error-code">
+            404
+        </div>
+
+        <h1 class="error-title">
+            Lost in the experiment?
+        </h1>
+
+        <p class="error-text">
+            This page doesn't exist in the IDEA LAB.
+            Head back to the laboratory and continue exploring
+            interactive physics experiments.
+        </p>
+
+        <a
+            href="https://ideahubdot.github.io/idealabdot.github.io/"
+            class="error-button"
+        >
+            ← Return to IDEA LAB
+        </a>
+
+    </main>
+
+</body>
+</html>
