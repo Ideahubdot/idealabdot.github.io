@@ -2873,6 +2873,46 @@ function playAssistantDragSound() {
         0.018
     );
 }
+       /* =========================
+   IDEA LAB WELCOME VOICE
+========================= */
+
+let welcomeVoicePlayed = false;
+
+function playWelcomeVoice() {
+
+    if (welcomeVoicePlayed) return;
+
+    if (!("speechSynthesis" in window)) {
+        return;
+    }
+
+    welcomeVoicePlayed = true;
+
+    const speech =
+        new SpeechSynthesisUtterance(
+            "Welcome to IDEA LAB. Explore, experiment, and understand."
+        );
+
+    speech.rate = 0.92;
+    speech.pitch = 1.05;
+    speech.volume = 0.55;
+
+    const voices =
+        window.speechSynthesis.getVoices();
+
+    const femaleVoice =
+        voices.find(voice =>
+            /female|samantha|zira|susan|karen|aria|google us english/i
+                .test(voice.name + " " + voice.voiceURI)
+        );
+
+    if (femaleVoice) {
+        speech.voice = femaleVoice;
+    }
+
+    window.speechSynthesis.speak(speech);
+}
    document.getElementById("contactEmail").href =
     "https://mail.google.com/mail/?view=cm&fs=1&to=" +
     encodeURIComponent(SITE_CONFIG.email);
@@ -2988,6 +3028,7 @@ function toggleAssistant() {
         panel.style.display = "flex";
        
        playAssistantOpenSound();
+       playWelcomeVoice();
 
         robot.classList.remove("awake");
 
