@@ -1203,7 +1203,27 @@
         0 14px 40px rgba(0,0,0,0.42),
         0 0 35px rgba(112,213,255,0.14);
 }
+ .assistant-robot.awake {
+    animation: robotAwake 0.7s ease-out;
+}
 
+@keyframes robotAwake {
+    0% {
+        transform: scale(1);
+    }
+
+    35% {
+        transform: scale(1.12) rotate(-2deg);
+    }
+
+    65% {
+        transform: scale(1.06) rotate(2deg);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
 .assistant-robot.dragging {
     cursor: grabbing;
 
@@ -2736,10 +2756,13 @@ document.getElementById("creatorName").textContent =
             document.getElementById("searchInput").value = "";
 
         }
- function toggleAssistant() {
+function toggleAssistant() {
 
     const panel =
         document.getElementById("assistantPanel");
+
+    const robot =
+        document.getElementById("assistantRobot");
 
     if (panel.style.display === "flex") {
 
@@ -2749,6 +2772,15 @@ document.getElementById("creatorName").textContent =
 
         panel.style.display = "flex";
 
+        robot.classList.remove("awake");
+
+        void robot.offsetWidth;
+
+        robot.classList.add("awake");
+
+        setTimeout(() => {
+            robot.classList.remove("awake");
+        }, 700);
     }
 }
 
