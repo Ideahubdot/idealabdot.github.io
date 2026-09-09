@@ -1455,7 +1455,18 @@
     font-size: 12px;
     line-height: 1.6;
 }
+.chat-bubble strong {
+    font-weight: 700;
+}
 
+.chat-bubble ul {
+    margin: 7px 0 5px 18px;
+    padding: 0;
+}
+
+.chat-bubble li {
+    margin: 3px 0;
+}
 .chat-message.user .chat-bubble {
     background: rgba(112,213,255,0.16);
 
@@ -2741,6 +2752,49 @@ document.getElementById("creatorName").textContent =
     }
 }
 
+function escapeChatHTML(text) {
+    return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function formatChatMessage(text) {
+
+    let html = escapeChatHTML(text);
+
+    /* Bold text: **text** */
+    html = html.replace(
+        /\*\*(.*?)\*\*/g,
+        "<strong>$1</strong>"
+    );
+
+    /* Bullet points */
+    html = html.replace(
+        /^\s*\*\s+(.+)$/gm,
+        "<li>$1</li>"
+    );
+
+    /* Numbered points */
+    html = html.replace(
+        /^\s*\d+\.\s+(.+)$/gm,
+        "<li>$1</li>"
+    );
+
+    /* Group consecutive list items */
+    html = html.replace(
+        /((?:<li>.*?<\/li>\s*)+)/gs,
+        "<ul>$1</ul>"
+    );
+
+    /* Preserve line breaks */
+    html = html.replace(/\n/g, "<br>");
+
+    return html;
+}
+
 function addChatMessage(text, sender) {
 
     const messages =
@@ -2755,15 +2809,18 @@ function addChatMessage(text, sender) {
     const bubble =
         document.createElement("div");
 
-    bubble.className = "chat-bubble";
+    bubble.className =
+        "chat-bubble";
 
-    bubble.textContent = text;
+    bubble.innerHTML =
+        formatChatMessage(text);
 
     wrapper.appendChild(bubble);
 
     messages.appendChild(wrapper);
 
-    messages.scrollTop = messages.scrollHeight;
+    messages.scrollTop =
+        messages.scrollHeight;
 }
    
 
@@ -2967,16 +3024,19 @@ async function askAssistant() {
 
         if (!answer.trim()) {
 
-            throw new Error(
-                "The AI returned an empty response."
-            );
-        }
+    throw new Error(
+        "The AI returned an empty response."
+    );
+}
 
-        assistantHistory.push({
-            role: "assistant",
-            content: answer
-        });
+/* Apply final chat formatting */
+botBubble.innerHTML =
+    formatChatMessage(answer);
 
+assistantHistory.push({
+    role: "assistant",
+    content: answer
+});
     } catch (error) {
 
         console.error(
