@@ -1793,6 +1793,40 @@
     border-bottom-left-radius: 4px;
 }
 
+       .assistant-quick-prompts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+
+    padding: 0 12px 12px;
+}
+
+.assistant-quick-prompts button {
+    flex: 1 1 auto;
+
+    padding: 7px 9px;
+
+    border: 1px solid rgba(112,213,255,0.14);
+    border-radius: 8px;
+
+    background: rgba(112,213,255,0.045);
+    color: #9edfff;
+
+    font-size: 10.5px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.assistant-quick-prompts button:hover {
+    transform: translateY(-1px);
+
+    background: rgba(112,213,255,0.09);
+
+    border-color: rgba(112,213,255,0.28);
+}
 .assistant-input {
     display: flex;
 
@@ -2863,7 +2897,31 @@
                 use the simulations, or find your way around IDEA LAB.
             </div>
         </div>
+       
+     <div class="assistant-quick-prompts">
 
+    <button
+        type="button"
+        onclick="useAssistantPrompt('Explain a physics concept in simple words.')"
+    >
+        Explain a concept
+    </button>
+
+    <button
+        type="button"
+        onclick="useAssistantPrompt('Which simulations are available in IDEA LAB?')"
+    >
+        Find a simulation
+    </button>
+
+    <button
+        type="button"
+        onclick="useAssistantPrompt('What can I explore on IDEA LAB?')"
+    >
+        Explore IDEA LAB
+    </button>
+
+</div>
     </div>
 
     <div class="assistant-input">
@@ -3371,7 +3429,15 @@ function addChatMessage(text, sender) {
         messages.scrollHeight;
 }
    
+   function useAssistantPrompt(prompt) {
 
+    const input =
+        document.getElementById("assistantInput");
+
+    input.value = prompt;
+
+    askAssistant();
+}
 async function askAssistant() {
 
     const input =
