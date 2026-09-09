@@ -2873,26 +2873,7 @@ function playAssistantDragSound() {
         0.018
     );
 }
-       /* =========================
-   IDEA LAB WELCOME VOICE
-========================= */
-
-let welcomeVoicePlayed = false;
-
-function playWelcomeVoice() {
-
-    if (welcomeVoicePlayed) return;
-
-    if (!("speechSynthesis" in window)) {
-        return;
-    }
-
-    welcomeVoicePlayed = true;
-
-    const speech =
-        new SpeechSynthesisUtterance(
-            "Welcome to IDEA LAB. Explore, experiment, and understand."
-        );
+       
 
     speech.rate = 0.92;
     speech.pitch = 1.05;
@@ -3028,7 +3009,6 @@ function toggleAssistant() {
         panel.style.display = "flex";
        
        playAssistantOpenSound();
-       playWelcomeVoice();
 
         robot.classList.remove("awake");
 
