@@ -2690,6 +2690,114 @@ const IDEA_LAB_CONTEXT = {
 
 /* Conversation history for the current page session */
 const assistantHistory = [];
+       /* =========================
+   IDEA LAB ASSISTANT SOUNDS
+========================= */
+
+let assistantAudioContext = null;
+
+function getAssistantAudioContext() {
+
+    if (!assistantAudioContext) {
+        assistantAudioContext =
+            new (window.AudioContext ||
+                 window.webkitAudioContext)();
+    }
+
+    if (assistantAudioContext.state === "suspended") {
+        assistantAudioContext.resume();
+    }
+
+    return assistantAudioContext;
+}
+
+function playAssistantTone(
+    frequency,
+    duration,
+    type = "sine",
+    volume = 0.035
+) {
+
+    const audio =
+        getAssistantAudioContext();
+
+    const oscillator =
+        audio.createOscillator();
+
+    const gain =
+        audio.createGain();
+
+    oscillator.type = type;
+
+    oscillator.frequency.setValueAtTime(
+        frequency,
+        audio.currentTime
+    );
+
+    gain.gain.setValueAtTime(
+        0.0001,
+        audio.currentTime
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+        volume,
+        audio.currentTime + 0.015
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+        0.0001,
+        audio.currentTime + duration
+    );
+
+    oscillator.connect(gain);
+    gain.connect(audio.destination);
+
+    oscillator.start();
+    oscillator.stop(
+        audio.currentTime + duration + 0.02
+    );
+}
+
+function playAssistantOpenSound() {
+
+    playAssistantTone(
+        620,
+        0.09,
+        "sine",
+        0.035
+    );
+
+    setTimeout(() => {
+
+        playAssistantTone(
+            880,
+            0.12,
+            "sine",
+            0.028
+        );
+
+    }, 70);
+}
+
+function playAssistantResponseSound() {
+
+    playAssistantTone(
+        740,
+        0.08,
+        "sine",
+        0.025
+    );
+}
+
+function playAssistantDragSound() {
+
+    playAssistantTone(
+        420,
+        0.045,
+        "triangle",
+        0.018
+    );
+}
    document.getElementById("contactEmail").href =
     "https://mail.google.com/mail/?view=cm&fs=1&to=" +
     encodeURIComponent(SITE_CONFIG.email);
@@ -2803,6 +2911,8 @@ function toggleAssistant() {
     } else {
 
         panel.style.display = "flex";
+       
+       playAssistantOpenSound();
 
         robot.classList.remove("awake");
 
@@ -2902,6 +3012,12 @@ async function askAssistant() {
     document
     .getElementById("assistantRobot")
     .classList.add("thinking");
+   playAssistantTone(
+    520,
+    0.07,
+    "triangle",
+    0.02
+);
     addChatMessage(question, "user");
 
     input.value = "";
@@ -3116,6 +3232,9 @@ assistantHistory.push({
 document
     .getElementById("assistantRobot")
     .classList.remove("thinking");
+   
+   playAssistantResponseSound();
+   
     input.disabled = false;
 
     input.focus();
@@ -3135,6 +3254,8 @@ const assistantRobot =
 
 let draggingAssistant = false;
 let assistantMoved = false;
+       
+playAssistantDragSound();
 
 let startX = 0;
 let startY = 0;
