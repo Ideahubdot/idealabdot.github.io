@@ -2909,25 +2909,9 @@ function playAssistantDragSound() {
 }
        
 
-    speech.rate = 0.92;
-    speech.pitch = 1.05;
-    speech.volume = 0.55;
+   
 
-    const voices =
-        window.speechSynthesis.getVoices();
-
-    const femaleVoice =
-        voices.find(voice =>
-            /female|samantha|zira|susan|karen|aria|google us english/i
-                .test(voice.name + " " + voice.voiceURI)
-        );
-
-    if (femaleVoice) {
-        speech.voice = femaleVoice;
-    }
-
-    window.speechSynthesis.speak(speech);
-}
+   
    document.getElementById("contactEmail").href =
     "https://mail.google.com/mail/?view=cm&fs=1&to=" +
     encodeURIComponent(SITE_CONFIG.email);
