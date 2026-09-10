@@ -446,7 +446,19 @@
                                     siteContext,
 
                                 currentSimulation:
-                                    currentSimulation
+                                    currentSimulation && {
+                                        name:
+                                            currentSimulation.name,
+
+                                        page:
+                                            page,
+
+                                        description:
+                                            currentSimulation.purpose,
+
+                                        controls:
+                                            currentSimulation.controls
+                                    }
 
                             })
                     }
