@@ -6,7 +6,7 @@
 <title>Fresnel Biprism — 3D Interactive Physics Lab</title>
 <style>
 :root{
-  --bg:#070b13; --panel:#111827; --panel2:#182235; --line:rgba(255,255,255,.10);
+  --bg:#070b13; --panel:#111827; --panel2:#182235; --line:rgba(255,255,255,.10);screenGroup=new
   --text:#e8edf7; --muted:#93a0b7; --accent:#ffb454; --cyan:#5eead4; --violet:#b8a7ff;
   --sans:Inter,Segoe UI,Arial,sans-serif; --mono:Consolas,"Roboto Mono",monospace;
 }
@@ -123,7 +123,7 @@ function updateLabels(){const w=viewport.clientWidth,h=viewport.clientHeight,v=n
 
 // Apparatus objects
 const slit=new THREE.Group(); root.add(slit); const slitMesh=new THREE.Mesh(new THREE.BoxGeometry(5.4,.13,.12),new THREE.MeshBasicMaterial({color:0xffffff})); slit.add(slitMesh); const slitGlow=new THREE.PointLight(0xffffff,1.5,22,2); slit.add(slitGlow);
-const wfGroup=new THREE.Group();root.add(wfGroup);const wavefronts=[];for(let i=0;i<5;i++){const g=new THREE.RingGeometry(.4,.43,64,1,0,Math.PI*2);const m=new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.42,side:THREE.DoubleSide});const r=new THREE.Mesh(g,m);r.rotation.y=Math.PI/2;r.userData.phase=i/5;wfGroup.add(r);wavefronts.push(r)}
+const wfGroup=new THREE.Group();root.add(wfGroup);const wavefronts=[];for(let i=0;i<5;i++){const g=new THREE.RingGeometry(.4,.43,64,1,0,Math.PI*2);const m=new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.42,side:THREE.DoubleSide});const r=new THREE.Mesh(g,m);r.rotation.y=0;r.userData.phase=i/5;wfGroup.add(r);wavefronts.push(r)}
 const prismGroup=new THREE.Group();root.add(prismGroup);const prismMat=new THREE.MeshPhysicalMaterial({color:0xbfe0ff,transparent:true,opacity:.32,roughness:.1,clearcoat:.7,side:THREE.DoubleSide});
 function triPrism(p1,p2,p3,width){const w=width/2,vs=[];const F=[p1,p2,p3].map(p=>[-w,p.y,p.z]),B=[p1,p2,p3].map(p=>[w,p.y,p.z]);const add=(a,b,c)=>vs.push(...a,...b,...c);add(F[0],F[2],F[1]);add(B[0],B[1],B[2]);for(let i=0;i<3;i++){let j=(i+1)%3;add(F[i],F[j],B[j]);add(F[i],B[j],B[i])}const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(vs,3));g.computeVertexNormals();return g}
 let topW,bottomW,edges1,edges2;
@@ -132,9 +132,6 @@ function buildPrism(z){prismGroup.clear();const A={y:PRISM_HALF_H,z:z},B={y:0,z:
 const src1=new THREE.Mesh(new THREE.SphereGeometry(.36,20,20),new THREE.MeshBasicMaterial({color:0xb8a7ff,wireframe:true}));const src2=new THREE.Mesh(new THREE.SphereGeometry(.36,20,20),new THREE.MeshBasicMaterial({color:0xff9ecb,wireframe:true}));root.add(src1,src2);
 const sourceGlow1=new THREE.Mesh(new THREE.SphereGeometry(.36,16,16),new THREE.MeshBasicMaterial({color:0xb8a7ff,transparent:true,opacity:.12}));const sourceGlow2=new THREE.Mesh(new THREE.SphereGeometry(.36,16,16),new THREE.MeshBasicMaterial({color:0xff9ecb,transparent:true,opacity:.12}));root.add(sourceGlow1,sourceGlow2);
 const rayGroup=new THREE.Group(),consGroup=new THREE.Group(),overlapGroup=new THREE.Group(),measureGroup=new THREE.Group();root.add(rayGroup,consGroup,overlapGroup,measureGroup);
-const screenGroup = new THREE.Group();
-root.add(screenGroup);
-
 const screenGroup = new THREE.Group();
 root.add(screenGroup);
 
@@ -154,7 +151,8 @@ const screenPlane = new THREE.Mesh(
   })
 );
 
-screenGroup.add(screenFrame, screenPlane);
+screenGroup.add(screenFrame);
+screenGroup.add(screenPlane);
 
 const screenEdge = new THREE.LineSegments(
   new THREE.EdgesGeometry(
@@ -306,7 +304,7 @@ document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{doc
 
 const STEPS=[
  ['Slit S produces the incident wavefront','A narrow slit is illuminated by monochromatic light. Its wavefront travels symmetrically toward the biprism.'],
- ['The biprism divides the wavefront','The two thin prism halves share the refracting edge B, parallel to the slit. The incident wavefront is divided into two parts.'],
+ ['The biprism divides the wavefront','The refracting edge B is parallel to the length of slit S. It divides the incident wavefront into two portions that pass through the upper and lower halves of the biprism. The incident wavefront is divided into two parts.'],
  ['The two halves refract in opposite directions','The upper half ABD deviates its portion downward; the lower half CBD deviates its portion upward, giving two emergent wavefronts that approach one another.'],
  ['Backward extensions give S₁ and S₂','Tracing the two emergent rays backward gives two virtual images S₁ and S₂ in the same plane on the source side of the biprism.'],
  ['S₁ and S₂ are coherent','Both virtual sources are derived from the same original wavefront, so they are coherent and can produce sustained interference.'],
@@ -377,7 +375,7 @@ const betaInput=document.getElementById('betaInput'),dInput=document.getElementB
 
 let clock=new THREE.Clock(),t=0;
 function resize(){const w=viewport.clientWidth,h=viewport.clientHeight;renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix()}window.addEventListener('resize',resize);
-function animate(){requestAnimationFrame(animate);const dt=Math.min(clock.getDelta(),.05);if(state.playing)t+=dt;const P=physics();const bz=BIPRISM_Z;const zV=bz-P.y1mm*SCALE;wavefronts.forEach((r,i)=>{const zSpan=Math.max(.8,bz);const ph=(t/1.7+r.userData.phase)%1;const rad=.18+ph*Math.max(.8,zSpan*.38);r.scale.set(rad,rad,1);r.position.set(0,0,SLIT_Z);r.material.opacity=.42*(1-ph)});const pulse=1+.06*Math.sin(t*3);src1.scale.setScalar(pulse);src2.scale.setScalar(pulse);controls.update();updateLabels();renderer.render(scene,camera)}
+function animate(){requestAnimationFrame(animate);const dt=Math.min(clock.getDelta(),.05);if(state.playing)t+=dt;const P=physics();const bz=BIPRISM_Z;const zV=bz-P.y1mm*SCALE;wavefronts.forEach((r,i)=>{const zSpan = BIPRISM_Z - SLIT_Z;const ph=(t/1.7+r.userData.phase)%1;const rad=.18+ph*Math.max(.8,zSpan*.38);r.scale.set(rad,rad,1);r.position.set(0,0,SLIT_Z);r.material.opacity=.42*(1-ph)});const pulse=1+.06*Math.sin(t*3);src1.scale.setScalar(pulse);src2.scale.setScalar(pulse);controls.update();updateLabels();renderer.render(scene,camera)}
 resize();update();animate();
 })();
 </script>
