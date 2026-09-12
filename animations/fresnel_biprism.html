@@ -1,382 +1,1150 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Fresnel Biprism — 3D Interactive Physics Lab</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fresnel's Biprism Experiment — Interactive 3D Simulation</title>
 <style>
-:root{
-  --bg:#070b13; --panel:#111827; --panel2:#182235; --line:rgba(255,255,255,.10);screenGroup=new
-  --text:#e8edf7; --muted:#93a0b7; --accent:#ffb454; --cyan:#5eead4; --violet:#b8a7ff;
-  --sans:Inter,Segoe UI,Arial,sans-serif; --mono:Consolas,"Roboto Mono",monospace;
-}
-*{box-sizing:border-box} html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--sans)}
-#app{display:flex;width:100vw;height:100vh} #viewport{position:relative;flex:1;min-width:0;overflow:hidden;background:radial-gradient(ellipse at 50% 5%,#111c31 0%,#070b13 67%)}
-#glcanvas{position:absolute;inset:0;width:100%;height:100%;display:block} #labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
-.label{position:absolute;transform:translate(-50%,-50%);white-space:nowrap;font:11px var(--mono);padding:2px 6px;border:1px solid rgba(255,255,255,.14);border-radius:4px;background:rgba(5,8,15,.80)}
-.label.accent{color:var(--accent);border-color:rgba(255,180,84,.42)} .label.source{color:var(--violet);border-color:rgba(184,167,255,.48)} .label.dim{color:var(--cyan)}
-#hud{position:absolute;left:0;right:0;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;padding:10px 14px;pointer-events:none}
-.brand b{display:block;font-size:14px}.brand span{font:10px var(--mono);color:var(--muted)} .toolbar{display:flex;gap:7px;pointer-events:auto}
-button{font-family:var(--sans);cursor:pointer}.btn{border:1px solid var(--line);background:var(--panel);color:var(--text);padding:7px 11px;border-radius:7px;font-size:12px}.btn:hover{background:var(--panel2)}
-.btn.accent{background:linear-gradient(#ffc46f,#e99b3d);color:#241705;border-color:transparent;font-weight:700}
-#status{position:absolute;bottom:10px;left:14px;font:10px var(--mono);color:var(--muted);pointer-events:none}
-#sidebar{width:390px;background:#0d1320;border-left:1px solid var(--line);display:flex;flex-direction:column}
-#tabs{display:flex;border-bottom:1px solid var(--line)} .tab{flex:1;padding:11px 4px;text-align:center;color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;border-bottom:2px solid transparent}.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
-#scroll{overflow-y:auto;padding:14px 15px 26px}.pane{display:none}.pane.active{display:block}.group{padding:0 0 15px;margin-bottom:15px;border-bottom:1px solid var(--line)}.group:last-child{border-bottom:0}.group h3{margin:0 0 10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-size:10.5px}
-.row{margin:0 0 12px}.rhead{display:flex;justify-content:space-between;margin-bottom:5px;font-size:12.5px}.rval{font:12px var(--mono);color:var(--accent)} input[type=range]{width:100%;accent-color:var(--accent)}
-.switch{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:12.5px}.switch input{accent-color:var(--accent)}
-.modebar{display:flex;gap:6px;margin-bottom:9px}.modebtn{flex:1;text-align:center;padding:7px 5px;background:var(--panel);border:1px solid var(--line);border-radius:6px;color:var(--muted);font-size:11px}.modebtn.active{color:var(--accent);border-color:rgba(255,180,84,.45);background:rgba(255,180,84,.10)}
-.readout{background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:10px;font:11.5px/1.8 var(--mono)} .kv{display:flex;justify-content:space-between;gap:12px}.kv b{color:var(--cyan);font-weight:500}.hint{display:block;color:var(--muted);font-size:10.5px;line-height:1.45;margin-top:5px}
-.guide{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:13px}.guideNum{color:var(--accent);font:11px var(--mono)}.guide h4{margin:6px 0 8px;font-size:14px}.guide p{margin:0 0 13px;color:#d0d8e8;font-size:12.5px;line-height:1.55}.dots{display:flex;gap:5px;margin-bottom:11px}.dot{width:7px;height:7px;border-radius:50%;background:#2d3850;cursor:pointer}.dot.on{background:var(--accent)}.nav{display:flex;gap:7px}.nav .btn{flex:1}
-input[type=number]{width:100%;padding:7px 8px;border-radius:6px;border:1px solid var(--line);background:var(--panel);color:var(--text);font:12px var(--mono);margin-bottom:7px}.calc{margin-top:8px;padding:10px;border:1px solid rgba(94,234,212,.28);background:rgba(94,234,212,.06);border-radius:7px;color:var(--cyan);font:11.5px var(--mono)}
-@media(max-width:900px){#sidebar{position:absolute;right:0;top:0;bottom:0;width:min(390px,88vw);z-index:20;box-shadow:-15px 0 40px rgba(0,0,0,.45)}.brand span{display:none}}
+  :root{
+    --bg:#0a0e1a; --panel:#111827ee; --panel2:#0d1420; --line:#25324a;
+    --text:#dbe4f3; --muted:#8ea0c0; --accent:#5ec2ff; --accent2:#ffcf5e;
+    --good:#57e08a; --warn:#ff8a65; --s1:#7fd1ff; --s2:#ffb27f;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;width:100%;height:100%;background:var(--bg);
+    font-family:'Segoe UI',Roboto,Arial,sans-serif;color:var(--text);overflow:hidden;}
+  #app{display:flex;width:100vw;height:100vh;}
+  #canvasWrap{position:relative;flex:1;min-width:0;height:100%;}
+  #glcanvas{display:block;width:100%;height:100%;background:radial-gradient(ellipse at 50% 30%,#0f1830 0%,#060a13 75%);}
+  #loadError{position:absolute;inset:0;display:none;align-items:center;justify-content:center;
+    background:#0a0e1a;color:#ff8a65;text-align:center;padding:40px;font-size:16px;z-index:50;}
+
+  #sidebar{width:352px;flex-shrink:0;height:100%;overflow-y:auto;background:var(--panel);
+    border-right:1px solid var(--line);padding:14px 14px 40px 14px;}
+  #sidebar::-webkit-scrollbar{width:8px;}
+  #sidebar::-webkit-scrollbar-thumb{background:#2a3a56;border-radius:4px;}
+
+  h1{font-size:16px;margin:0 0 2px 0;color:#fff;letter-spacing:.2px;}
+  .subtitle{font-size:11.5px;color:var(--muted);margin-bottom:12px;line-height:1.4;}
+  .section{background:var(--panel2);border:1px solid var(--line);border-radius:10px;
+    padding:10px 12px 12px 12px;margin-bottom:10px;}
+  .section h2{font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--accent);
+    margin:0 0 8px 0;font-weight:600;}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:7px 0;}
+  .row label{font-size:12.5px;color:var(--text);flex:1;}
+  .row .val{font-size:12px;color:var(--accent2);min-width:64px;text-align:right;font-variant-numeric:tabular-nums;}
+  input[type=range]{flex:2;accent-color:var(--accent);width:100%;}
+  input[type=number]{width:78px;background:#0b1220;border:1px solid var(--line);color:var(--text);
+    border-radius:6px;padding:4px 6px;font-size:12px;}
+  .checkrow{display:flex;align-items:center;gap:7px;margin:6px 0;font-size:12.5px;color:var(--text);}
+  .checkrow input{accent-color:var(--accent);width:15px;height:15px;}
+  .btnrow{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+  button{cursor:pointer;background:#16223a;border:1px solid #2a3a56;color:var(--text);
+    padding:7px 10px;border-radius:7px;font-size:12px;transition:.15s;}
+  button:hover{background:#1e2f4d;border-color:var(--accent);}
+  button.primary{background:linear-gradient(135deg,#1c5c8a,#123a5c);border-color:#2e7cb8;color:#fff;}
+  button.primary:hover{filter:brightness(1.15);}
+  button:disabled{opacity:.4;cursor:default;}
+  .readout{display:flex;justify-content:space-between;font-size:12.5px;padding:3px 0;border-bottom:1px dashed #1e2a40;}
+  .readout b{color:#fff;font-weight:600;}
+  .readout .sym{color:var(--muted);}
+  .readout .v{color:var(--good);font-variant-numeric:tabular-nums;}
+  .eq{font-size:13px;background:#0b1220;border:1px solid var(--line);border-radius:7px;
+    padding:6px 9px;margin:5px 0;color:#eaf2ff;}
+  .eq sub{color:var(--accent2);}
+  .hint{font-size:11px;color:var(--muted);line-height:1.4;margin-top:4px;}
+  .calcGrid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px;}
+  .calcGrid label{font-size:11px;color:var(--muted);display:block;margin-bottom:2px;}
+  .calcOut{margin-top:8px;font-size:13px;background:#0b2116;border:1px solid #1f4a30;
+    border-radius:7px;padding:7px 9px;color:#8cf0b2;}
+  a.link{color:var(--accent);}
+
+  /* top bars */
+  #topbar{position:absolute;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;
+    align-items:flex-start;pointer-events:none;z-index:10;}
+  #topbar > *{pointer-events:auto;}
+  #ctrlBtns{display:flex;gap:6px;background:#0b1220cc;border:1px solid var(--line);
+    padding:6px;border-radius:10px;backdrop-filter:blur(4px);}
+  #ctrlBtns button{padding:8px 12px;}
+  #camHint{background:#0b1220cc;border:1px solid var(--line);border-radius:10px;padding:8px 12px;
+    font-size:11px;color:var(--muted);backdrop-filter:blur(4px);max-width:230px;line-height:1.5;}
+
+  #liveBar{position:absolute;left:10px;bottom:10px;background:#0b1220dd;border:1px solid var(--line);
+    border-radius:10px;padding:10px 14px;font-size:12.5px;backdrop-filter:blur(4px);z-index:10;
+    display:flex;gap:18px;flex-wrap:wrap;max-width:calc(100% - 380px);}
+  #liveBar .item{display:flex;flex-direction:column;min-width:78px;}
+  #liveBar .item .k{color:var(--muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;}
+  #liveBar .item .v{color:var(--good);font-size:15px;font-weight:600;font-variant-numeric:tabular-nums;}
+
+  #eqOverlay{position:absolute;right:10px;bottom:10px;background:#0b1220dd;border:1px solid var(--line);
+    border-radius:10px;padding:10px 12px;font-size:12px;backdrop-filter:blur(4px);z-index:10;max-width:270px;}
+  #eqOverlay h3{margin:0 0 6px 0;font-size:11px;color:var(--accent);text-transform:uppercase;letter-spacing:.5px;}
+
+  /* tour modal */
+  #tourModal{position:absolute;inset:0;display:none;align-items:center;justify-content:center;
+    background:#000000aa;z-index:100;}
+  #tourBox{background:#0e1626;border:1px solid #2a3a56;border-radius:14px;padding:22px 24px;
+    max-width:480px;width:88%;box-shadow:0 20px 60px #000a;}
+  #tourBox h2{margin:0 0 4px 0;font-size:12px;color:var(--accent2);letter-spacing:.5px;text-transform:uppercase;}
+  #tourBox h3{margin:2px 0 10px 0;font-size:18px;color:#fff;}
+  #tourBox p{font-size:13.5px;line-height:1.6;color:#cfe0f7;margin:0 0 16px 0;}
+  #tourFoot{display:flex;justify-content:space-between;align-items:center;}
+  #tourStepLbl{font-size:11.5px;color:var(--muted);}
+  #tourBtns{display:flex;gap:8px;}
+
+  #toast{position:absolute;top:64px;left:50%;transform:translateX(-50%);background:#123a5cee;
+    border:1px solid #2e7cb8;color:#fff;padding:8px 16px;border-radius:20px;font-size:12.5px;
+    z-index:20;display:none;}
+
+  @media (max-width:900px){
+    #sidebar{width:0;padding:0;overflow:hidden;}
+  }
 </style>
 </head>
 <body>
 <div id="app">
-  <div id="viewport">
-    <canvas id="glcanvas"></canvas><div id="labels"></div>
-    <div id="hud"><div class="brand"><b>Fresnel Biprism Lab</b><span>virtual coherent sources · non-localized interference · 3D</span></div><div class="toolbar"><button class="btn" id="play">⏸ Pause</button><button class="btn" id="reset">Reset</button><button class="btn" id="resetCam">Reset Camera</button></div></div>
-    <div id="status">left-drag orbit · right-drag pan · wheel zoom</div>
-  </div>
-  <aside id="sidebar">
-    <div id="tabs"><div class="tab active" data-tab="controls">Controls</div><div class="tab" data-tab="guide">Guided Tour</div><div class="tab" data-tab="measure">Measure</div></div>
-    <div id="scroll">
-      <section class="pane active" id="pane-controls">
-        <div class="group"><h3>Source & Prism</h3>
-          <div class="row"><div class="rhead"><span>Wavelength λ</span><span class="rval" id="v_lambda">589 nm</span></div><input id="lambda" type="range" min="400" max="700" value="589" step="1"></div>
-          <div class="row"><div class="rhead"><span>Refractive index μ</span><span class="rval" id="v_mu">1.50</span></div><input id="mu" type="range" min="1.30" max="1.80" value="1.50" step="0.01"></div>
-          <div class="row"><div class="rhead"><span>Acute prism angle α</span><span class="rval" id="v_alpha">0.50°</span></div><input id="alpha" type="range" min="0.20" max="1.20" value="0.50" step="0.01"></div>
-          <span class="hint">Textbook value is of the order of 30′ = 0.50°. Visual prism dimensions are enlarged only for clarity.</span>
-        </div>
-        <div class="group"><h3>Geometry</h3>
-          <div class="row"><div class="rhead"><span>y₁ — biprism → S₁S₂ plane</span><span class="rval" id="v_y1">30 cm</span></div><input id="y1" type="range" min="10" max="80" value="30" step="1"></div>
-          <div class="row"><div class="rhead"><span>y₂ — biprism → screen</span><span class="rval" id="v_y2">100 cm</span></div><input id="y2" type="range" min="30" max="200" value="100" step="1"></div>
-          <div class="modebar"><div class="modebtn active" data-mode="auto">Derived d</div><div class="modebtn" data-mode="manual">Manual d</div></div>
-          <div class="row"><div class="rhead"><span>d — virtual-source separation</span><span class="rval" id="v_d">2.618 mm</span></div><input id="dman" type="range" min="0.5" max="20" value="4" step="0.05" disabled></div>
-          <span class="hint">In automatic mode, d = 2y₁θ. Manual d is an optional exploration mode; all visual source/beam geometry follows the chosen d.</span>
-        </div>
-        <div class="group"><h3>Live Physics</h3><div class="readout" id="live"></div></div>
-        <div class="group"><h3>Visibility</h3>
-          <label class="switch">Light rays <input id="rays" type="checkbox" checked></label>
-          <label class="switch">Wavefronts <input id="wavefronts" type="checkbox" checked></label>
-          <label class="switch">Virtual sources S₁, S₂ <input id="sources" type="checkbox" checked></label>
-          <label class="switch">Construction rays <input id="construction" type="checkbox" checked></label>
-          <label class="switch">Overlap region EF <input id="overlap" type="checkbox" checked></label>
-          <label class="switch">Fringes on screen <input id="fringes" type="checkbox" checked></label>
-          <label class="switch">Measurements <input id="measurements" type="checkbox"checked></label>
-          <label class="switch">Diffraction hint outside EF <input id="diffraction" type="checkbox"checked></label>
-          <span class="hint">The main fringes are mathematically generated from β = λD/d and are parallel to the slit.</span>
-        </div>
-      </section>
-      <section class="pane" id="pane-guide"><div class="guide"><div class="guideNum" id="gnum">STEP 1 / 8</div><h4 id="gtitle">Slit produces the incident wavefront</h4><p id="gtext"></p><div class="dots" id="dots"></div><div class="nav"><button class="btn" id="prev">◀ Back</button><button class="btn accent" id="next">Next ▶</button></div></div><span class="hint">The camera and visibility state change with each step. Return to Controls to explore.</span></section>
-      <section class="pane" id="pane-measure">
-        <div class="group"><h3>Current simulated measurements</h3><div class="readout" id="measurementReadout"></div></div>
-        <div class="group"><h3>Determine wavelength</h3>
-          <input id="betaInput" type="number" step="0.001" placeholder="β fringe width (mm)">
-          <input id="dInput" type="number" step="0.001" placeholder="d source separation (mm)">
-          <input id="DInput" type="number" step="0.1" placeholder="D = y₁ + y₂ (mm)">
-          <button class="btn accent" id="calc" style="width:100%">Compute λ</button>
-          <div class="calc" id="calcResult">Enter β, d and D.</div>
-          <button class="btn" id="useLive" style="width:100%;margin-top:7px">Use live values</button>
-          <span class="hint">For experimental measurement, β may be obtained from β = X/N, where X is the distance across N fringe intervals.</span>
-        </div>
-      </section>
+  <div id="sidebar">
+    <h1>🔬 Fresnel's Biprism</h1>
+    <div class="subtitle">Interactive 3D simulation — division of wavefront, virtual coherent sources S₁ &amp; S₂, and non‑localized interference fringes.</div>
+
+    <div class="section">
+      <h2>Source &amp; Prism Parameters</h2>
+      <div class="row"><label for="lambdaSlider">Wavelength λ</label><span class="val" id="lambdaVal">589 nm</span></div>
+      <input type="range" id="lambdaSlider" min="400" max="700" step="1" value="589">
+      <div class="row"><label for="muSlider">Refractive index μ</label><span class="val" id="muVal">1.50</span></div>
+      <input type="range" id="muSlider" min="1.10" max="1.90" step="0.01" value="1.50">
+      <div class="row"><label for="alphaSlider">Prism angle α</label><span class="val" id="alphaVal">0.50°</span></div>
+      <input type="range" id="alphaSlider" min="0.10" max="2.00" step="0.01" value="0.50">
+      <div class="hint">Default α ≈ 0.50° (30′). θ = (μ−1)α is the deviation produced by each half‑prism.</div>
     </div>
-  </aside>
+
+    <div class="section">
+      <h2>Geometry</h2>
+      <div class="row"><label for="y1Slider">y₁ (slit → biprism)</label><span class="val" id="y1Val">25 cm</span></div>
+      <input type="range" id="y1Slider" min="5" max="50" step="1" value="25">
+      <div class="row"><label for="y2Slider">y₂ (biprism → screen)</label><span class="val" id="y2Val">100 cm</span></div>
+      <input type="range" id="y2Slider" min="50" max="200" step="1" value="100">
+      <div class="checkrow"><input type="checkbox" id="manualDCheck"><label for="manualDCheck">Manual override: set d directly (mm)</label></div>
+      <div class="row"><label for="manualDInput">d (manual)</label><input type="number" id="manualDInput" min="0.05" max="3" step="0.01" value="0.30"></div>
+      <div class="hint">When enabled, d is used as-typed for β = λD/d and for placing S₁,S₂ (overrides d = 2y₁θ).</div>
+    </div>
+
+    <div class="section">
+      <h2>Live Values</h2>
+      <div class="readout"><span class="sym">θ (deviation)</span><b class="v" id="outTheta">–</b></div>
+      <div class="readout"><span class="sym">d = 2y₁θ</span><b class="v" id="outD">–</b></div>
+      <div class="readout"><span class="sym">D = y₁ + y₂</span><b class="v" id="outDbig">–</b></div>
+      <div class="readout"><span class="sym">β = λD/d</span><b class="v" id="outBeta">–</b></div>
+    </div>
+
+    <div class="section">
+      <h2>Show / Hide Layers</h2>
+      <div class="checkrow"><input type="checkbox" id="toggleRays" checked><label for="toggleRays">Rays (incident &amp; refracted)</label></div>
+      <div class="checkrow"><input type="checkbox" id="toggleWavefronts" checked><label for="toggleWavefronts">Wavefronts</label></div>
+      <div class="checkrow"><input type="checkbox" id="toggleSources" checked><label for="toggleSources">Virtual sources S₁,S₂ &amp; construction rays</label></div>
+      <div class="checkrow"><input type="checkbox" id="toggleOverlap" checked><label for="toggleOverlap">Overlap region EF</label></div>
+      <div class="checkrow"><input type="checkbox" id="toggleFringes" checked><label for="toggleFringes">Interference fringes</label></div>
+      <div class="checkrow"><input type="checkbox" id="toggleMeasurements" checked><label for="toggleMeasurements">Measurements / dimensions</label></div>
+      <div class="checkrow"><input type="checkbox" id="toggleEquations" checked><label for="toggleEquations">Equations panel</label></div>
+      <div class="checkrow"><input type="checkbox" id="toggleDiffraction" checked><label for="toggleDiffraction">Diffraction hint (outside EF)</label></div>
+    </div>
+
+    <div class="section">
+      <h2>Wavelength Calculator</h2>
+      <div class="hint">Independently compute λ = βd/D from measured values (e.g. from an experiment).</div>
+      <div class="calcGrid">
+        <div><label>β (mm)</label><input type="number" id="calcBeta" step="0.001" value="0.34"></div>
+        <div><label>d (mm)</label><input type="number" id="calcD" step="0.001" value="0.22"></div>
+        <div><label>D (cm)</label><input type="number" id="calcDD" step="0.1" value="125"></div>
+      </div>
+      <div class="btnrow">
+        <button id="btnCalcLoad">Load current sim values</button>
+        <button class="primary" id="btnCalc">Compute λ</button>
+      </div>
+      <div class="calcOut" id="calcOut">λ = – nm</div>
+    </div>
+
+    <div class="section">
+      <h2>Equations (reference)</h2>
+      <div class="eq">θ = (μ−1)α</div>
+      <div class="eq">d = 2y<sub>1</sub>θ</div>
+      <div class="eq">D = y<sub>1</sub> + y<sub>2</sub></div>
+      <div class="eq">β = λD / d</div>
+      <div class="eq">λ = βd / D</div>
+    </div>
+
+    <div class="hint" style="margin-top:6px;">Tip: drag left‑mouse to rotate the 3D scene, right‑mouse to pan, and scroll to zoom. Visual sizes (prism angle, S₁S₂ gap, fringe spacing) are exaggerated for clarity — all numeric readouts use the real formulas above.</div>
+  </div>
+
+  <div id="canvasWrap">
+    <canvas id="glcanvas"></canvas>
+    <div id="loadError">
+      ⚠️ Could not load the 3D graphics library (Three.js) from the CDN.<br><br>
+      Please check your internet connection and reload this page.
+    </div>
+
+    <div id="topbar">
+      <div id="ctrlBtns">
+        <button class="primary" id="btnPlay">⏸ Pause</button>
+        <button id="btnReset">⟲ Reset</button>
+        <button id="btnResetCam">🎥 Reset Camera</button>
+        <button id="btnTour">🎓 Guided Tour</button>
+      </div>
+      <div id="camHint"><b>Controls:</b> Left‑drag = rotate · Right‑drag = pan · Scroll = zoom</div>
+    </div>
+
+    <div id="liveBar">
+      <div class="item"><span class="k">θ</span><span class="v" id="lbTheta">–</span></div>
+      <div class="item"><span class="k">d</span><span class="v" id="lbD">–</span></div>
+      <div class="item"><span class="k">D</span><span class="v" id="lbDD">–</span></div>
+      <div class="item"><span class="k">β</span><span class="v" id="lbBeta">–</span></div>
+      <div class="item"><span class="k">λ</span><span class="v" id="lbLambda">–</span></div>
+    </div>
+
+    <div id="eqOverlay">
+      <h3>Key relations</h3>
+      <div style="line-height:1.7;">
+        θ=(μ−1)α &nbsp;|&nbsp; d=2y₁θ &nbsp;|&nbsp; D=y₁+y₂<br>
+        β = λD/d &nbsp;&nbsp; λ = βd/D
+      </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <div id="tourModal">
+      <div id="tourBox">
+        <h2 id="tourStepTag">STEP 1 OF 8</h2>
+        <h3 id="tourTitle">The Slit</h3>
+        <p id="tourText">…</p>
+        <div id="tourFoot">
+          <span id="tourStepLbl"></span>
+          <div id="tourBtns">
+            <button id="btnTourPrev">◀ Prev</button>
+            <button id="btnTourNext" class="primary">Next ▶</button>
+            <button id="btnTourClose">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script>
-(()=>{
-'use strict';
-const viewport=document.getElementById('viewport'), canvas=document.getElementById('glcanvas'), labelLayer=document.getElementById('labels');
-const scene=new THREE.Scene(); scene.background=new THREE.Color(0x070b13); scene.fog=new THREE.FogExp2(0x070b13,0.0048);
-const renderer=new THREE.WebGLRenderer({canvas,antialias:true}); renderer.setPixelRatio(Math.min(devicePixelRatio||1,2)); renderer.outputEncoding=THREE.sRGBEncoding;
-const camera=new THREE.PerspectiveCamera(42,1,.1,1000); const controls=new THREE.OrbitControls(camera,renderer.domElement); controls.enableDamping=true; controls.dampingFactor=.08; controls.minDistance=8; controls.maxDistance=160;
-const hemi=new THREE.HemisphereLight(0x9eb0e8,0x0a0e15,.62); scene.add(hemi); const light=new THREE.DirectionalLight(0xffffff,.7); light.position.set(15,25,-12); scene.add(light);
-const grid=new THREE.GridHelper(180,36,0x263552,0x141c2d); grid.position.y=-7; scene.add(grid);
-const root=new THREE.Group(); scene.add(root);
+(function(){
+"use strict";
 
-const state={lambda:589,mu:1.50,alpha:.50,y1:30,y2:100,dMode:'auto',dManual:4,playing:true,show:{rays:true,wavefronts:true,sources:true,construction:true,overlap:true,fringes:true,measurements:false,diffraction:false}};
-const SCALE=.05; // one scene unit = 20 mm
-const BIPRISM_Z=12; // fixed bench position
-const SLIT_Z=-32; // slit is always on the source side of the biprism
-const PRISM_HALF_H=2.7, PRISM_LEN=10, SCREEN_W=18, SCREEN_H=18;
-const VISUAL_ANGLE_MULT=7; // visual-only enlargement of tiny deviation angle
-
-function physics(){
- const a=state.alpha*Math.PI/180, theta=(state.mu-1)*a;
- const y1mm=state.y1*10, y2mm=state.y2*10, D=y1mm+y2mm;
- const d=state.dMode==='manual'?state.dManual:2*y1mm*theta;
- const lambda=state.lambda*1e-6, beta=lambda*D/d;
- return {a,theta,y1mm,y2mm,D,d,lambda,beta};
-}
-function ccol(nm){
- let r=0,g=0,b=0;if(nm<440){r=(440-nm)/60;b=1}else if(nm<490){g=(nm-440)/50;b=1}else if(nm<510){g=1;b=(510-nm)/20}else if(nm<580){r=(nm-510)/70;g=1}else if(nm<645){r=1;g=(645-nm)/65}else{r=1} return new THREE.Color(r,g,b);
-}
-function line(p1,p2,color,dashed=false,opacity=1){const g=new THREE.BufferGeometry().setFromPoints([p1,p2]);const m=dashed?new THREE.LineDashedMaterial({color,dashSize:.38,gapSize:.26,transparent:true,opacity}):new THREE.LineBasicMaterial({color,transparent:true,opacity});const l=new THREE.Line(g,m);if(dashed)l.computeLineDistances();return l;}
-function tube(p1,p2,color,r=.055){const d=new THREE.Vector3().subVectors(p2,p1),len=d.length();const g=new THREE.CylinderGeometry(r,r,len,8,18,true);const m=new THREE.MeshBasicMaterial({color,transparent:true,opacity:.78,depthWrite:false});const o=new THREE.Mesh(g,m);o.position.copy(p1).add(d.multiplyScalar(.5));o.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),p2.clone().sub(p1).normalize());return o;}
-function addLabel(text,cls,get){const e=document.createElement('div');e.className='label '+cls;e.textContent=text;labelLayer.appendChild(e);const o={e,get,group:cls.includes('dim')?'measure':cls.includes('source')?'source':'base'};labelObjs.push(o);return o}
-const labelObjs=[];
-function updateLabels(){const w=viewport.clientWidth,h=viewport.clientHeight,v=new THREE.Vector3();for(const l of labelObjs){if(l.group==='measure'&&!state.show.measurements||l.group==='source'&&!state.show.sources){l.e.style.opacity=0;continue}v.copy(l.get());v.project(camera);if(v.z>1){l.e.style.opacity=0;continue}l.e.style.opacity=1;l.e.style.left=((v.x*.5+.5)*w)+'px';l.e.style.top=((-v.y*.5+.5)*h)+'px'}}
-
-// Apparatus objects
-const slit=new THREE.Group(); root.add(slit); const slitMesh=new THREE.Mesh(new THREE.BoxGeometry(5.4,.13,.12),new THREE.MeshBasicMaterial({color:0xffffff})); slit.add(slitMesh); const slitGlow=new THREE.PointLight(0xffffff,1.5,22,2); slit.add(slitGlow);
-const wfGroup=new THREE.Group();root.add(wfGroup);const wavefronts=[];for(let i=0;i<5;i++){const g=new THREE.RingGeometry(.4,.43,64,1,0,Math.PI*2);const m=new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.42,side:THREE.DoubleSide});const r=new THREE.Mesh(g,m);r.rotation.y=0;r.userData.phase=i/5;wfGroup.add(r);wavefronts.push(r)}
-const prismGroup=new THREE.Group();root.add(prismGroup);const prismMat=new THREE.MeshPhysicalMaterial({color:0xbfe0ff,transparent:true,opacity:.32,roughness:.1,clearcoat:.7,side:THREE.DoubleSide});
-function triPrism(p1,p2,p3,width){const w=width/2,vs=[];const F=[p1,p2,p3].map(p=>[-w,p.y,p.z]),B=[p1,p2,p3].map(p=>[w,p.y,p.z]);const add=(a,b,c)=>vs.push(...a,...b,...c);add(F[0],F[2],F[1]);add(B[0],B[1],B[2]);for(let i=0;i<3;i++){let j=(i+1)%3;add(F[i],F[j],B[j]);add(F[i],B[j],B[i])}const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(vs,3));g.computeVertexNormals();return g}
-let topW,bottomW,edges1,edges2;
-function buildPrism(z){prismGroup.clear();const A={y:PRISM_HALF_H,z:z},B={y:0,z:z-.42},C={y:-PRISM_HALF_H,z:z},D={y:0,z:z+.92};const g1=triPrism(A,B,D,PRISM_LEN),g2=triPrism(C,B,D,PRISM_LEN);topW=new THREE.Mesh(g1,prismMat);bottomW=new THREE.Mesh(g2,prismMat);const em=new THREE.LineBasicMaterial({color:0x8fd6ff,transparent:true,opacity:.6});edges1=new THREE.LineSegments(new THREE.EdgesGeometry(g1),em);edges2=new THREE.LineSegments(new THREE.EdgesGeometry(g2),em);prismGroup.add(topW,bottomW,edges1,edges2);return {A,B,C,D}}
-
-const src1=new THREE.Mesh(new THREE.SphereGeometry(.36,20,20),new THREE.MeshBasicMaterial({color:0xb8a7ff,wireframe:true}));const src2=new THREE.Mesh(new THREE.SphereGeometry(.36,20,20),new THREE.MeshBasicMaterial({color:0xff9ecb,wireframe:true}));root.add(src1,src2);
-const sourceGlow1=new THREE.Mesh(new THREE.SphereGeometry(.36,16,16),new THREE.MeshBasicMaterial({color:0xb8a7ff,transparent:true,opacity:.12}));const sourceGlow2=new THREE.Mesh(new THREE.SphereGeometry(.36,16,16),new THREE.MeshBasicMaterial({color:0xff9ecb,transparent:true,opacity:.12}));root.add(sourceGlow1,sourceGlow2);
-const rayGroup=new THREE.Group(),consGroup=new THREE.Group(),overlapGroup=new THREE.Group(),measureGroup=new THREE.Group();root.add(rayGroup,consGroup,overlapGroup,measureGroup);
-const screenGroup = new THREE.Group();
-root.add(screenGroup);
-
-const screenFrame = new THREE.Mesh(
-  new THREE.PlaneGeometry(SCREEN_W + 0.7, SCREEN_H + 0.7),
-  new THREE.MeshBasicMaterial({
-    color: 0x0b101b,
-    side: THREE.DoubleSide
-  })
-);
-
-const screenPlane = new THREE.Mesh(
-  new THREE.PlaneGeometry(SCREEN_W, SCREEN_H),
-  new THREE.MeshBasicMaterial({
-    color: 0x03060c,
-    side: THREE.DoubleSide
-  })
-);
-
-screenGroup.add(screenFrame);
-screenGroup.add(screenPlane);
-
-const screenEdge = new THREE.LineSegments(
-  new THREE.EdgesGeometry(
-    new THREE.PlaneGeometry(SCREEN_W + 0.7, SCREEN_H + 0.7)
-  ),
-  new THREE.LineBasicMaterial({
-    color: 0x3e4b68
-  })
-);
-
-screenGroup.add(screenEdge);
-
-const fringeCanvas=document.createElement('canvas');fringeCanvas.width=640;fringeCanvas.height=640;const fctx=fringeCanvas.getContext('2d');const fringeTex=new THREE.CanvasTexture(fringeCanvas);
-function drawFringes(P){const W=fringeCanvas.width,H=fringeCanvas.height,img=fctx.createImageData(W,H),col=ccol(state.lambda),R=col.r,G=col.g,B=col.b;const beta=P.beta; // mm
- // Realistic screen view: finite vertical/horizontal window centered on optic axis.
- // Pixels map to +/- 8 mm horizontally/vertically. // S₁ and S₂ are separated vertically, so path difference varies vertically.
-// Therefore the bright and dark interference fringes are horizontal,
-// i.e. parallel to the slit.
- const halfYmm=8;
- for(let py=0;py<H;py++){
-   const ymm=(1-(py/(H-1))*2)*halfYmm;
-   const inEF=Math.abs(ymm)<=5.8;
-   let I=0;
-   if(state.show.fringes&&inEF){
-     const phase=Math.PI*ymm/beta; I=.05+.95*(Math.cos(phase)**2);
-     // soft finite envelope to avoid a hard-edged pattern
-     I*=Math.max(0,1-Math.pow(Math.abs(ymm)/5.8,8));
-   } else if(inEF) I=.025;
-   if(state.show.diffraction&&!inEF){const env=Math.max(0,1-Math.abs(ymm)/8);I=.04+.12*env*(.5+.5*Math.cos(ymm*2.1));}
-   for(let px=0;px<W;px++){const i=(py*W+px)*4;img.data[i]=Math.round(255*R*I);img.data[i+1]=Math.round(255*G*I);img.data[i+2]=Math.round(255*B*I);img.data[i+3]=255}
- }
- fctx.putImageData(img,0,0);fringeTex.needsUpdate=true;screenPlane.material.map=fringeTex;screenPlane.material.needsUpdate=true;
+/* ============================================================
+   0. LIBRARY CHECK
+   ============================================================ */
+if (typeof THREE === "undefined" || typeof THREE.OrbitControls === "undefined") {
+  document.getElementById("loadError").style.display = "flex";
+  document.getElementById("sidebar").style.display = "none";
+  document.getElementById("topbar").style.display = "none";
+  document.getElementById("liveBar").style.display = "none";
+  document.getElementById("eqOverlay").style.display = "none";
+  return;
 }
 
-const LS=addLabel('S','accent',()=>slit.position.clone().add(new THREE.Vector3(2.9,0,0)));const LB=addLabel('B','',()=>new THREE.Vector3(0,.18,BIPRISM_Z-.75));const LA=addLabel('ABD','',()=>new THREE.Vector3(-4.3,1.45,BIPRISM_Z));const LC=addLabel('CBD','',()=>new THREE.Vector3(-4.3,-1.45,BIPRISM_Z));const L1=addLabel('S₁ (virtual)','source',()=>src1.position);const L2=addLabel('S₂ (virtual)','source',()=>src2.position);const LSc=addLabel('Screen','',()=>screenGroup.position.clone().add(new THREE.Vector3(0,SCREEN_H/2+1.1,0)));const Ld=addLabel('d','dim',()=>new THREE.Vector3(3.3,0,0));const Ly1=addLabel('y₁','dim',()=>new THREE.Vector3(-7,0,(BIPRISM_Z+(BIPRISM_Z-1))/2));const Ly2=addLabel('y₂','dim',()=>new THREE.Vector3(-9,0,(BIPRISM_Z+(BIPRISM_Z+1))/2));const LD=addLabel('D','dim',()=>new THREE.Vector3(-11,0,BIPRISM_Z+1));
+/* ============================================================
+   1. HELPERS
+   ============================================================ */
+function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+function mapRange(v,a,b,c,d){ return c + (clamp(v,a,b)-a) * (d-c) / (b-a); }
+function fmt(v, d){ return Number(v).toFixed(d===undefined?2:d); }
 
-function clearGroup(g){while(g.children.length)g.remove(g.children[0])}
-function makeDim(p1,p2,label){const g=new THREE.Group();g.add(line(p1,p2,0x5eead4));measureGroup.add(g);label.get=()=>p1.clone().add(p2).multiplyScalar(.5);label.e.textContent=label.e.textContent;return g}
-function updateMeasurements(P,bz,zv,zs){clearGroup(measureGroup);const x1=-7,x2=-9,x3=-11;const dVis=Math.max(0.90,Math.min(3.6,P.d*SCALE*8));measureGroup.add(line(new THREE.Vector3(x1,0,zv),new THREE.Vector3(x1,0,bz),0x5eead4),line(new THREE.Vector3(x2,0,bz),new THREE.Vector3(x2,0,zs),0x5eead4),line(new THREE.Vector3(x3,0,zv),new THREE.Vector3(x3,0,zs),0xffb454),line(new THREE.Vector3(3.3,dVis*.5,zv),new THREE.Vector3(3.3,-dVis*.5,zv),0xb8a7ff));Ly1.e.textContent='y₁ = '+state.y1+' cm';Ly2.e.textContent='y₂ = '+state.y2+' cm';LD.e.textContent='D = '+(P.D/10).toFixed(1)+' cm';Ld.e.textContent='d = '+P.d.toFixed(3)+' mm'}
-
-function update(){
-
-  const P = physics();
-
-  document.getElementById('v_d').textContent =
-    P.d.toFixed(3) + ' mm';
-
-  const bz = BIPRISM_Z;
-    P.d.toFixed(3) + ' mm';
-                  ;const bz=BIPRISM_Z;const y1Scene=P.y1mm*SCALE;const y2Scene=P.y2mm*SCALE;const zv=bz-Math.max(2,y1Scene); // virtual-source plane is in front of biprism, on source side
- const zs=bz+y2Scene;
- buildPrism(bz);
- // slit remains on source side, ahead of the virtual source plane when possible
- slit.position.set(0,0,SLIT_Z);
- const dVis=Math.max(0.90,Math.min(3.6,P.d*SCALE*8)); // visual-only enlargement so the tiny virtual-source separation is visible
- src1.position.set(0,dVis*.5,zv);src2.position.set(0,-dVis*.5,zv);sourceGlow1.position.copy(src1.position);sourceGlow2.position.copy(src2.position);
- screenGroup.position.set(0,0,zs);
- clearGroup(rayGroup);clearGroup(consGroup);clearGroup(overlapGroup);
- // Representative rays pass through the corresponding half of the biprism. Their forward continuations are defined by S1/S2 -> prism exit -> screen.
- const exitGap=Math.min(0.42,dVis*.35);
- const topExit=new THREE.Vector3(0,Math.max(0.16,dVis*.5-exitGap),bz+.55);
- const botExit=new THREE.Vector3(0,-Math.max(0.16,dVis*.5-exitGap),bz+.55);
- // Incident light to the prism. The actual wavefront reaches the full prism; this ray marks the optical axis.
- rayGroup.add(tube(new THREE.Vector3(0,0,SLIT_Z),new THREE.Vector3(0,0,bz-.4),0xffffff,.065));
- // Forward rays are the exact straight continuation of the virtual-source construction rays.
- const screenTopY=src1.y+(topExit.y-src1.y)*(zs-topExit.z)/(topExit.z-src1.z);
- const screenBotY=src2.y+(botExit.y-src2.y)*(zs-botExit.z)/(botExit.z-src2.z);
- const scr1=new THREE.Vector3(0,screenTopY,zs),scr2=new THREE.Vector3(0,screenBotY,zs);
- rayGroup.add(tube(topExit,scr1,0x7fd6ff,.06),tube(botExit,scr2,0xffb454,.06));
- // dashed backward extensions to virtual sources — visually proves S₁/S₂ are virtual
- consGroup.add(line(topExit,src1,0x7fd6ff,true,.9),line(botExit,src2,0xffb454,true,.9));
- consGroup.add(line(src1,scr1,0x7fd6ff,true,.23),line(src2,scr2,0xffb454,true,.23));
- // overlap region: two transparent wedge volumes extending from the prism to the screen
- const len = zs - bz;
-const r = Math.max(1.6, Math.tan(0.16) * len);
-                  function cone(apex,target,color){const dir=new THREE.Vector3().subVectors(target,apex),h=dir.length();const g=new THREE.ConeGeometry(r,h,32,1,true);g.translate(0,-h/2,0);const m=new THREE.MeshBasicMaterial({color,transparent:true,opacity:.07,side:THREE.DoubleSide,depthWrite:false,blending:THREE.AdditiveBlending});const q=new THREE.Mesh(g,m);q.position.copy(apex);q.quaternion.setFromUnitVectors(new THREE.Vector3(0,-1,0),dir.normalize());return q}overlapGroup.add(cone(topExit,scr1,0x7fd6ff),cone(botExit,scr2,0xffb454));
- drawFringes(P); updateMeasurements(P,bz,zv,zs);
- // animated source color
- const color=ccol(state.lambda);slitMesh.material.color.copy(color);slitGlow.color.copy(color);wavefronts.forEach(w=>w.material.color.copy(color));
- rayGroup.visible=state.show.rays;wfGroup.visible=state.show.wavefronts;src1.visible=src2.visible=sourceGlow1.visible=sourceGlow2.visible=state.show.sources;consGroup.visible=state.show.construction;overlapGroup.visible=state.show.overlap;measureGroup.visible=state.show.measurements;
- document.getElementById('live').innerHTML=`<div class="kv"><span>θ = (μ−1)α</span><b>${(P.theta*1000).toFixed(3)} mrad</b></div><div class="kv"><span>d = 2y₁θ</span><b>${P.d.toFixed(3)} mm</b></div><div class="kv"><span>D = y₁+y₂</span><b>${(P.D/10).toFixed(1)} cm</b></div><div class="kv"><span>β = λD/d</span><b>${(P.beta*1000).toFixed(2)} µm</b></div><div class="kv"><span>mode</span><b>${state.dMode==='auto'?'derived':'manual'}</b></div>`;
- document.getElementById('measurementReadout').innerHTML=`<div class="kv"><span>d</span><b>${P.d.toFixed(4)} mm</b></div><div class="kv"><span>y₁</span><b>${(P.y1mm/10).toFixed(2)} cm</b></div><div class="kv"><span>y₂</span><b>${(P.y2mm/10).toFixed(2)} cm</b></div><div class="kv"><span>D</span><b>${(P.D/10).toFixed(2)} cm</b></div><div class="kv"><span>β</span><b>${P.beta.toFixed(5)} mm</b></div><div class="kv"><span>λ input</span><b>${state.lambda} nm</b></div>`;
- return P;
+function wavelengthToRGB(nm){
+  var w = clamp(nm,380,700), r=0,g=0,b=0;
+  if (w>=380 && w<440){ r=-(w-440)/(440-380); g=0; b=1; }
+  else if (w>=440 && w<490){ r=0; g=(w-440)/(490-440); b=1; }
+  else if (w>=490 && w<510){ r=0; g=1; b=-(w-510)/(510-490); }
+  else if (w>=510 && w<580){ r=(w-510)/(580-510); g=1; b=0; }
+  else if (w>=580 && w<645){ r=1; g=-(w-645)/(645-580); b=0; }
+  else if (w>=645 && w<=700){ r=1; g=0; b=0; }
+  var factor;
+  if (w>=380 && w<420) factor = 0.3 + 0.7*(w-380)/(420-380);
+  else if (w>=420 && w<701) factor = 1.0;
+  else if (w>=700 && w<=780) factor = 0.3 + 0.7*(780-w)/(780-700);
+  else factor = 0.5;
+  r = Math.round(255*Math.pow(clamp(r,0,1)*factor,0.8));
+  g = Math.round(255*Math.pow(clamp(g,0,1)*factor,0.8));
+  b = Math.round(255*Math.pow(clamp(b,0,1)*factor,0.8));
+  return "rgb(" + r + "," + g + "," + b + ")";
+}
+function wavelengthToHex(nm){
+  var c = wavelengthToRGB(nm);
+  var m = c.match(/\d+/g);
+  return (parseInt(m[0])<<16) + (parseInt(m[1])<<8) + parseInt(m[2]);
 }
 
-// UI
-function slider(id,key,display,fmt){document.getElementById(id).addEventListener('input',e=>{state[key]=parseFloat(e.target.value);document.getElementById(display).textContent=fmt(state[key]);update()})}
-slider('lambda','lambda','v_lambda',v=>v+' nm');slider('mu','mu','v_mu',v=>v.toFixed(2));slider('alpha','alpha','v_alpha',v=>v.toFixed(2)+'°');slider('y1','y1','v_y1',v=>v+' cm');slider('y2','y2','v_y2',v=>v+' cm');slider('dman','dManual','v_d',v=>v.toFixed(2)+' mm');
-for(const k of Object.keys(state.show)){const el=document.getElementById(k==='sources'?'sources':k);el.addEventListener('change',()=>{state.show[k]=el.checked;update()})}
-document.querySelectorAll('.modebtn').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.modebtn').forEach(x=>x.classList.remove('active'));b.classList.add('active');state.dMode=b.dataset.mode;document.getElementById('dman').disabled=state.dMode!=='manual';update()}));
-
-document.getElementById('reset').addEventListener('click', () => {
-
-  Object.assign(state, {
-    lambda: 589,
-    mu: 1.50,
-    alpha: 0.50,
-    y1: 30,
-    y2: 100,
-    dMode: 'auto',
-    dManual: 4,
-    playing: true,
-
-    show: {
-      rays: true,
-      wavefronts: true,
-      sources: true,
-      construction: true,
-      overlap: true,
-      fringes: true,
-      measurements: true,
-      diffraction: true
+function clearGroup(group){
+  for (var i = group.children.length - 1; i >= 0; i--){
+    var obj = group.children[i];
+    if (obj.children && obj.children.length) clearGroup(obj);
+    if (obj.geometry) obj.geometry.dispose();
+    if (obj.material){
+      if (Array.isArray(obj.material)) obj.material.forEach(function(m){ if(m.map) m.map.dispose(); m.dispose(); });
+      else { if (obj.material.map) obj.material.map.dispose(); obj.material.dispose(); }
     }
-  });
-
-  document.getElementById('lambda').value = 589;
-  document.getElementById('mu').value = 1.50;
-  document.getElementById('alpha').value = 0.50;
-  document.getElementById('y1').value = 30;
-  document.getElementById('y2').value = 100;
-  document.getElementById('dman').value = 4;
-
-  document.querySelectorAll('.modebtn').forEach(button => {
-    button.classList.toggle('active', button.dataset.mode === 'auto');
-  });
-
-  document.getElementById('dman').disabled = true;
-
-  document.getElementById('rays').checked = true;
-  document.getElementById('wavefronts').checked = true;
-  document.getElementById('sources').checked = true;
-  document.getElementById('construction').checked = true;
-  document.getElementById('overlap').checked = true;
-  document.getElementById('fringes').checked = true;
-  document.getElementById('measurements').checked = true;
-  document.getElementById('diffraction').checked = true;
-
-  document.getElementById('v_lambda').textContent = '589 nm';
-  document.getElementById('v_mu').textContent = '1.50';
-  document.getElementById('v_alpha').textContent = '0.50°';
-  document.getElementById('v_y1').textContent = '30 cm';
-  document.getElementById('v_y2').textContent = '100 cm';
-
-  update();
-});
-const CAM={pos:new THREE.Vector3(31,17,-29),target:new THREE.Vector3(0,0,18)};camera.position.copy(CAM.pos);controls.target.copy(CAM.target);controls.update();document.getElementById('resetCam').addEventListener('click',()=>{camera.position.copy(CAM.pos);controls.target.copy(CAM.target);controls.update()});
-
-document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.pane').forEach(x=>x.classList.remove('active'));t.classList.add('active');document.getElementById('pane-'+t.dataset.tab).classList.add('active')}));
-
-const STEPS=[
- ['Slit S produces the incident wavefront','A narrow slit is illuminated by monochromatic light. Its wavefront travels symmetrically toward the biprism.'],
- ['The biprism divides the wavefront','The refracting edge B is parallel to the length of slit S. It divides the incident wavefront into two portions that pass through the upper and lower halves of the biprism. The incident wavefront is divided into two parts.'],
- ['The two halves refract in opposite directions','The upper half ABD deviates its portion downward; the lower half CBD deviates its portion upward, giving two emergent wavefronts that approach one another.'],
- ['Backward extensions give S₁ and S₂','Tracing the two emergent rays backward gives two virtual images S₁ and S₂ in the same plane on the source side of the biprism.'],
- ['S₁ and S₂ are coherent','Both virtual sources are derived from the same original wavefront, so they are coherent and can produce sustained interference.'],
- ['The beams overlap in EF','The two emergent beams overlap beyond the biprism. The overlap is the region where the two coherent wavefronts coexist.'],
- ['Interference fringes appear','Within the overlap region, alternate constructive and destructive interference gives straight, equally spaced bright and dark fringes parallel to the slit.'],
- ['Use fringe width to determine λ','For D = y₁ + y₂, β = λD/d. Thus λ = βd/D. With θ=(μ−1)α and d=2y₁θ, the biprism geometry can also be used to obtain d.']
-];let gi=0;
-function renderDots(){const d=document.getElementById('dots');d.innerHTML='';STEPS.forEach((_,i)=>{const e=document.createElement('div');e.className='dot'+(i===gi?' on':'');e.onclick=()=>{gi=i;guideStep()};d.appendChild(e)})}
-function guideStep(){
-
-  const s = STEPS[gi];
-
-  document.getElementById('gnum').textContent =
-    'STEP ' + (gi + 1) + ' / ' + STEPS.length;
-
-  document.getElementById('gtitle').textContent = s[0];
-  document.getElementById('gtext').textContent = s[1];
-
-  renderDots();
-
-  document.getElementById('prev').disabled = gi === 0;
-
-  document.getElementById('next').textContent =
-    gi === STEPS.length - 1 ? 'Restart ↺' : 'Next ▶';
-
-  const show = {
-    rays: [false, true, true, true, true, true, true, true][gi],
-    wavefronts: [true, true, false, false, false, false, false, true][gi],
-    sources: [false, false, false, true, true, true, true, true][gi],
-    construction: [false, false, false, true, true, false, false, true][gi],
-    overlap: [false, false, false, false, false, true, true, true][gi],
-    fringes: [false, false, false, false, false, false, true, true][gi],
-    measurements: gi === 7,
-    diffraction: false
-  };
-
-  state.show = show;
-
-  for (const k of Object.keys(show)) {
-    const el = document.getElementById(k);
-    if (el) {
-      el.checked = show[k];
-    }
+    group.remove(obj);
   }
+}
 
-  if (gi === 1) {
-    camera.position.set(17, 8, 8);
-    controls.target.set(0, 0, 12);
+function makeLabelSprite(text, opts){
+  opts = opts || {};
+  var fontSize = opts.fontSize || 44;
+  var color = opts.color || "#eaf2ff";
+  var pad = 14;
+  var canvas = document.createElement("canvas");
+  var ctx = canvas.getContext("2d");
+  ctx.font = "600 " + fontSize + "px Segoe UI, Arial";
+  var w = Math.ceil(ctx.measureText(text).width) + pad*2;
+  var h = fontSize + pad*2;
+  canvas.width = w; canvas.height = h;
+  ctx.font = "600 " + fontSize + "px Segoe UI, Arial";
+  if (opts.bg){
+    ctx.fillStyle = opts.bg;
+    ctx.fillRect(0,0,w,h);
+  }
+  ctx.fillStyle = color;
+  ctx.textBaseline = "middle";
+  ctx.textAlign = "center";
+  ctx.fillText(text, w/2, h/2 + 2);
+  var tex = new THREE.CanvasTexture(canvas);
+  tex.minFilter = THREE.LinearFilter;
+  var mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: opts.depthTest !== false });
+  var sprite = new THREE.Sprite(mat);
+  var scale = (opts.scale || 0.9);
+  sprite.scale.set(scale * (w/h), scale, 1);
+  return sprite;
+}
 
-  } else if (gi === 5) {
-    camera.position.set(24, 10, 27);
-    controls.target.set(0, 0, 22);
-
-  } else if (gi >= 6) {
-    camera.position.set(18, 8, 39);
-    controls.target.set(0, 0, 34);
-
+function makeLine(points, color, opts){
+  opts = opts || {};
+  var geom = new THREE.BufferGeometry().setFromPoints(points);
+  var mat;
+  if (opts.dashed){
+    mat = new THREE.LineDashedMaterial({ color: color, dashSize: opts.dashSize||0.18, gapSize: opts.gapSize||0.12,
+      transparent:true, opacity: opts.opacity===undefined?1:opts.opacity, linewidth: opts.linewidth||1 });
   } else {
-    camera.position.set(16, 7, 4);
-    controls.target.set(0, 0, 9);
+    mat = new THREE.LineBasicMaterial({ color: color, transparent:true, opacity: opts.opacity===undefined?1:opts.opacity, linewidth: opts.linewidth||1 });
   }
-
-  controls.update();
-  update();
+  var line = new THREE.Line(geom, mat);
+  if (opts.dashed) line.computeLineDistances();
+  return line;
 }
 
-const betaInput=document.getElementById('betaInput'),dInput=document.getElementById('dInput'),DInput=document.getElementById('DInput'),calcResult=document.getElementById('calcResult');document.getElementById('calc').onclick=()=>{const b=parseFloat(betaInput.value),d=parseFloat(dInput.value),D=parseFloat(DInput.value);if(!(b>0&&d>0&&D>0)){calcResult.textContent='Enter positive β, d and D.';return}const lm=b*d/D;calcResult.innerHTML='λ = βd/D = <b style="color:#ffb454">'+(lm*1e6).toFixed(2)+' nm</b>'};document.getElementById('useLive').onclick=()=>{const p=physics();betaInput.value=p.beta.toFixed(5);dInput.value=p.d.toFixed(4);DInput.value=p.D.toFixed(2)};
+/* ============================================================
+   2. STATE & DEFAULTS
+   ============================================================ */
+var DEFAULTS = {
+  lambda_nm: 589, mu: 1.50, alpha_deg: 0.50,
+  y1_cm: 25, y2_cm: 100,
+  manualD: false, manualD_mm: 0.30
+};
 
-let clock=new THREE.Clock(),t=0;
-function resize(){const w=viewport.clientWidth,h=viewport.clientHeight;renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix()}window.addEventListener('resize',resize);
-function animate(){requestAnimationFrame(animate);const dt=Math.min(clock.getDelta(),.05);if(state.playing)t+=dt;const P=physics();const bz=BIPRISM_Z;const zV=bz-P.y1mm*SCALE;wavefronts.forEach((r,i)=>{const zSpan = BIPRISM_Z - SLIT_Z;const ph=(t/1.7+r.userData.phase)%1;const rad=.18+ph*Math.max(.8,zSpan*.38);r.scale.set(rad,rad,1);r.position.set(0,0,SLIT_Z);r.material.opacity=.42*(1-ph)});const pulse=1+.06*Math.sin(t*3);src1.scale.setScalar(pulse);src2.scale.setScalar(pulse);controls.update();updateLabels();renderer.render(scene,camera)}
-resize();update();animate();
+var state = {
+  lambda_nm: DEFAULTS.lambda_nm, mu: DEFAULTS.mu, alpha_deg: DEFAULTS.alpha_deg,
+  y1_cm: DEFAULTS.y1_cm, y2_cm: DEFAULTS.y2_cm,
+  manualD: DEFAULTS.manualD, manualD_mm: DEFAULTS.manualD_mm,
+  playing: true,
+  show: { rays:true, wavefronts:true, sources:true, overlap:true, fringes:true, measurements:true, equations:true, diffraction:true }
+};
+
+var current = { phys:null, vis:null };
+
+/* ============================================================
+   3. PHYSICS
+   ============================================================ */
+function computePhysics(s){
+  var alphaRad = s.alpha_deg * Math.PI/180;
+  var theta = (s.mu - 1) * alphaRad;           // radians
+  var y1 = s.y1_cm, y2 = s.y2_cm;
+  var D_cm = y1 + y2;
+  var d_geom_cm = 2 * y1 * theta;
+  var d_cm = s.manualD ? (s.manualD_mm/10) : d_geom_cm;
+  var lambda_cm = s.lambda_nm * 1e-7;
+  var beta_cm = (d_cm > 1e-9) ? (lambda_cm * D_cm / d_cm) : 0;
+  return {
+    alphaRad: alphaRad, theta: theta, theta_deg: theta*180/Math.PI, theta_arcmin: theta*180/Math.PI*60,
+    y1_cm: y1, y2_cm: y2, D_cm: D_cm, D_m: D_cm/100,
+    d_geom_cm: d_geom_cm, d_cm: d_cm, d_mm: d_cm*10,
+    lambda_cm: lambda_cm, lambda_nm: s.lambda_nm,
+    beta_cm: beta_cm, beta_mm: beta_cm*10, beta_um: beta_cm*1e4,
+    mu: s.mu, manualD: s.manualD
+  };
+}
+
+/* ============================================================
+   4. VISUAL (exaggerated) GEOMETRY MAPPING
+   ============================================================ */
+var H = 1.3;          // half-height of biprism aperture (visual, fixed)
+var T = 0.55;         // forward thickness of biprism apex (visual, fixed)
+var ZLEN = 2.4;        // slit / biprism / prism extrusion length along Z
+var VIS_K = 9.0;       // exaggeration factor for source separation
+
+function computeVisual(phys){
+  var sceneY1 = mapRange(phys.y1_cm, 5, 50, 4.2, 8.2);
+  var sceneY2 = mapRange(phys.y2_cm, 50, 200, 6.5, 14.5);
+  var sceneD  = sceneY1 + sceneY2;
+
+  var d_vis = 2 * sceneY1 * phys.theta * VIS_K;
+  d_vis = clamp(d_vis, 0.22, H*1.55);
+
+  var S1y = d_vis/2, S2y = -d_vis/2;
+  var s = sceneD / sceneY1;                  // projection ratio to screen
+
+  var Y_B1 = S1y * (1 - s);                  // beam1 (from S1) through edge B(0,0)
+  var Y_A1 = S1y + (H - S1y) * s;             // beam1 through edge A(H)
+  var Y_B2 = -Y_B1;                           // beam2 through edge B (mirrors)
+  var Y_C2 = -Y_A1;                           // beam2 through edge C(-H)
+
+  var EFhalf = Math.min(Math.abs(Y_B1), Math.abs(Y_B2));
+  var beamTop = Y_A1;
+  var beamBottom = Y_C2;
+  var screenHalfH = clamp(beamTop*1.12, EFhalf*1.6, 7.5);
+
+  return {
+    sceneY1:sceneY1, sceneY2:sceneY2, sceneD:sceneD, H:H, T:T,
+    d_vis:d_vis, S1:{x:0,y:S1y,z:0}, S2:{x:0,y:S2y,z:0},
+    Y_B1:Y_B1, Y_A1:Y_A1, Y_B2:Y_B2, Y_C2:Y_C2,
+    EFhalf:EFhalf, beamTop:beamTop, beamBottom:beamBottom, screenHalfH:screenHalfH
+  };
+}
+
+/* ============================================================
+   5. THREE.JS SETUP
+   ============================================================ */
+var canvas = document.getElementById("glcanvas");
+var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha:false });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1, 2));
+
+var scene = new THREE.Scene();
+scene.fog = new THREE.Fog(0x060a13, 30, 70);
+
+var camera = new THREE.PerspectiveCamera(45, 1, 0.1, 500);
+var DEFAULT_CAM_POS = new THREE.Vector3(15, 9.5, 17);
+var DEFAULT_CAM_TARGET = new THREE.Vector3(9, 0, 0);
+camera.position.copy(DEFAULT_CAM_POS);
+
+var controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.target.copy(DEFAULT_CAM_TARGET);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.screenSpacePanning = true;
+controls.minDistance = 3;
+controls.maxDistance = 80;
+controls.mouseButtons = { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.DOLLY, RIGHT: THREE.MOUSE.PAN };
+controls.update();
+renderer.domElement.addEventListener("contextmenu", function(e){ e.preventDefault(); });
+
+scene.add(new THREE.AmbientLight(0xffffff, 0.85));
+var dl = new THREE.DirectionalLight(0xffffff, 0.55);
+dl.position.set(12, 22, 16);
+scene.add(dl);
+var dl2 = new THREE.DirectionalLight(0x88bbff, 0.25);
+dl2.position.set(-10,-6,-14);
+scene.add(dl2);
+
+var grid = new THREE.GridHelper(60, 60, 0x1c2c48, 0x141d31);
+grid.position.set(9, -6, 0);
+scene.add(grid);
+
+/* ---- persistent groups ---- */
+var gSlit = new THREE.Group();      scene.add(gSlit);
+var gBiprism = new THREE.Group();   scene.add(gBiprism);
+var gWavefronts = new THREE.Group();scene.add(gWavefronts);
+var gRays = new THREE.Group();      scene.add(gRays);
+var gSources = new THREE.Group();   scene.add(gSources);
+var gOverlap = new THREE.Group();   scene.add(gOverlap);
+var gScreen = new THREE.Group();    scene.add(gScreen);
+var gMeasure = new THREE.Group();   scene.add(gMeasure);
+var gLabelsStatic = new THREE.Group(); scene.add(gLabelsStatic);
+
+var Z_SAMPLES = [ {z:0, op:1.0}, {z:1.05, op:0.28}, {z:-1.05, op:0.28} ];
+
+/* ============================================================
+   6. BUILD: SLIT
+   ============================================================ */
+function buildSlit(){
+  clearGroup(gSlit);
+  var geo = new THREE.CylinderGeometry(0.07, 0.07, ZLEN, 16);
+  geo.rotateX(Math.PI/2);
+  var mat = new THREE.MeshStandardMaterial({ color:0xfff2b0, emissive:0x554400, emissiveIntensity:0.7 });
+  var mesh = new THREE.Mesh(geo, mat);
+  gSlit.add(mesh);
+  var label = makeLabelSprite("S", {color:"#fff2b0", fontSize:52});
+  label.position.set(-0.55, 0.55, 0);
+  gSlit.add(label);
+}
+buildSlit();
+
+/* ============================================================
+   7. BUILD: BIPRISM (two thin prisms base-to-base, edge B // slit)
+   ============================================================ */
+var biprismMesh, biprismEdges, edgeBDLine;
+function buildBiprismMesh(){
+  clearGroup(gBiprism);
+  var shape = new THREE.Shape();
+  shape.moveTo(0, H);      // A (top, back/flat face)
+  shape.lineTo(T, 0);      // B (apex, refracting edge, toward screen)
+  shape.lineTo(0, -H);     // C (bottom, back/flat face)
+  shape.lineTo(0, H);
+  var geo = new THREE.ExtrudeGeometry(shape, { depth: ZLEN, bevelEnabled:false, steps:1 });
+  geo.translate(0, 0, -ZLEN/2);
+  var mat = new THREE.MeshPhysicalMaterial({
+    color:0x9fd8ff, transparent:true, opacity:0.28, roughness:0.15, metalness:0,
+    transmission:0.35, side:THREE.DoubleSide, depthWrite:false
+  });
+  biprismMesh = new THREE.Mesh(geo, mat);
+  gBiprism.add(biprismMesh);
+
+  var edgesGeo = new THREE.EdgesGeometry(geo);
+  biprismEdges = new THREE.LineSegments(edgesGeo, new THREE.LineBasicMaterial({ color:0xbfe6ff, transparent:true, opacity:0.85 }));
+  gBiprism.add(biprismEdges);
+
+  // BD edge (shared refracting edge, dividing line), highlighted
+  var bdPts = [ new THREE.Vector3(T,0,-ZLEN/2), new THREE.Vector3(T,0,ZLEN/2) ];
+  edgeBDLine = makeLine(bdPts, 0xffe27a, { opacity:1, linewidth:2 });
+  gBiprism.add(edgeBDLine);
+
+  // D marker line (center of the flat back face)
+  var dPts = [ new THREE.Vector3(0,0,-ZLEN/2), new THREE.Vector3(0,0,ZLEN/2) ];
+  gBiprism.add(makeLine(dPts, 0x8899bb, { opacity:0.5 }));
+
+  var zf = ZLEN/2 + 0.35;
+  var lblA = makeLabelSprite("A", {color:"#bfe6ff", fontSize:40}); lblA.position.set(0, H+0.35, zf); gBiprism.add(lblA);
+  var lblB = makeLabelSprite("B", {color:"#ffe27a", fontSize:40}); lblB.position.set(T+0.15, 0.32, zf); gBiprism.add(lblB);
+  var lblC = makeLabelSprite("C", {color:"#bfe6ff", fontSize:40}); lblC.position.set(0, -H-0.35, zf); gBiprism.add(lblC);
+  var lblD = makeLabelSprite("D", {color:"#8899bb", fontSize:36}); lblD.position.set(-0.28, 0.05, zf); gBiprism.add(lblD);
+
+  var upTri = makeLabelSprite("upper half ABD  →  deviates DOWN", {color:"#7fd1ff", fontSize:26});
+  upTri.position.set(0.1, H+0.9, zf); gBiprism.add(upTri);
+  var loTri = makeLabelSprite("lower half CBD  →  deviates UP", {color:"#ffb27f", fontSize:26});
+  loTri.position.set(0.1, -H-0.9, zf); gBiprism.add(loTri);
+}
+buildBiprismMesh();
+
+/* ============================================================
+   8. BUILD: WAVEFRONTS (animated cylindrical arcs from S)
+   ============================================================ */
+var wavefrontLines = []; // {line, zi, ringIndex}
+var N_RINGS = 3;
+var ARC_ANGLES = (function(){ var a=[]; for(var i=0;i<=36;i++){ a.push(-1.15 + (2.3*i/36)); } return a; })();
+var wavePhase = 0;
+
+function buildWavefronts(){
+  clearGroup(gWavefronts);
+  wavefrontLines = [];
+  for (var zi=0; zi<Z_SAMPLES.length; zi++){
+    for (var r=0; r<N_RINGS; r++){
+      var pts = [];
+      for (var a=0;a<ARC_ANGLES.length;a++) pts.push(new THREE.Vector3(0,0,0));
+      var line = makeLine(pts, 0x8fd6ff, { opacity: 0.55*Z_SAMPLES[zi].op });
+      line.frustumCulled = false; // geometry is mutated every frame; avoid stale bounding-sphere culling
+      gWavefronts.add(line);
+      wavefrontLines.push({ line:line, zi:zi, ring:r });
+    }
+  }
+  // static split-colored arc exactly at the biprism plane (shows the wavefront being divided)
+  var maxR = current.vis ? current.vis.sceneY1 : 6;
+  var upperPts=[], lowerPts=[];
+  for (var k=0;k<ARC_ANGLES.length;k++){
+    var t = ARC_ANGLES[k];
+    var x = maxR*Math.cos(t), y = maxR*Math.sin(t);
+    if (y >= -0.001) upperPts.push(new THREE.Vector3(x,y,0));
+    if (y <= 0.001) lowerPts.push(new THREE.Vector3(x,y,0));
+  }
+  gWavefronts.add(makeLine(upperPts, 0x7fd1ff, { opacity:0.9, linewidth:2 }));
+  gWavefronts.add(makeLine(lowerPts, 0xffb27f, { opacity:0.9, linewidth:2 }));
+  var lbl = makeLabelSprite("wavefront divided at biprism", {color:"#eaf2ff", fontSize:24});
+  lbl.position.set(maxR*0.55, maxR*0.95+0.5, 0);
+  gWavefronts.add(lbl);
+}
+
+function updateWavefronts(phase){
+  if (!current.vis) return;
+  var maxR = current.vis.sceneY1 * 1.15;
+  var idx = 0;
+  for (var zi=0; zi<Z_SAMPLES.length; zi++){
+    for (var r=0; r<N_RINGS; r++){
+      var entry = wavefrontLines[idx++];
+      var radius = ((phase + r*(maxR/N_RINGS)) % maxR);
+      var posAttr = entry.line.geometry.attributes.position;
+      for (var a=0;a<ARC_ANGLES.length;a++){
+        var t = ARC_ANGLES[a];
+        var x = radius*Math.cos(t);
+        var y = radius*Math.sin(t);
+        posAttr.setXYZ(a, x, y, Z_SAMPLES[zi].z);
+      }
+      posAttr.needsUpdate = true;
+      entry.line.material.opacity = 0.55 * Z_SAMPLES[zi].op * clamp(radius/0.4,0,1);
+    }
+  }
+}
+
+/* ============================================================
+   9. BUILD: RAYS, VIRTUAL SOURCES, CONSTRUCTION LINES
+   ============================================================ */
+function buildRaysAndSources(){
+  clearGroup(gRays);
+  clearGroup(gSources);
+  var vis = current.vis;
+  var sceneY1 = vis.sceneY1, sceneD = vis.sceneD, H_ = vis.H;
+  var S1 = vis.S1, S2 = vis.S2;
+
+  for (var zi=0; zi<Z_SAMPLES.length; zi++){
+    var z = Z_SAMPLES[zi].z, op = Z_SAMPLES[zi].op;
+    var Spt = new THREE.Vector3(0,0,z);
+
+    // ---- fan of sample rays (visual richness) ----
+    var N_FAN = 5;
+    for (var half=-1; half<=1; half+=2){
+      for (var i=0;i<N_FAN;i++){
+        var hitY = half>0 ? (H_*(i+0.5)/N_FAN) : (-H_*(i+0.5)/N_FAN);
+        var hit = new THREE.Vector3(sceneY1, hitY, z);
+        // incident
+        gRays.add(makeLine([Spt, hit], half>0?0x9fd8ff:0xffcf9f, { opacity: 0.55*op }));
+        // emergent: direction as if from virtual source (S1 for upper, S2 for lower)
+        var src = half>0 ? S1 : S2;
+        var srcV = new THREE.Vector3(src.x, src.y, z);
+        var dir = new THREE.Vector3().subVectors(hit, srcV);
+        var tScreen = (sceneD - srcV.x) / dir.x;
+        var screenPt = new THREE.Vector3().copy(srcV).addScaledVector(dir, tScreen);
+        gRays.add(makeLine([hit, screenPt], half>0?0x9fd8ff:0xffcf9f, { opacity: 0.5*op }));
+      }
+    }
+
+    // ---- boundary / construction rays (edges of aperture): solid + dashed backward extension ----
+    var edgesUpper = [0, H_];   // B, A
+    var edgesLower = [0, -H_];  // B, C
+    function addConstruction(edgeYs, srcObj, color){
+      var srcV = new THREE.Vector3(srcObj.x, srcObj.y, z);
+      for (var e=0;e<edgeYs.length;e++){
+        var hit = new THREE.Vector3(sceneY1, edgeYs[e], z);
+        gRays.add(makeLine([Spt, hit], color, { opacity: 0.85*op, linewidth:2 }));
+        var dir = new THREE.Vector3().subVectors(hit, srcV);
+        var tScreen = (sceneD - srcV.x) / dir.x;
+        var screenPt = new THREE.Vector3().copy(srcV).addScaledVector(dir, tScreen);
+        gRays.add(makeLine([hit, screenPt], color, { opacity: 0.85*op, linewidth:2 }));
+        if (state.show.sources) {
+          gSources.add(makeLine([srcV, hit], color, { dashed:true, opacity:0.75*op, dashSize:0.14, gapSize:0.1 }));
+        }
+      }
+    }
+    addConstruction(edgesUpper, S1, 0x5ec2ff);
+    addConstruction(edgesLower, S2, 0xffb257);
+
+    // ---- virtual source markers (only draw once, at central z) ----
+    if (zi === 0){
+      var s1geo = new THREE.SphereGeometry(0.11, 20, 20);
+      var s1mesh = new THREE.Mesh(s1geo, new THREE.MeshStandardMaterial({ color:0x5ec2ff, emissive:0x1a4a66, emissiveIntensity:0.8 }));
+      s1mesh.position.set(S1.x, S1.y, 0);
+      gSources.add(s1mesh);
+      var s2mesh = new THREE.Mesh(s1geo.clone(), new THREE.MeshStandardMaterial({ color:0xffb257, emissive:0x663d10, emissiveIntensity:0.8 }));
+      s2mesh.position.set(S2.x, S2.y, 0);
+      gSources.add(s2mesh);
+      var l1 = makeLabelSprite("S\u2081", {color:"#5ec2ff", fontSize:46}); l1.position.set(S1.x-0.5, S1.y+0.35, 0); gSources.add(l1);
+      var l2 = makeLabelSprite("S\u2082", {color:"#ffb257", fontSize:46}); l2.position.set(S2.x-0.5, S2.y-0.35, 0); gSources.add(l2);
+
+      var coh = makeLabelSprite("S\u2081, S\u2082 are coherent: both derive from the SAME wavefront from S", {color:"#eafff2", fontSize:24});
+      coh.position.set(-0.2, (S1.y+S2.y)/2, 1.7);
+      gSources.add(coh);
+    }
+  }
+}
+
+/* ============================================================
+   10. BUILD: OVERLAP REGION EF (in space + on screen)
+   ============================================================ */
+function buildOverlap(){
+  clearGroup(gOverlap);
+  var vis = current.vis;
+  var sceneY1 = vis.sceneY1, sceneD = vis.sceneD, EFhalf = vis.EFhalf;
+  var S1 = vis.S1, S2 = vis.S2;
+
+  // shaded overlap wedge in space (from biprism plane to screen), built from the 4 bounding rays
+  var zf = ZLEN/2 + 0.02;
+  var p1 = new THREE.Vector3(sceneY1, 0, 0);
+  var p2 = new THREE.Vector3(sceneD, EFhalf, 0);
+  var p3 = new THREE.Vector3(sceneD, -EFhalf, 0);
+  var geo = new THREE.BufferGeometry().setFromPoints([p1,p2,p3]);
+  geo.setIndex([0,1,2]);
+  geo.computeVertexNormals();
+  var mat = new THREE.MeshBasicMaterial({ color:0x8cf0b2, transparent:true, opacity:0.14, side:THREE.DoubleSide, depthWrite:false });
+  var mesh = new THREE.Mesh(geo, mat);
+  gOverlap.add(mesh);
+  var outline = makeLine([p1,p2,p3,p1], 0x8cf0b2, { opacity:0.7 });
+  gOverlap.add(outline);
+
+  // E and F markers on the screen
+  var E = new THREE.Vector3(sceneD, EFhalf, 0);
+  var F = new THREE.Vector3(sceneD, -EFhalf, 0);
+  var mS = new THREE.MeshStandardMaterial({ color:0x8cf0b2, emissive:0x1f4a30, emissiveIntensity:0.8 });
+  var sph = new THREE.SphereGeometry(0.09,16,16);
+  var eM = new THREE.Mesh(sph, mS); eM.position.copy(E); gOverlap.add(eM);
+  var fM = new THREE.Mesh(sph.clone(), mS.clone()); fM.position.copy(F); gOverlap.add(fM);
+  var eL = makeLabelSprite("E", {color:"#8cf0b2", fontSize:38}); eL.position.set(E.x+0.35,E.y,0); gOverlap.add(eL);
+  var fL = makeLabelSprite("F", {color:"#8cf0b2", fontSize:38}); fL.position.set(F.x+0.35,F.y,0); gOverlap.add(fL);
+
+  var lbl = makeLabelSprite("overlap region EF — non-localized fringes form here", {color:"#8cf0b2", fontSize:24});
+  lbl.position.set((sceneY1+sceneD)/2, EFhalf+0.4, 0);
+  gOverlap.add(lbl);
+}
+
+/* ============================================================
+   11. BUILD: SCREEN + FRINGE / DIFFRACTION TEXTURE
+   ============================================================ */
+var screenMesh, screenTexture, screenCanvas, screenCtx;
+var TEX_W = 48, TEX_H = 960;
+
+function buildScreenMesh(){
+  clearGroup(gScreen);
+  screenCanvas = document.createElement("canvas");
+  screenCanvas.width = TEX_W; screenCanvas.height = TEX_H;
+  screenCtx = screenCanvas.getContext("2d");
+  screenTexture = new THREE.CanvasTexture(screenCanvas);
+  screenTexture.minFilter = THREE.LinearFilter;
+  screenTexture.magFilter = THREE.LinearFilter;
+
+  var geo = new THREE.PlaneGeometry(1, 1);
+  var mat = new THREE.MeshBasicMaterial({ map: screenTexture, side: THREE.DoubleSide, transparent:false });
+  screenMesh = new THREE.Mesh(geo, mat);
+  screenMesh.rotation.y = Math.PI/2;
+  gScreen.add(screenMesh);
+
+  var frame = new THREE.LineSegments(new THREE.EdgesGeometry(geo), new THREE.LineBasicMaterial({ color:0x3a4a6a }));
+  frame.rotation.y = Math.PI/2;
+  gScreen.add(frame);
+
+  var lbl = makeLabelSprite("Screen", {color:"#cfe0f7", fontSize:30});
+  gScreen.add(lbl);
+  screenMesh.userData.label = lbl;
+}
+buildScreenMesh();
+
+function updateScreenTexture(phys, vis){
+  var halfH = vis.screenHalfH;
+  var EF = vis.EFhalf;
+  var beamTop = vis.beamTop, beamBottom = vis.beamBottom;
+  var colorRGB = wavelengthToRGB(phys.lambda_nm);
+  var refBeta = 0.0338; // cm, reference (default params) fringe width used to scale visual fringe count
+  var nFringes = clamp(Math.round(10 * (refBeta / Math.max(phys.beta_cm,1e-6))), 4, 46);
+  var fringeSpacingVis = (EF*2) / nFringes;
+
+  for (var py=0; py<TEX_H; py++){
+    var v = 1 - py/(TEX_H-1);           // 1 at top .. 0 at bottom
+    var y = (v*2 - 1) * halfH;          // world-ish Y across screen
+    var r=10, g=10, b=18;
+
+    if (state.show.fringes && Math.abs(y) <= EF){
+      var phase = Math.PI * y / (fringeSpacingVis/2);
+      var I = Math.cos(phase)*Math.cos(phase);
+      var m = colorRGB.match(/\d+/g);
+      var br = I*0.92 + 0.04;
+      r = Math.round(parseInt(m[0]) * br);
+      g = Math.round(parseInt(m[1]) * br);
+      b = Math.round(parseInt(m[2]) * br);
+    } else if (Math.abs(y) <= EF){
+      r=26; g=26; b=34;
+    } else if (y <= beamTop && y >= beamBottom){
+      if (state.show.diffraction){
+        var dist = Math.abs(y) - EF;
+        var span = Math.max(beamTop, -beamBottom) - EF + 0.001;
+        var freq = 5 + 9*(dist/span);
+        var uneven = Math.sin(dist*freq*3.0 + dist*dist*2.0);
+        var decay = Math.max(0, 1 - dist/span);
+        var I2 = 0.5 + 0.5*uneven;
+        var m2 = colorRGB.match(/\d+/g);
+        var br2 = (0.10 + 0.16*I2) * decay;
+        r = Math.round(parseInt(m2[0]) * br2) + 6;
+        g = Math.round(parseInt(m2[1]) * br2) + 6;
+        b = Math.round(parseInt(m2[2]) * br2) + 10;
+      } else {
+        r=16; g=16; b=22;
+      }
+    } else {
+      r=8; g=9; b=15;
+    }
+    screenCtx.fillStyle = "rgb(" + r + "," + g + "," + b + ")";
+    screenCtx.fillRect(0, py, TEX_W, 1);
+  }
+  screenTexture.needsUpdate = true;
+
+  screenMesh.scale.set(ZLEN + 1.4, halfH*2, 1);
+  screenMesh.position.set(vis.sceneD, 0, 0);
+  var frame = gScreen.children[1];
+  if (frame){ frame.scale.copy(screenMesh.scale); frame.position.copy(screenMesh.position); frame.rotation.copy(screenMesh.rotation); }
+  if (screenMesh.userData.label){ screenMesh.userData.label.position.set(vis.sceneD, halfH+0.5, 0); }
+}
+
+/* ============================================================
+   12. BUILD: MEASUREMENTS / DIMENSIONS
+   ============================================================ */
+function addDim(p1, p2, label, color){
+  gMeasure.add(makeLine([p1,p2], color, { opacity:0.85 }));
+  var tick = 0.12;
+  gMeasure.add(makeLine([new THREE.Vector3(p1.x,p1.y-tick,p1.z), new THREE.Vector3(p1.x,p1.y+tick,p1.z)], color, {opacity:0.85}));
+  gMeasure.add(makeLine([new THREE.Vector3(p2.x,p2.y-tick,p2.z), new THREE.Vector3(p2.x,p2.y+tick,p2.z)], color, {opacity:0.85}));
+  var mid = new THREE.Vector3().addVectors(p1,p2).multiplyScalar(0.5);
+  var lbl = makeLabelSprite(label, {color: "#" + color.toString(16).padStart(6,'0'), fontSize:26});
+  lbl.position.copy(mid);
+  lbl.position.y += 0.32;
+  gMeasure.add(lbl);
+}
+
+function buildMeasurements(phys, vis){
+  clearGroup(gMeasure);
+  var zd = ZLEN/2 + 1.3;
+  var y1p1 = new THREE.Vector3(0, H+1.7, zd);
+  var y1p2 = new THREE.Vector3(vis.sceneY1, H+1.7, zd);
+  addDim(y1p1, y1p2, "y\u2081 = " + fmt(phys.y1_cm,0) + " cm", 0x5ec2ff);
+
+  var y2p1 = new THREE.Vector3(vis.sceneY1, H+1.7, zd);
+  var y2p2 = new THREE.Vector3(vis.sceneD, H+1.7, zd);
+  addDim(y2p1, y2p2, "y\u2082 = " + fmt(phys.y2_cm,0) + " cm", 0xffb257);
+
+  var Dp1 = new THREE.Vector3(0, H+2.7, zd);
+  var Dp2 = new THREE.Vector3(vis.sceneD, H+2.7, zd);
+  addDim(Dp1, Dp2, "D = " + fmt(phys.D_cm,0) + " cm", 0xc9a6ff);
+
+  var dp1 = new THREE.Vector3(-1.3, vis.S1.y, 0);
+  var dp2 = new THREE.Vector3(-1.3, vis.S2.y, 0);
+  addDim(dp1, dp2, "d = " + fmt(phys.d_mm,3) + " mm", 0x8cf0b2);
+}
+
+/* ============================================================
+   13. RECOMPUTE / REBUILD PIPELINE
+   ============================================================ */
+function recompute(){
+  var phys = computePhysics(state);
+  var vis = computeVisual(phys);
+  current.phys = phys; current.vis = vis;
+  return { phys:phys, vis:vis };
+}
+
+function rebuildAll(){
+  var r = recompute();
+  buildBiprismMesh();
+  gBiprism.position.set(r.vis.sceneY1, 0, 0); // shape's local (0,0) = flat back face = biprism reference plane
+  buildWavefronts();
+  buildRaysAndSources();
+  buildOverlap();
+  updateScreenTexture(r.phys, r.vis);
+  buildMeasurements(r.phys, r.vis);
+  applyVisibility();
+  updateReadouts(r.phys);
+}
+
+/* ============================================================
+   14. VISIBILITY & READOUTS
+   ============================================================ */
+function applyVisibility(){
+  gRays.visible = state.show.rays;
+  gWavefronts.visible = state.show.wavefronts;
+  gSources.visible = state.show.sources;
+  gOverlap.visible = state.show.overlap;
+  gMeasure.visible = state.show.measurements;
+  document.getElementById("eqOverlay").style.display = state.show.equations ? "block" : "none";
+  // screen texture depends on fringes/diffraction flags too
+  if (current.phys && current.vis) updateScreenTexture(current.phys, current.vis);
+}
+
+function updateReadouts(phys){
+  document.getElementById("outTheta").textContent = fmt(phys.theta_deg,4) + "\u00b0 (" + fmt(phys.theta,6) + " rad)";
+  document.getElementById("outD").textContent = fmt(phys.d_mm,4) + " mm" + (phys.manualD ? " (manual)" : "");
+  document.getElementById("outDbig").textContent = fmt(phys.D_cm,1) + " cm";
+  document.getElementById("outBeta").textContent = fmt(phys.beta_mm,4) + " mm";
+
+  document.getElementById("lbTheta").textContent = fmt(phys.theta_deg,3) + "\u00b0";
+  document.getElementById("lbD").textContent = fmt(phys.d_mm,3) + " mm";
+  document.getElementById("lbDD").textContent = fmt(phys.D_cm,0) + " cm";
+  document.getElementById("lbBeta").textContent = fmt(phys.beta_mm,3) + " mm";
+  document.getElementById("lbLambda").textContent = fmt(phys.lambda_nm,0) + " nm";
+}
+
+/* ============================================================
+   15. UI WIRING
+   ============================================================ */
+function $(id){ return document.getElementById(id); }
+
+function readSlidersIntoState(){
+  state.lambda_nm = parseFloat($("lambdaSlider").value);
+  state.mu = parseFloat($("muSlider").value);
+  state.alpha_deg = parseFloat($("alphaSlider").value);
+  state.y1_cm = parseFloat($("y1Slider").value);
+  state.y2_cm = parseFloat($("y2Slider").value);
+  state.manualD = $("manualDCheck").checked;
+  state.manualD_mm = parseFloat($("manualDInput").value) || 0.01;
+}
+
+function syncSliderLabels(){
+  $("lambdaVal").textContent = state.lambda_nm + " nm";
+  $("muVal").textContent = fmt(state.mu,2);
+  $("alphaVal").textContent = fmt(state.alpha_deg,2) + "\u00b0";
+  $("y1Val").textContent = fmt(state.y1_cm,0) + " cm";
+  $("y2Val").textContent = fmt(state.y2_cm,0) + " cm";
+}
+
+function onControlsChanged(){
+  readSlidersIntoState();
+  syncSliderLabels();
+  $("manualDInput").disabled = !state.manualD;
+  rebuildAll();
+}
+
+["lambdaSlider","muSlider","alphaSlider","y1Slider","y2Slider","manualDInput"].forEach(function(id){
+  $(id).addEventListener("input", onControlsChanged);
+});
+$("manualDCheck").addEventListener("change", onControlsChanged);
+
+var toggleMap = {
+  toggleRays:"rays", toggleWavefronts:"wavefronts", toggleSources:"sources",
+  toggleOverlap:"overlap", toggleFringes:"fringes", toggleMeasurements:"measurements",
+  toggleEquations:"equations", toggleDiffraction:"diffraction"
+};
+Object.keys(toggleMap).forEach(function(id){
+  $(id).addEventListener("change", function(){
+    state.show[toggleMap[id]] = $(id).checked;
+    applyVisibility();
+  });
+});
+
+/* ---- Play / Pause ---- */
+$("btnPlay").addEventListener("click", function(){
+  state.playing = !state.playing;
+  $("btnPlay").textContent = state.playing ? "\u23F8 Pause" : "\u25B6 Play";
+});
+
+/* ---- Reset ---- */
+function resetAll(showToast){
+  state.lambda_nm = DEFAULTS.lambda_nm; state.mu = DEFAULTS.mu; state.alpha_deg = DEFAULTS.alpha_deg;
+  state.y1_cm = DEFAULTS.y1_cm; state.y2_cm = DEFAULTS.y2_cm;
+  state.manualD = DEFAULTS.manualD; state.manualD_mm = DEFAULTS.manualD_mm;
+  state.playing = true;
+  $("btnPlay").textContent = "\u23F8 Pause";
+
+  $("lambdaSlider").value = state.lambda_nm;
+  $("muSlider").value = state.mu;
+  $("alphaSlider").value = state.alpha_deg;
+  $("y1Slider").value = state.y1_cm;
+  $("y2Slider").value = state.y2_cm;
+  $("manualDCheck").checked = false;
+  $("manualDInput").value = state.manualD_mm;
+  $("manualDInput").disabled = true;
+
+  Object.keys(state.show).forEach(function(k){ state.show[k] = true; });
+  Object.keys(toggleMap).forEach(function(id){ $(id).checked = true; });
+
+  syncSliderLabels();
+  rebuildAll();
+  wavePhase = 0;
+  if (showToast) showToastMsg("Reset to default state — everything visible.");
+}
+$("btnReset").addEventListener("click", function(){ resetAll(true); });
+
+/* ---- Reset Camera ---- */
+var camAnim = { active:false, t0:0, dur:700, fromPos:new THREE.Vector3(), toPos:new THREE.Vector3(), fromTgt:new THREE.Vector3(), toTgt:new THREE.Vector3() };
+function animateCameraTo(pos, target, dur){
+  camAnim.fromPos.copy(camera.position);
+  camAnim.toPos.copy(pos);
+  camAnim.fromTgt.copy(controls.target);
+  camAnim.toTgt.copy(target);
+  camAnim.t0 = performance.now();
+  camAnim.dur = dur || 800;
+  camAnim.active = true;
+}
+function resetCamera(){ animateCameraTo(DEFAULT_CAM_POS, DEFAULT_CAM_TARGET, 800); }
+$("btnResetCam").addEventListener("click", resetCamera);
+
+/* ---- toast ---- */
+var toastTimer=null;
+function showToastMsg(msg){
+  var t = $("toast");
+  t.textContent = msg; t.style.display = "block";
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ t.style.display = "none"; }, 2200);
+}
+
+/* ---- Wavelength calculator ---- */
+$("btnCalcLoad").addEventListener("click", function(){
+  if (!current.phys) return;
+  $("calcBeta").value = fmt(current.phys.beta_mm,4);
+  $("calcD").value = fmt(current.phys.d_mm,4);
+  $("calcDD").value = fmt(current.phys.D_cm,2);
+});
+$("btnCalc").addEventListener("click", function(){
+  var beta = parseFloat($("calcBeta").value);
+  var d = parseFloat($("calcD").value);
+  var D = parseFloat($("calcDD").value);
+  if (!(beta>0) || !(d>0) || !(D>0)){
+    $("calcOut").textContent = "\u03bb = – (enter positive values)";
+    return;
+  }
+  // lambda = beta*d/D ; units: beta(mm), d(mm) -> mm^2 ; D(cm) -> convert to mm
+  var lambda_mm = (beta * d) / (D*10);
+  var lambda_nm = lambda_mm * 1e6;
+  $("calcOut").textContent = "\u03bb = " + fmt(lambda_nm,1) + " nm";
+});
+
+/* ============================================================
+   16. GUIDED TOUR
+   ============================================================ */
+var tourSteps = [
+  {
+    title: "1. The Slit & Incident Wavefront",
+    text: "A narrow, monochromatic slit S acts as a line source of light. It sends out a single, expanding cylindrical wavefront toward the biprism. Every point on this wavefront is in phase — this single wavefront is the key to everything that follows.",
+    action: function(){
+      state.show.wavefronts=true; state.show.rays=true; applyToggles();
+      animateCameraTo(new THREE.Vector3(-4,4,10), new THREE.Vector3(2,0,0), 900);
+    }
+  },
+  {
+    title: "2. The Biprism Divides the Wavefront",
+    text: "The Fresnel biprism is two extremely thin prisms joined base-to-base, with the refracting edge B running parallel to the slit. As the single wavefront reaches the biprism, its upper part and lower part pass through two different prism halves.",
+    action: function(){
+      state.show.wavefronts=true; applyToggles();
+      var y1 = current.vis.sceneY1;
+      animateCameraTo(new THREE.Vector3(y1+1, 4.5, 9), new THREE.Vector3(y1,0,0), 900);
+    }
+  },
+  {
+    title: "3. Opposite Refraction Through the Two Halves",
+    text: "The upper half (triangle ABD) deviates its light DOWNWARD by θ=(μ−1)α. The lower half (triangle CBD) deviates its light UPWARD by the same angle θ. The two emergent beams now overlap, having been bent toward each other.",
+    action: function(){
+      state.show.rays=true; state.show.wavefronts=false; applyToggles();
+      var y1 = current.vis.sceneY1;
+      animateCameraTo(new THREE.Vector3(y1+3, 2.5, 7), new THREE.Vector3(y1+1,0,0), 900);
+    }
+  },
+  {
+    title: "4. Formation of Virtual Sources S\u2081 and S\u2082",
+    text: "If we trace the emergent rays backward (dashed construction lines), the upper-half rays appear to diverge from a point S\u2081 above the axis, and the lower-half rays from a point S\u2082 below the axis — both located at the same distance y\u2081 from the biprism as S itself. Their separation is d = 2y\u2081θ.",
+    action: function(){
+      state.show.sources=true; state.show.measurements=true; applyToggles();
+      animateCameraTo(new THREE.Vector3(6,3,11), new THREE.Vector3(3,0,0), 900);
+    }
+  },
+  {
+    title: "5. Coherence of S\u2081 and S\u2082",
+    text: "S\u2081 and S\u2082 are virtual images of the SAME original wavefront from S — they are not two independent lamps. Because they share a common origin and a fixed phase relationship, they are coherent sources, a necessary condition for sustained interference.",
+    action: function(){
+      state.show.sources=true; state.show.wavefronts=true; applyToggles();
+      animateCameraTo(new THREE.Vector3(2,3.5,10), new THREE.Vector3(1,0,0), 900);
+    }
+  },
+  {
+    title: "6. The Overlap Region EF",
+    text: "Beyond the biprism, the two beams (each bounded by the biprism aperture) spread out as cones from S\u2081 and S\u2082. They only overlap within a limited region EF on the screen — interference fringes can only be observed inside this region.",
+    action: function(){
+      state.show.overlap=true; applyToggles();
+      var vis = current.vis;
+      animateCameraTo(new THREE.Vector3(vis.sceneD-4, 5, 12), new THREE.Vector3(vis.sceneD-2,0,0), 900);
+    }
+  },
+  {
+    title: "7. Interference Fringes on the Screen",
+    text: "Inside EF, light from S\u2081 and S\u2082 superposes. Where path difference = mλ, bright fringes appear; where it equals (m+\u00bd)λ, dark fringes appear. The fringes are equally spaced, with width β = λD/d, and are 'non-localized' — visible at any screen position within EF. Outside EF, only faint, unevenly-spaced diffraction bands may appear.",
+    action: function(){
+      state.show.fringes=true; state.show.diffraction=true; applyToggles();
+      var vis = current.vis;
+      animateCameraTo(new THREE.Vector3(vis.sceneD+3, 1, 5), new THREE.Vector3(vis.sceneD,0,0), 900);
+    }
+  },
+  {
+    title: "8. Determining the Wavelength",
+    text: "By measuring the fringe width β, and the geometric quantities d (source separation) and D (source-to-screen distance), the wavelength of light can be found experimentally using λ = βd/D. Try the Wavelength Calculator in the side panel!",
+    action: function(){
+      state.show.equations=true; applyToggles();
+      resetCamera();
+    }
+  }
+];
+var tourIndex = 0;
+
+function applyToggles(){
+  Object.keys(toggleMap).forEach(function(id){ $(id).checked = state.show[toggleMap[id]]; });
+  applyVisibility();
+}
+
+function showTourStep(i){
+  tourIndex = clamp(i, 0, tourSteps.length-1);
+  var step = tourSteps[tourIndex];
+  $("tourStepTag").textContent = "STEP " + (tourIndex+1) + " OF " + tourSteps.length;
+  $("tourTitle").textContent = step.title;
+  $("tourText").textContent = step.text;
+  $("tourStepLbl").textContent = (tourIndex+1) + " / " + tourSteps.length;
+  $("btnTourPrev").disabled = (tourIndex === 0);
+  $("btnTourNext").textContent = (tourIndex === tourSteps.length-1) ? "Finish" : "Next \u25B6";
+  step.action();
+}
+
+function restoreAllLayers(){
+  Object.keys(state.show).forEach(function(k){ state.show[k] = true; });
+  applyToggles();
+}
+
+$("btnTour").addEventListener("click", function(){
+  $("tourModal").style.display = "flex";
+  showTourStep(0);
+});
+$("btnTourClose").addEventListener("click", function(){
+  $("tourModal").style.display = "none";
+  restoreAllLayers();
+});
+$("btnTourPrev").addEventListener("click", function(){ showTourStep(tourIndex-1); });
+$("btnTourNext").addEventListener("click", function(){
+  if (tourIndex === tourSteps.length-1){ $("tourModal").style.display = "none"; restoreAllLayers(); }
+  else { showTourStep(tourIndex+1); }
+});
+
+/* ============================================================
+   17. RENDER LOOP
+   ============================================================ */
+var clock = new THREE.Clock();
+function resizeRenderer(){
+  var w = canvas.clientWidth, h = canvas.clientHeight;
+  if (w<1||h<1) return;
+  renderer.setSize(w,h,false);
+  camera.aspect = w/h;
+  camera.updateProjectionMatrix();
+}
+window.addEventListener("resize", resizeRenderer);
+
+function tick(){
+  requestAnimationFrame(tick);
+  resizeRenderer();
+  var dt = Math.min(clock.getDelta(), 0.05);
+  if (state.playing) wavePhase += dt * 2.6;
+  updateWavefronts(wavePhase);
+
+  if (camAnim.active){
+    var t = (performance.now() - camAnim.t0) / camAnim.dur;
+    if (t >= 1){ t = 1; camAnim.active = false; }
+    var e = 1 - Math.pow(1-t, 3); // ease-out cubic
+    camera.position.lerpVectors(camAnim.fromPos, camAnim.toPos, e);
+    controls.target.lerpVectors(camAnim.fromTgt, camAnim.toTgt, e);
+  }
+  controls.update();
+  renderer.render(scene, camera);
+}
+
+/* ============================================================
+   18. INIT
+   ============================================================ */
+function init(){
+  resizeRenderer();
+  $("manualDInput").disabled = !state.manualD;
+  syncSliderLabels();
+  rebuildAll();
+  camera.position.copy(DEFAULT_CAM_POS);
+  controls.target.copy(DEFAULT_CAM_TARGET);
+  controls.update();
+  tick();
+}
+init();
+
 })();
 </script>
 </body>
