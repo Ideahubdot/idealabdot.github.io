@@ -53,7 +53,7 @@ input[type=number]{width:100%;padding:7px 8px;border-radius:6px;border:1px solid
           <div class="row"><div class="rhead"><span>y₁ — biprism → S₁S₂ plane</span><span class="rval" id="v_y1">30 cm</span></div><input id="y1" type="range" min="10" max="80" value="30" step="1"></div>
           <div class="row"><div class="rhead"><span>y₂ — biprism → screen</span><span class="rval" id="v_y2">100 cm</span></div><input id="y2" type="range" min="30" max="200" value="100" step="1"></div>
           <div class="modebar"><div class="modebtn active" data-mode="auto">Derived d</div><div class="modebtn" data-mode="manual">Manual d</div></div>
-          <div class="row"><div class="rhead"><span>d — virtual-source separation</span><span class="rval" id="v_d">4.00 mm</span></div><input id="dman" type="range" min="0.5" max="20" value="4" step="0.05" disabled></div>
+          <div class="row"><div class="rhead"><span>d — virtual-source separation</span><span class="rval" id="v_d">2.618 mm</span></div><input id="dman" type="range" min="0.5" max="20" value="4" step="0.05" disabled></div>
           <span class="hint">In automatic mode, d = 2y₁θ. Manual d is an optional exploration mode; all visual source/beam geometry follows the chosen d.</span>
         </div>
         <div class="group"><h3>Live Physics</h3><div class="readout" id="live"></div></div>
@@ -132,13 +132,25 @@ function buildPrism(z){prismGroup.clear();const A={y:PRISM_HALF_H,z:z},B={y:0,z:
 const src1=new THREE.Mesh(new THREE.SphereGeometry(.36,20,20),new THREE.MeshBasicMaterial({color:0xb8a7ff,wireframe:true}));const src2=new THREE.Mesh(new THREE.SphereGeometry(.36,20,20),new THREE.MeshBasicMaterial({color:0xff9ecb,wireframe:true}));root.add(src1,src2);
 const sourceGlow1=new THREE.Mesh(new THREE.SphereGeometry(.36,16,16),new THREE.MeshBasicMaterial({color:0xb8a7ff,transparent:true,opacity:.12}));const sourceGlow2=new THREE.Mesh(new THREE.SphereGeometry(.36,16,16),new THREE.MeshBasicMaterial({color:0xff9ecb,transparent:true,opacity:.12}));root.add(sourceGlow1,sourceGlow2);
 const rayGroup=new THREE.Group(),consGroup=new THREE.Group(),overlapGroup=new THREE.Group(),measureGroup=new THREE.Group();root.add(rayGroup,consGroup,overlapGroup,measureGroup);
-const screenGroup=new THREE.Group();root.add(screenGroup);const screenFrame=new THREE.Mesh(new THREE.PlaneGeometry(SCREEN_W+.7,SCREEN_H+.7),new THREE.MeshBasicMaterial({color:0x0b101b}));const screenPlane=new THREE.Mesh(new THREE.PlaneGeometry(SCREEN_W,SCREEN_H),new THREE.MeshBasicMaterial({color:0x03060c}));screenGroup.add(screenFrame,screenPlane);screenFrame.rotation.y=0;screenPlane.rotation.y=0;
+const screenGroup=new THREE.Group();root.add(screenGroup);const screenFrame=new THREE.Mesh(new THREE.PlaneGeometry(SCREEN_W+.7,SCREEN_H+.7),new THREE.MeshBasicMaterial({
+    color:0x0b101b,
+    side:THREE.DoubleSide
+});const screenPlane=new THREE.Mesh(
+  new THREE.PlaneGeometry(SCREEN_W,SCREEN_H),
+  new THREE.MeshBasicMaterial({
+    color:0x03060c,
+    side:THREE.DoubleSide
+})
+);
+  screenGroup.add(screenFrame,screenPlane);screenFrame.rotation.y=0;screenPlane.rotation.y=0;
 const screenEdge=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(SCREEN_W+.7,SCREEN_H+.7)),new THREE.LineBasicMaterial({color:0x3e4b68}));screenGroup.add(screenEdge);
 
 const fringeCanvas=document.createElement('canvas');fringeCanvas.width=640;fringeCanvas.height=640;const fctx=fringeCanvas.getContext('2d');const fringeTex=new THREE.CanvasTexture(fringeCanvas);
 function drawFringes(P){const W=fringeCanvas.width,H=fringeCanvas.height,img=fctx.createImageData(W,H),col=ccol(state.lambda),R=col.r,G=col.g,B=col.b;const beta=P.beta; // mm
  // Realistic screen view: finite vertical/horizontal window centered on optic axis.
- // Pixels map to +/- 8 mm horizontally/vertically. Intensity varies with vertical coordinate because virtual sources are separated vertically; fringes are horizontal and parallel to the horizontal slit.
+ // Pixels map to +/- 8 mm horizontally/vertically. // S₁ and S₂ are separated vertically, so path difference varies vertically.
+// Therefore the bright and dark interference fringes are horizontal,
+// i.e. parallel to the slit.
  const halfYmm=8;
  for(let py=0;py<H;py++){
    const ymm=(1-(py/(H-1))*2)*halfYmm;
@@ -161,11 +173,13 @@ function clearGroup(g){while(g.children.length)g.remove(g.children[0])}
 function makeDim(p1,p2,label){const g=new THREE.Group();g.add(line(p1,p2,0x5eead4));measureGroup.add(g);label.get=()=>p1.clone().add(p2).multiplyScalar(.5);label.e.textContent=label.e.textContent;return g}
 function updateMeasurements(P,bz,zv,zs){clearGroup(measureGroup);const x1=-7,x2=-9,x3=-11;const dVis=Math.max(0.90,Math.min(3.6,P.d*SCALE*8));measureGroup.add(line(new THREE.Vector3(x1,0,zv),new THREE.Vector3(x1,0,bz),0x5eead4),line(new THREE.Vector3(x2,0,bz),new THREE.Vector3(x2,0,zs),0x5eead4),line(new THREE.Vector3(x3,0,zv),new THREE.Vector3(x3,0,zs),0xffb454),line(new THREE.Vector3(3.3,dVis*.5,zv),new THREE.Vector3(3.3,-dVis*.5,zv),0xb8a7ff));Ly1.e.textContent='y₁ = '+state.y1+' cm';Ly2.e.textContent='y₂ = '+state.y2+' cm';LD.e.textContent='D = '+(P.D/10).toFixed(1)+' cm';Ld.e.textContent='d = '+P.d.toFixed(3)+' mm'}
 
-function update(){const P=physics();const bz=BIPRISM_Z;const y1Scene=P.y1mm*SCALE;const y2Scene=P.y2mm*SCALE;const zv=bz-Math.max(2,y1Scene); // virtual-source plane is in front of biprism, on source side
+function update(){const P=physics()document.getElementById('v_d').textContent =
+    P.d.toFixed(3) + ' mm';
+                  ;const bz=BIPRISM_Z;const y1Scene=P.y1mm*SCALE;const y2Scene=P.y2mm*SCALE;const zv=bz-Math.max(2,y1Scene); // virtual-source plane is in front of biprism, on source side
  const zs=bz+y2Scene;
  buildPrism(bz);
  // slit remains on source side, ahead of the virtual source plane when possible
- slit.position.set(0,0,0);
+ slit.position.set(0,0,SLIT_Z);
  const dVis=Math.max(0.90,Math.min(3.6,P.d*SCALE*8)); // visual-only enlargement so the tiny virtual-source separation is visible
  src1.position.set(0,dVis*.5,zv);src2.position.set(0,-dVis*.5,zv);sourceGlow1.position.copy(src1.position);sourceGlow2.position.copy(src2.position);
  screenGroup.position.set(0,0,zs);
@@ -204,7 +218,7 @@ for(const k of Object.keys(state.show)){const el=document.getElementById(k==='so
 document.querySelectorAll('.modebtn').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.modebtn').forEach(x=>x.classList.remove('active'));b.classList.add('active');state.dMode=b.dataset.mode;document.getElementById('dman').disabled=state.dMode!=='manual';update()}));
 
 document.getElementById('play').addEventListener('click',e=>{state.playing=!state.playing;e.target.textContent=state.playing?'⏸ Pause':'▶ Play'});
-document.getElementById('reset').addEventListener('click',()=>{Object.assign(state,{lambda:589,mu:1.5,alpha:.5,y1:30,y2:100,dMode:'auto',dManual:4});for(const [id,v] of [['lambda',589],['mu',1.5],['alpha',.5],['y1',30],['y2',100],['dman',4]])document.getElementById(id).value=v;document.querySelectorAll('.modebtn').forEach(x=>x.classList.toggle('active',x.dataset.mode==='auto'));document.getElementById('dman').disabled=true;['v_lambda','v_y1','v_y2'].forEach(()=>{});document.getElementById('v_lambda').textContent='589 nm';document.getElementById('v_mu').textContent='1.50';document.getElementById('v_alpha').textContent='0.50°';document.getElementById('v_y1').textContent='30 cm';document.getElementById('v_y2').textContent='100 cm';document.getElementById('v_d').textContent='4.00 mm';update()});
+document.getElementById('reset').addEventListener('click',()=>{Object.assign(state,{lambda:589,mu:1.5,alpha:.5,y1:30,y2:100,dMode:'auto',dManual:4});for(const [id,v] of [['lambda',589],['mu',1.5],['alpha',.5],['y1',30],['y2',100],['dman',4]])document.getElementById(id).value=v;document.querySelectorAll('.modebtn').forEach(x=>x.classList.toggle('active',x.dataset.mode==='auto'));document.getElementById('dman').disabled=true;document.getElementById('v_lambda').textContent='589 nm';document.getElementById('v_mu').textContent='1.50';document.getElementById('v_alpha').textContent='0.50°';document.getElementById('v_y1').textContent='30 cm';document.getElementById('v_y2').textContent='100 cm';document.getElementById('v_d').textContent='2.618 mm';update()});
 const CAM={pos:new THREE.Vector3(31,17,-29),target:new THREE.Vector3(0,0,18)};camera.position.copy(CAM.pos);controls.target.copy(CAM.target);controls.update();document.getElementById('resetCam').addEventListener('click',()=>{camera.position.copy(CAM.pos);controls.target.copy(CAM.target);controls.update()});
 
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.pane').forEach(x=>x.classList.remove('active'));t.classList.add('active');document.getElementById('pane-'+t.dataset.tab).classList.add('active')}));
@@ -227,7 +241,7 @@ const betaInput=document.getElementById('betaInput'),dInput=document.getElementB
 
 let clock=new THREE.Clock(),t=0;
 function resize(){const w=viewport.clientWidth,h=viewport.clientHeight;renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix()}window.addEventListener('resize',resize);
-function animate(){requestAnimationFrame(animate);const dt=Math.min(clock.getDelta(),.05);if(state.playing)t+=dt;const P=physics();const bz=BIPRISM_Z;const zV=bz-P.y1mm*SCALE;wavefronts.forEach((r,i)=>{const zSpan=Math.max(.8,bz);const ph=(t/1.7+r.userData.phase)%1;const rad=.18+ph*Math.max(.8,zSpan*.38);r.scale.set(rad,rad,1);r.position.set(0,0,0);r.material.opacity=.42*(1-ph)});const pulse=1+.06*Math.sin(t*3);src1.scale.setScalar(pulse);src2.scale.setScalar(pulse);controls.update();updateLabels();renderer.render(scene,camera)}
+function animate(){requestAnimationFrame(animate);const dt=Math.min(clock.getDelta(),.05);if(state.playing)t+=dt;const P=physics();const bz=BIPRISM_Z;const zV=bz-P.y1mm*SCALE;wavefronts.forEach((r,i)=>{const zSpan=Math.max(.8,bz);const ph=(t/1.7+r.userData.phase)%1;const rad=.18+ph*Math.max(.8,zSpan*.38);r.scale.set(rad,rad,1);r.position.set(0,0,SLIT_Z);r.material.opacity=.42*(1-ph)});const pulse=1+.06*Math.sin(t*3);src1.scale.setScalar(pulse);src2.scale.setScalar(pulse);controls.update();updateLabels();renderer.render(scene,camera)}
 resize();update();guideStep();animate();
 })();
 </script>
