@@ -64,8 +64,8 @@ input[type=number]{width:100%;padding:7px 8px;border-radius:6px;border:1px solid
           <label class="switch">Construction rays <input id="construction" type="checkbox" checked></label>
           <label class="switch">Overlap region EF <input id="overlap" type="checkbox" checked></label>
           <label class="switch">Fringes on screen <input id="fringes" type="checkbox" checked></label>
-          <label class="switch">Measurements <input id="measurements" type="checkbox"></label>
-          <label class="switch">Diffraction hint outside EF <input id="diffraction" type="checkbox"></label>
+          <label class="switch">Measurements <input id="measurements" type="checkbox"checked></label>
+          <label class="switch">Diffraction hint outside EF <input id="diffraction" type="checkbox"checked></label>
           <span class="hint">The main fringes are mathematically generated from β = λD/d and are parallel to the slit.</span>
         </div>
       </section>
@@ -132,18 +132,40 @@ function buildPrism(z){prismGroup.clear();const A={y:PRISM_HALF_H,z:z},B={y:0,z:
 const src1=new THREE.Mesh(new THREE.SphereGeometry(.36,20,20),new THREE.MeshBasicMaterial({color:0xb8a7ff,wireframe:true}));const src2=new THREE.Mesh(new THREE.SphereGeometry(.36,20,20),new THREE.MeshBasicMaterial({color:0xff9ecb,wireframe:true}));root.add(src1,src2);
 const sourceGlow1=new THREE.Mesh(new THREE.SphereGeometry(.36,16,16),new THREE.MeshBasicMaterial({color:0xb8a7ff,transparent:true,opacity:.12}));const sourceGlow2=new THREE.Mesh(new THREE.SphereGeometry(.36,16,16),new THREE.MeshBasicMaterial({color:0xff9ecb,transparent:true,opacity:.12}));root.add(sourceGlow1,sourceGlow2);
 const rayGroup=new THREE.Group(),consGroup=new THREE.Group(),overlapGroup=new THREE.Group(),measureGroup=new THREE.Group();root.add(rayGroup,consGroup,overlapGroup,measureGroup);
-const screenGroup=new THREE.Group();root.add(screenGroup);const screenFrame=new THREE.Mesh(new THREE.PlaneGeometry(SCREEN_W+.7,SCREEN_H+.7),new THREE.MeshBasicMaterial({
-    color:0x0b101b,
-    side:THREE.DoubleSide
-});const screenPlane=new THREE.Mesh(
-  new THREE.PlaneGeometry(SCREEN_W,SCREEN_H),
+const screenGroup = new THREE.Group();
+root.add(screenGroup);
+
+const screenGroup = new THREE.Group();
+root.add(screenGroup);
+
+const screenFrame = new THREE.Mesh(
+  new THREE.PlaneGeometry(SCREEN_W + 0.7, SCREEN_H + 0.7),
   new THREE.MeshBasicMaterial({
-    color:0x03060c,
-    side:THREE.DoubleSide
-})
+    color: 0x0b101b,
+    side: THREE.DoubleSide
+  })
 );
-  screenGroup.add(screenFrame,screenPlane);screenFrame.rotation.y=0;screenPlane.rotation.y=0;
-const screenEdge=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(SCREEN_W+.7,SCREEN_H+.7)),new THREE.LineBasicMaterial({color:0x3e4b68}));screenGroup.add(screenEdge);
+
+const screenPlane = new THREE.Mesh(
+  new THREE.PlaneGeometry(SCREEN_W, SCREEN_H),
+  new THREE.MeshBasicMaterial({
+    color: 0x03060c,
+    side: THREE.DoubleSide
+  })
+);
+
+screenGroup.add(screenFrame, screenPlane);
+
+const screenEdge = new THREE.LineSegments(
+  new THREE.EdgesGeometry(
+    new THREE.PlaneGeometry(SCREEN_W + 0.7, SCREEN_H + 0.7)
+  ),
+  new THREE.LineBasicMaterial({
+    color: 0x3e4b68
+  })
+);
+
+screenGroup.add(screenEdge);
 
 const fringeCanvas=document.createElement('canvas');fringeCanvas.width=640;fringeCanvas.height=640;const fctx=fringeCanvas.getContext('2d');const fringeTex=new THREE.CanvasTexture(fringeCanvas);
 function drawFringes(P){const W=fringeCanvas.width,H=fringeCanvas.height,img=fctx.createImageData(W,H),col=ccol(state.lambda),R=col.r,G=col.g,B=col.b;const beta=P.beta; // mm
@@ -173,7 +195,14 @@ function clearGroup(g){while(g.children.length)g.remove(g.children[0])}
 function makeDim(p1,p2,label){const g=new THREE.Group();g.add(line(p1,p2,0x5eead4));measureGroup.add(g);label.get=()=>p1.clone().add(p2).multiplyScalar(.5);label.e.textContent=label.e.textContent;return g}
 function updateMeasurements(P,bz,zv,zs){clearGroup(measureGroup);const x1=-7,x2=-9,x3=-11;const dVis=Math.max(0.90,Math.min(3.6,P.d*SCALE*8));measureGroup.add(line(new THREE.Vector3(x1,0,zv),new THREE.Vector3(x1,0,bz),0x5eead4),line(new THREE.Vector3(x2,0,bz),new THREE.Vector3(x2,0,zs),0x5eead4),line(new THREE.Vector3(x3,0,zv),new THREE.Vector3(x3,0,zs),0xffb454),line(new THREE.Vector3(3.3,dVis*.5,zv),new THREE.Vector3(3.3,-dVis*.5,zv),0xb8a7ff));Ly1.e.textContent='y₁ = '+state.y1+' cm';Ly2.e.textContent='y₂ = '+state.y2+' cm';LD.e.textContent='D = '+(P.D/10).toFixed(1)+' cm';Ld.e.textContent='d = '+P.d.toFixed(3)+' mm'}
 
-function update(){const P=physics()document.getElementById('v_d').textContent =
+function update(){
+
+  const P = physics();
+
+  document.getElementById('v_d').textContent =
+    P.d.toFixed(3) + ' mm';
+
+  const bz = BIPRISM_Z;
     P.d.toFixed(3) + ' mm';
                   ;const bz=BIPRISM_Z;const y1Scene=P.y1mm*SCALE;const y2Scene=P.y2mm*SCALE;const zv=bz-Math.max(2,y1Scene); // virtual-source plane is in front of biprism, on source side
  const zs=bz+y2Scene;
@@ -217,8 +246,60 @@ slider('lambda','lambda','v_lambda',v=>v+' nm');slider('mu','mu','v_mu',v=>v.toF
 for(const k of Object.keys(state.show)){const el=document.getElementById(k==='sources'?'sources':k);el.addEventListener('change',()=>{state.show[k]=el.checked;update()})}
 document.querySelectorAll('.modebtn').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.modebtn').forEach(x=>x.classList.remove('active'));b.classList.add('active');state.dMode=b.dataset.mode;document.getElementById('dman').disabled=state.dMode!=='manual';update()}));
 
-document.getElementById('play').addEventListener('click',e=>{state.playing=!state.playing;e.target.textContent=state.playing?'⏸ Pause':'▶ Play'});
-document.getElementById('reset').addEventListener('click',()=>{Object.assign(state,{lambda:589,mu:1.5,alpha:.5,y1:30,y2:100,dMode:'auto',dManual:4});for(const [id,v] of [['lambda',589],['mu',1.5],['alpha',.5],['y1',30],['y2',100],['dman',4]])document.getElementById(id).value=v;document.querySelectorAll('.modebtn').forEach(x=>x.classList.toggle('active',x.dataset.mode==='auto'));document.getElementById('dman').disabled=true;document.getElementById('v_lambda').textContent='589 nm';document.getElementById('v_mu').textContent='1.50';document.getElementById('v_alpha').textContent='0.50°';document.getElementById('v_y1').textContent='30 cm';document.getElementById('v_y2').textContent='100 cm';document.getElementById('v_d').textContent='2.618 mm';update()});
+document.getElementById('reset').addEventListener('click', () => {
+
+  Object.assign(state, {
+    lambda: 589,
+    mu: 1.50,
+    alpha: 0.50,
+    y1: 30,
+    y2: 100,
+    dMode: 'auto',
+    dManual: 4,
+    playing: true,
+
+    show: {
+      rays: true,
+      wavefronts: true,
+      sources: true,
+      construction: true,
+      overlap: true,
+      fringes: true,
+      measurements: true,
+      diffraction: true
+    }
+  });
+
+  document.getElementById('lambda').value = 589;
+  document.getElementById('mu').value = 1.50;
+  document.getElementById('alpha').value = 0.50;
+  document.getElementById('y1').value = 30;
+  document.getElementById('y2').value = 100;
+  document.getElementById('dman').value = 4;
+
+  document.querySelectorAll('.modebtn').forEach(button => {
+    button.classList.toggle('active', button.dataset.mode === 'auto');
+  });
+
+  document.getElementById('dman').disabled = true;
+
+  document.getElementById('rays').checked = true;
+  document.getElementById('wavefronts').checked = true;
+  document.getElementById('sources').checked = true;
+  document.getElementById('construction').checked = true;
+  document.getElementById('overlap').checked = true;
+  document.getElementById('fringes').checked = true;
+  document.getElementById('measurements').checked = true;
+  document.getElementById('diffraction').checked = true;
+
+  document.getElementById('v_lambda').textContent = '589 nm';
+  document.getElementById('v_mu').textContent = '1.50';
+  document.getElementById('v_alpha').textContent = '0.50°';
+  document.getElementById('v_y1').textContent = '30 cm';
+  document.getElementById('v_y2').textContent = '100 cm';
+
+  update();
+});
 const CAM={pos:new THREE.Vector3(31,17,-29),target:new THREE.Vector3(0,0,18)};camera.position.copy(CAM.pos);controls.target.copy(CAM.target);controls.update();document.getElementById('resetCam').addEventListener('click',()=>{camera.position.copy(CAM.pos);controls.target.copy(CAM.target);controls.update()});
 
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.pane').forEach(x=>x.classList.remove('active'));t.classList.add('active');document.getElementById('pane-'+t.dataset.tab).classList.add('active')}));
@@ -234,15 +315,70 @@ const STEPS=[
  ['Use fringe width to determine λ','For D = y₁ + y₂, β = λD/d. Thus λ = βd/D. With θ=(μ−1)α and d=2y₁θ, the biprism geometry can also be used to obtain d.']
 ];let gi=0;
 function renderDots(){const d=document.getElementById('dots');d.innerHTML='';STEPS.forEach((_,i)=>{const e=document.createElement('div');e.className='dot'+(i===gi?' on':'');e.onclick=()=>{gi=i;guideStep()};d.appendChild(e)})}
-function guideStep(){const s=STEPS[gi];document.getElementById('gnum').textContent='STEP '+(gi+1)+' / '+STEPS.length;document.getElementById('gtitle').textContent=s[0];document.getElementById('gtext').textContent=s[1];renderDots();document.getElementById('prev').disabled=gi===0;document.getElementById('next').textContent=gi===STEPS.length-1?'Restart ↺':'Next ▶';const show={rays:[false,true,true,true,true,true,true,true][gi],wavefronts:[true,true,false,false,false,false,false,true][gi],sources:[false,false,false,true,true,true,true,true][gi],construction:[false,false,false,true,true,false,false,true][gi],overlap:[false,false,false,false,false,true,true,true][gi],fringes:[false,false,false,false,false,false,true,true][gi],measurements:gi===7,diffraction:false};state.show=show;for(const k of Object.keys(show)){const id=k==='sources'?'sources':k;document.getElementById(id).checked=show[k]}if(gi===1){camera.position.set(17,8,8);controls.target.set(0,0,12)}else if(gi===5){camera.position.set(24,10,27);controls.target.set(0,0,22)}else if(gi>=6){camera.position.set(18,8,39);controls.target.set(0,0,34)}else{camera.position.set(16,7,4);controls.target.set(0,0,9)}update()}
-document.getElementById('prev').onclick=()=>{if(gi>0){gi--;guideStep()}};document.getElementById('next').onclick=()=>{gi=gi===STEPS.length-1?0:gi+1;guideStep()};
+function guideStep(){
+
+  const s = STEPS[gi];
+
+  document.getElementById('gnum').textContent =
+    'STEP ' + (gi + 1) + ' / ' + STEPS.length;
+
+  document.getElementById('gtitle').textContent = s[0];
+  document.getElementById('gtext').textContent = s[1];
+
+  renderDots();
+
+  document.getElementById('prev').disabled = gi === 0;
+
+  document.getElementById('next').textContent =
+    gi === STEPS.length - 1 ? 'Restart ↺' : 'Next ▶';
+
+  const show = {
+    rays: [false, true, true, true, true, true, true, true][gi],
+    wavefronts: [true, true, false, false, false, false, false, true][gi],
+    sources: [false, false, false, true, true, true, true, true][gi],
+    construction: [false, false, false, true, true, false, false, true][gi],
+    overlap: [false, false, false, false, false, true, true, true][gi],
+    fringes: [false, false, false, false, false, false, true, true][gi],
+    measurements: gi === 7,
+    diffraction: false
+  };
+
+  state.show = show;
+
+  for (const k of Object.keys(show)) {
+    const el = document.getElementById(k);
+    if (el) {
+      el.checked = show[k];
+    }
+  }
+
+  if (gi === 1) {
+    camera.position.set(17, 8, 8);
+    controls.target.set(0, 0, 12);
+
+  } else if (gi === 5) {
+    camera.position.set(24, 10, 27);
+    controls.target.set(0, 0, 22);
+
+  } else if (gi >= 6) {
+    camera.position.set(18, 8, 39);
+    controls.target.set(0, 0, 34);
+
+  } else {
+    camera.position.set(16, 7, 4);
+    controls.target.set(0, 0, 9);
+  }
+
+  controls.update();
+  update();
+}
 
 const betaInput=document.getElementById('betaInput'),dInput=document.getElementById('dInput'),DInput=document.getElementById('DInput'),calcResult=document.getElementById('calcResult');document.getElementById('calc').onclick=()=>{const b=parseFloat(betaInput.value),d=parseFloat(dInput.value),D=parseFloat(DInput.value);if(!(b>0&&d>0&&D>0)){calcResult.textContent='Enter positive β, d and D.';return}const lm=b*d/D;calcResult.innerHTML='λ = βd/D = <b style="color:#ffb454">'+(lm*1e6).toFixed(2)+' nm</b>'};document.getElementById('useLive').onclick=()=>{const p=physics();betaInput.value=p.beta.toFixed(5);dInput.value=p.d.toFixed(4);DInput.value=p.D.toFixed(2)};
 
 let clock=new THREE.Clock(),t=0;
 function resize(){const w=viewport.clientWidth,h=viewport.clientHeight;renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix()}window.addEventListener('resize',resize);
 function animate(){requestAnimationFrame(animate);const dt=Math.min(clock.getDelta(),.05);if(state.playing)t+=dt;const P=physics();const bz=BIPRISM_Z;const zV=bz-P.y1mm*SCALE;wavefronts.forEach((r,i)=>{const zSpan=Math.max(.8,bz);const ph=(t/1.7+r.userData.phase)%1;const rad=.18+ph*Math.max(.8,zSpan*.38);r.scale.set(rad,rad,1);r.position.set(0,0,SLIT_Z);r.material.opacity=.42*(1-ph)});const pulse=1+.06*Math.sin(t*3);src1.scale.setScalar(pulse);src2.scale.setScalar(pulse);controls.update();updateLabels();renderer.render(scene,camera)}
-resize();update();guideStep();animate();
+resize();update();animate();
 })();
 </script>
 </body>
