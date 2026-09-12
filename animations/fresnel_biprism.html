@@ -185,7 +185,9 @@ function update(){const P=physics();const bz=BIPRISM_Z;const y1Scene=P.y1mm*SCAL
  consGroup.add(line(topExit,src1,0x7fd6ff,true,.9),line(botExit,src2,0xffb454,true,.9));
  consGroup.add(line(src1,scr1,0x7fd6ff,true,.23),line(src2,scr2,0xffb454,true,.23));
  // overlap region: two transparent wedge volumes extending from the prism to the screen
- const len=zs-bz;const halfAngle=Math.max(.07,Math.abs(Math.tan(thetaVis)));const r=Math.max(1.6,Math.tan(0.16)*len);function cone(apex,target,color){const dir=new THREE.Vector3().subVectors(target,apex),h=dir.length();const g=new THREE.ConeGeometry(r,h,32,1,true);g.translate(0,-h/2,0);const m=new THREE.MeshBasicMaterial({color,transparent:true,opacity:.07,side:THREE.DoubleSide,depthWrite:false,blending:THREE.AdditiveBlending});const q=new THREE.Mesh(g,m);q.position.copy(apex);q.quaternion.setFromUnitVectors(new THREE.Vector3(0,-1,0),dir.normalize());return q}overlapGroup.add(cone(topExit,scr1,0x7fd6ff),cone(botExit,scr2,0xffb454));
+ const len = zs - bz;
+const r = Math.max(1.6, Math.tan(0.16) * len);
+                  function cone(apex,target,color){const dir=new THREE.Vector3().subVectors(target,apex),h=dir.length();const g=new THREE.ConeGeometry(r,h,32,1,true);g.translate(0,-h/2,0);const m=new THREE.MeshBasicMaterial({color,transparent:true,opacity:.07,side:THREE.DoubleSide,depthWrite:false,blending:THREE.AdditiveBlending});const q=new THREE.Mesh(g,m);q.position.copy(apex);q.quaternion.setFromUnitVectors(new THREE.Vector3(0,-1,0),dir.normalize());return q}overlapGroup.add(cone(topExit,scr1,0x7fd6ff),cone(botExit,scr2,0xffb454));
  drawFringes(P); updateMeasurements(P,bz,zv,zs);
  // animated source color
  const color=ccol(state.lambda);slitMesh.material.color.copy(color);slitGlow.color.copy(color);wavefronts.forEach(w=>w.material.color.copy(color));
