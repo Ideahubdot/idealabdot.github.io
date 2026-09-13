@@ -99,6 +99,145 @@
   @media (max-width:900px){
     #sidebar{width:0;padding:0;overflow:hidden;}
   }
+  /* =========================
+   CHATBOT
+========================= */
+
+#chatToggle{
+  position:absolute;
+  right:16px;
+  bottom:16px;
+  z-index:40;
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  border:1px solid #2a3a56;
+  background:#123a5c;
+  color:#fff;
+  font-size:20px;
+  cursor:pointer;
+  box-shadow:0 8px 24px #0008;
+}
+
+#chatbot{
+  position:absolute;
+  right:16px;
+  bottom:72px;
+  width:350px;
+  height:470px;
+  z-index:39;
+  display:none;
+  flex-direction:column;
+  background:#0d1420f5;
+  border:1px solid #2a3a56;
+  border-radius:14px;
+  box-shadow:0 18px 50px #000b;
+  backdrop-filter:blur(8px);
+  overflow:hidden;
+}
+
+#chatHeader{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:12px;
+  border-bottom:1px solid #25324a;
+  background:#111827;
+}
+
+#chatHeader b{
+  color:#fff;
+  font-size:13px;
+}
+
+#chatSubtitle{
+  color:#8ea0c0;
+  font-size:10px;
+  margin-top:2px;
+}
+
+#chatClear{
+  padding:5px 8px;
+  font-size:10px;
+}
+
+#chatMessages{
+  flex:1;
+  overflow-y:auto;
+  padding:10px;
+}
+
+.chatMsg{
+  margin-bottom:9px;
+  max-width:88%;
+  padding:8px 10px;
+  border-radius:9px;
+  font-size:12px;
+  line-height:1.5;
+  white-space:pre-wrap;
+}
+
+.chatBot{
+  background:#16223a;
+  color:#dbe4f3;
+  border:1px solid #25324a;
+}
+
+.chatUser{
+  margin-left:auto;
+  background:#123a5c;
+  color:#fff;
+  border:1px solid #2e7cb8;
+}
+
+#chatQuick{
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px;
+  padding:8px 10px;
+  border-top:1px solid #25324a;
+}
+
+#chatQuick button{
+  font-size:10px;
+  padding:5px 7px;
+}
+
+#chatInputRow{
+  display:flex;
+  gap:6px;
+  padding:9px;
+  border-top:1px solid #25324a;
+}
+
+#chatInput{
+  flex:1;
+  min-width:0;
+  background:#0b1220;
+  border:1px solid #25324a;
+  border-radius:7px;
+  color:#fff;
+  padding:8px;
+  font-size:12px;
+}
+
+#chatInput:focus{
+  outline:none;
+  border-color:#5ec2ff;
+}
+
+@media(max-width:900px){
+  #chatbot{
+    right:10px;
+    bottom:68px;
+    width:min(350px,calc(100vw - 20px));
+  }
+
+  #chatToggle{
+    right:10px;
+    bottom:10px;
+  }
+}
 </style>
 </head>
 <body>
@@ -228,7 +367,39 @@
     </div>
   </div>
 </div>
+<!-- =========================
+     PHYSICS CHATBOT
+========================== -->
+<div id="chatbot">
+  <div id="chatHeader">
+    <div>
+      <b>🔬 Fresnel Assistant</b>
+      <div id="chatSubtitle">Ask about the experiment or control the simulation</div>
+    </div>
+    <button id="chatClear">Clear</button>
+  </div>
 
+  <div id="chatMessages"></div>
+
+  <div id="chatQuick">
+    <button data-msg="Explain the experiment">Experiment</button>
+    <button data-msg="Explain S1 and S2">S₁ & S₂</button>
+    <button data-msg="Explain beta">β</button>
+    <button data-msg="Explain the derivation">Derivation</button>
+  </div>
+
+  <div id="chatInputRow">
+    <input
+      id="chatInput"
+      type="text"
+      placeholder="Ask something..."
+      autocomplete="off"
+    >
+    <button id="chatSend">Send</button>
+  </div>
+</div>
+
+<button id="chatToggle">💬</button>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script>
@@ -1172,7 +1343,402 @@ $("btnTourNext").addEventListener("click", function(){
   if (tourIndex === tourSteps.length-1){ $("tourModal").style.display = "none"; restoreAllLayers(); }
   else { showTourStep(tourIndex+1); }
 });
+/* ============================================================
+   CHATBOT
+   ============================================================ */
 
+var chatInput = document.getElementById("chatInput");
+var chatMessages = document.getElementById("chatMessages");
+var chatBox = document.getElementById("chatbot");
+var chatToggle = document.getElementById("chatToggle");
+var chatSend = document.getElementById("chatSend");
+var chatClear = document.getElementById("chatClear");
+
+function addChatMessage(text, type){
+  var div = document.createElement("div");
+  div.className = "chatMsg " + (type === "user" ? "chatUser" : "chatBot");
+  div.textContent = text;
+  chatMessages.appendChild(div);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function currentSimulationInfo(){
+  if (!current.phys) return "";
+
+  var p = current.phys;
+
+  return (
+    "Current simulation values:\n" +
+    "λ = " + fmt(p.lambda_nm,0) + " nm\n" +
+    "μ = " + fmt(p.mu,2) + "\n" +
+    "α = " + fmt(state.alpha_deg,2) + "°\n" +
+    "θ = " + fmt(p.theta_deg,4) + "°\n" +
+    "y₁ = " + fmt(p.y1_cm,1) + " cm\n" +
+    "y₂ = " + fmt(p.y2_cm,1) + " cm\n" +
+    "d = " + fmt(p.d_mm,4) + " mm\n" +
+    "D = " + fmt(p.D_cm,1) + " cm\n" +
+    "β = " + fmt(p.beta_mm,4) + " mm"
+  );
+}
+
+function setLambda(value){
+  value = clamp(value,400,700);
+  document.getElementById("lambdaSlider").value = value;
+  onControlsChanged();
+}
+
+function setMu(value){
+  value = clamp(value,1.10,1.90);
+  document.getElementById("muSlider").value = value;
+  onControlsChanged();
+}
+
+function setAlpha(value){
+  value = clamp(value,0.10,2.00);
+  document.getElementById("alphaSlider").value = value;
+  onControlsChanged();
+}
+
+function setY1(value){
+  value = clamp(value,5,50);
+  document.getElementById("y1Slider").value = value;
+  onControlsChanged();
+}
+
+function setY2(value){
+  value = clamp(value,50,200);
+  document.getElementById("y2Slider").value = value;
+  onControlsChanged();
+}
+
+function setD(value){
+  value = clamp(value,0.05,3);
+
+  document.getElementById("manualDCheck").checked = true;
+  document.getElementById("manualDInput").value = value;
+
+  onControlsChanged();
+}
+
+function setLayer(layer, visible){
+  var id = Object.keys(toggleMap).find(function(key){
+    return toggleMap[key] === layer;
+  });
+
+  if (!id) return false;
+
+  document.getElementById(id).checked = visible;
+  state.show[layer] = visible;
+  applyVisibility();
+
+  return true;
+}
+
+function chatbotAnswer(raw){
+  var q = raw.toLowerCase().trim();
+
+  /* -------------------------
+     CONTROL COMMANDS
+  ------------------------- */
+
+  var m;
+
+  m = q.match(/(?:set|change)\s+(?:wavelength|lambda|λ)\s+(?:to\s+)?([\d.]+)/i);
+  if (m){
+    setLambda(parseFloat(m[1]));
+    return "Done. Wavelength is now " +
+      fmt(current.phys.lambda_nm,0) + " nm.";
+  }
+
+  m = q.match(/(?:set|change)\s+(?:mu|μ|refractive index)\s+(?:to\s+)?([\d.]+)/i);
+  if (m){
+    setMu(parseFloat(m[1]));
+    return "Done. Refractive index μ is now " +
+      fmt(current.phys.mu,2) + ".";
+  }
+
+  m = q.match(/(?:set|change)\s+(?:alpha|α|prism angle)\s+(?:to\s+)?([\d.]+)/i);
+  if (m){
+    setAlpha(parseFloat(m[1]));
+    return "Done. Prism angle α is now " +
+      fmt(state.alpha_deg,2) + "°.";
+  }
+
+  m = q.match(/(?:set|change)\s+y1\s+(?:to\s+)?([\d.]+)/i);
+  if (m){
+    setY1(parseFloat(m[1]));
+    return "Done. y₁ is now " +
+      fmt(state.y1_cm,0) + " cm.";
+  }
+
+  m = q.match(/(?:set|change)\s+y2\s+(?:to\s+)?([\d.]+)/i);
+  if (m){
+    setY2(parseFloat(m[1]));
+    return "Done. y₂ is now " +
+      fmt(state.y2_cm,0) + " cm.";
+  }
+
+  m = q.match(/(?:set|change)\s+d\s+(?:to\s+)?([\d.]+)/i);
+  if (m){
+    setD(parseFloat(m[1]));
+    return "Done. Manual d is now " +
+      fmt(current.phys.d_mm,3) + " mm.";
+  }
+
+  if (q.includes("pause")){
+    state.playing = false;
+    document.getElementById("btnPlay").textContent = "▶ Play";
+    return "Paused the simulation.";
+  }
+
+  if (q.includes("play") || q.includes("resume")){
+    state.playing = true;
+    document.getElementById("btnPlay").textContent = "⏸ Pause";
+    return "Playing the simulation.";
+  }
+
+  if (q.includes("reset camera")){
+    resetCamera();
+    return "Camera reset.";
+  }
+
+  if (q === "reset" || q.includes("reset everything")){
+    resetAll(false);
+    return "Simulation reset. All layers are visible again.";
+  }
+
+  var layerWords = {
+    "rays":"rays",
+    "wavefronts":"wavefronts",
+    "sources":"sources",
+    "overlap":"overlap",
+    "fringes":"fringes",
+    "measurements":"measurements",
+    "equations":"equations",
+    "diffraction":"diffraction"
+  };
+
+  Object.keys(layerWords).forEach(function(word){});
+
+  m = q.match(/(?:show|enable|turn on)\s+(rays|wavefronts|sources|overlap|fringes|measurements|equations|diffraction)/i);
+  if (m){
+    var layer1 = m[1].toLowerCase();
+    setLayer(layer1,true);
+    return "Done. " + layer1 + " are now visible.";
+  }
+
+  m = q.match(/(?:hide|disable|turn off)\s+(rays|wavefronts|sources|overlap|fringes|measurements|equations|diffraction)/i);
+  if (m){
+    var layer2 = m[1].toLowerCase();
+    setLayer(layer2,false);
+    return "Done. " + layer2 + " are now hidden.";
+  }
+
+  /* -------------------------
+     PHYSICS KNOWLEDGE
+  ------------------------- */
+
+  if (
+    q.includes("what is fresnel") ||
+    q.includes("what is biprism") ||
+    q.includes("fresnel biprism") ||
+    q.includes("explain experiment")
+  ){
+    return (
+      "Fresnel's biprism is used to produce two virtual coherent sources " +
+      "from one narrow monochromatic slit.\n\n" +
+      "The biprism divides the incident wavefront into two parts. " +
+      "The upper half deviates light downward and the lower half deviates " +
+      "light upward. By tracing the rays backward, two virtual sources S₁ " +
+      "and S₂ are obtained. Their overlapping waves produce interference fringes."
+    );
+  }
+
+  if (
+    q.includes("s1") ||
+    q.includes("s2") ||
+    q.includes("virtual source")
+  ){
+    return (
+      "S₁ and S₂ are virtual coherent sources formed by the two halves " +
+      "of the biprism. They are not two separate physical lamps.\n\n" +
+      "Both originate from the same original wavefront from slit S, so " +
+      "they have a fixed phase relationship and are coherent."
+    );
+  }
+
+  if (
+    q.includes("why") &&
+    q.includes("coherent")
+  ){
+    return (
+      "S₁ and S₂ are coherent because both are produced from the same " +
+      "original wavefront from slit S. Therefore their phase difference " +
+      "remains fixed, allowing stable interference fringes."
+    );
+  }
+
+  if (
+    q.includes("theta") ||
+    q.includes("deviation")
+  ){
+    return (
+      "The prism deviation is:\n\n" +
+      "θ = (μ − 1)α\n\n" +
+      "For the upper half, the light is deviated downward. " +
+      "For the lower half, it is deviated upward.\n\n" +
+      currentSimulationInfo()
+    );
+  }
+
+  if (
+    q.includes("d formula") ||
+    q.includes("source separation") ||
+    q === "what is d"
+  ){
+    return (
+      "The separation between the virtual sources is:\n\n" +
+      "d = 2y₁θ\n\n" +
+      "Here y₁ is the distance from the S₁S₂ plane to the biprism."
+    );
+  }
+
+  if (
+    q.includes("beta") ||
+    q.includes("fringe width")
+  ){
+    return (
+      "The fringe width is:\n\n" +
+      "β = λD/d\n\n" +
+      "So β increases with wavelength λ and distance D, and decreases " +
+      "when source separation d increases.\n\n" +
+      currentSimulationInfo()
+    );
+  }
+
+  if (
+    q.includes("wavelength") &&
+    (q.includes("calculate") || q.includes("formula"))
+  ){
+    return (
+      "The wavelength can be found from:\n\n" +
+      "λ = βd/D\n\n" +
+      "Use β and d in the same length units, and keep D in a matching unit."
+    );
+  }
+
+  if (
+    q.includes("derivation") ||
+    q.includes("derive")
+  ){
+    return (
+      "The main derivation chain is:\n\n" +
+      "1. θ = (μ − 1)α\n" +
+      "2. d = 2y₁θ\n" +
+      "3. D = y₁ + y₂\n" +
+      "4. β = λD/d\n\n" +
+      "Combining these gives the wavelength relation:\n\n" +
+      "λ = βd/D"
+    );
+  }
+
+  if (
+    q.includes("non localized") ||
+    q.includes("non-localized")
+  ){
+    return (
+      "The interference fringes are called non-localized because they " +
+      "are not confined to one particular plane. They can be observed " +
+      "at different positions within the region where the two beams overlap."
+    );
+  }
+
+  if (
+    q.includes("diffraction")
+  ){
+    return (
+      "Outside the main overlap region EF, the textbook notes that faint, " +
+      "uneven and widely spaced diffraction bands may be observed."
+    );
+  }
+
+  if (
+    q.includes("current values") ||
+    q.includes("current state") ||
+    q.includes("parameters")
+  ){
+    return currentSimulationInfo();
+  }
+
+  /* -------------------------
+     FALLBACK
+  ------------------------- */
+
+  return (
+    "I can help with the Fresnel biprism experiment, its equations, " +
+    "virtual sources, interference, and the simulation controls.\n\n" +
+    "Try asking:\n" +
+    "• What is β?\n" +
+    "• Explain S₁ and S₂\n" +
+    "• Why are S₁ and S₂ coherent?\n" +
+    "• Set wavelength to 650 nm\n" +
+    "• Hide rays\n" +
+    "• Reset everything"
+  );
+}
+
+function sendChat(){
+  var text = chatInput.value.trim();
+  if (!text) return;
+
+  addChatMessage(text,"user");
+
+  var answer = chatbotAnswer(text);
+
+  setTimeout(function(){
+    addChatMessage(answer,"bot");
+  },120);
+
+  chatInput.value = "";
+}
+
+chatToggle.addEventListener("click",function(){
+  var open = chatBox.style.display === "flex";
+  chatBox.style.display = open ? "none" : "flex";
+
+  if (!open && chatMessages.children.length === 0){
+    addChatMessage(
+      "Hi! I'm the Fresnel Biprism Assistant.\n\n" +
+      "Ask me about the experiment, equations, S₁/S₂, " +
+      "or tell me to change a simulation control.",
+      "bot"
+    );
+  }
+});
+
+chatSend.addEventListener("click",sendChat);
+
+chatInput.addEventListener("keydown",function(e){
+  if (e.key === "Enter"){
+    e.preventDefault();
+    sendChat();
+  }
+});
+
+chatClear.addEventListener("click",function(){
+  chatMessages.innerHTML = "";
+  addChatMessage(
+    "Chat cleared. Ask me anything about the Fresnel biprism.",
+    "bot"
+  );
+});
+
+document.querySelectorAll("#chatQuick button").forEach(function(btn){
+  btn.addEventListener("click",function(){
+    chatInput.value = btn.getAttribute("data-msg");
+    sendChat();
+  });
+});
 /* ============================================================
    17. RENDER LOOP
    ============================================================ */
