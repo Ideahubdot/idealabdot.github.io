@@ -120,7 +120,7 @@
 
     <div class="section">
       <h2>Geometry</h2>
-      <div class="row"><label for="y1Slider">y₁ (slit → biprism)</label><span class="val" id="y1Val">25 cm</span></div>
+      <div class="row"><label for="y1Slider">y₁ (S₁S₂ plane → biprism)</label><span class="val" id="y1Val">25 cm</span></div>
       <input type="range" id="y1Slider" min="5" max="50" step="1" value="25">
       <div class="row"><label for="y2Slider">y₂ (biprism → screen)</label><span class="val" id="y2Val">100 cm</span></div>
       <input type="range" id="y2Slider" min="50" max="200" step="1" value="100">
@@ -132,7 +132,7 @@
     <div class="section">
       <h2>Live Values</h2>
       <div class="readout"><span class="sym">θ (deviation)</span><b class="v" id="outTheta">–</b></div>
-      <div class="readout"><span class="sym">d = 2y₁θ</span><b class="v" id="outD">–</b></div>
+      <div class="readout"><span class="sym">d (source separation)</span><b class="v" id="outD">–</b></div>
       <div class="readout"><span class="sym">D = y₁ + y₂</span><b class="v" id="outDbig">–</b></div>
       <div class="readout"><span class="sym">β = λD/d</span><b class="v" id="outBeta">–</b></div>
     </div>
@@ -153,8 +153,8 @@
       <h2>Wavelength Calculator</h2>
       <div class="hint">Independently compute λ = βd/D from measured values (e.g. from an experiment).</div>
       <div class="calcGrid">
-        <div><label>β (mm)</label><input type="number" id="calcBeta" step="0.001" value="0.34"></div>
-        <div><label>d (mm)</label><input type="number" id="calcD" step="0.001" value="0.22"></div>
+        <div><label>β (mm)</label><input type="number" id="calcBeta" step="0.001" value="0.338"></div>
+        <div><label>d (mm)</label><input type="number" id="calcD" step="0.001" value="2.182"></div>
         <div><label>D (cm)</label><input type="number" id="calcDD" step="0.1" value="125"></div>
       </div>
       <div class="btnrow">
@@ -388,6 +388,7 @@ function computeVisual(phys){
   var sceneY1 = mapRange(phys.y1_cm, 5, 50, 4.2, 8.2);
   var sceneY2 = mapRange(phys.y2_cm, 50, 200, 6.5, 14.5);
   var sceneD  = sceneY1 + sceneY2;
+  var rayPlaneX = sceneY1 + T * 0.35;
 
   var d_vis = 2 * sceneY1 * phys.theta * VIS_K;
   d_vis = clamp(d_vis, 0.22, H*1.55);
@@ -406,7 +407,8 @@ function computeVisual(phys){
   var screenHalfH = clamp(beamTop*1.12, EFhalf*1.6, 7.5);
 
   return {
-    sceneY1:sceneY1, sceneY2:sceneY2, sceneD:sceneD, H:H, T:T,
+    sceneY1:sceneY1, sceneY2:sceneY2, sceneD:sceneD,
+rayPlaneX:rayPlaneX, H:H, T:T,
     d_vis:d_vis, S1:{x:0,y:S1y,z:0}, S2:{x:0,y:S2y,z:0},
     Y_B1:Y_B1, Y_A1:Y_A1, Y_B2:Y_B2, Y_C2:Y_C2,
     EFhalf:EFhalf, beamTop:beamTop, beamBottom:beamBottom, screenHalfH:screenHalfH
@@ -417,8 +419,35 @@ function computeVisual(phys){
    5. THREE.JS SETUP
    ============================================================ */
 var canvas = document.getElementById("glcanvas");
-var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha:false });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio||1, 2));
+var renderer;
+
+try {
+  renderer = new THREE.WebGLRenderer({
+    canvas: canvas,
+    antialias: true,
+    alpha: false
+  });
+
+  renderer.setPixelRatio(
+    Math.min(window.devicePixelRatio || 1, 2)
+  );
+} catch (err) {
+  console.error("Three.js WebGL initialization failed:", err);
+
+  document.getElementById("loadError").innerHTML =
+    "⚠️ The 3D graphics could not be initialized.<br><br>" +
+    "Three.js loaded, but WebGL could not be started.<br>" +
+    "Check the browser's hardware acceleration/WebGL support and reload the page.";
+
+  document.getElementById("loadError").style.display = "flex";
+
+  document.getElementById("sidebar").style.display = "none";
+  document.getElementById("topbar").style.display = "none";
+  document.getElementById("liveBar").style.display = "none";
+  document.getElementById("eqOverlay").style.display = "none";
+
+  return;
+}
 
 var scene = new THREE.Scene();
 scene.fog = new THREE.Fog(0x060a13, 30, 70);
@@ -603,16 +632,35 @@ function buildRaysAndSources(){
     for (var half=-1; half<=1; half+=2){
       for (var i=0;i<N_FAN;i++){
         var hitY = half>0 ? (H_*(i+0.5)/N_FAN) : (-H_*(i+0.5)/N_FAN);
-        var hit = new THREE.Vector3(sceneY1, hitY, z);
+        var hit = new THREE.Vector3(vis.rayPlaneX, hitY, z);
         // incident
         gRays.add(makeLine([Spt, hit], half>0?0x9fd8ff:0xffcf9f, { opacity: 0.55*op }));
-        // emergent: direction as if from virtual source (S1 for upper, S2 for lower)
-        var src = half>0 ? S1 : S2;
-        var srcV = new THREE.Vector3(src.x, src.y, z);
-        var dir = new THREE.Vector3().subVectors(hit, srcV);
-        var tScreen = (sceneD - srcV.x) / dir.x;
-        var screenPt = new THREE.Vector3().copy(srcV).addScaledVector(dir, tScreen);
-        gRays.add(makeLine([hit, screenPt], half>0?0x9fd8ff:0xffcf9f, { opacity: 0.5*op }));
+        /*
+  The refracted ray is drawn as the forward continuation of
+  the line joining the corresponding virtual source S₁/S₂
+  to the point where the ray meets the biprism.
+
+  Since the virtual-source displacement is
+      S₁S₂/2 = y₁ θ
+  this automatically represents the prism deviation
+      θ = (μ−1)α
+  in the small-angle construction.
+*/
+var src = half > 0 ? S1 : S2;
+var srcV = new THREE.Vector3(src.x, src.y, z);
+
+var dir = new THREE.Vector3().subVectors(hit, srcV).normalize();
+
+var tScreen = (sceneD - hit.x) / dir.x;
+var screenPt = new THREE.Vector3().copy(hit).addScaledVector(dir, tScreen);
+
+gRays.add(
+  makeLine(
+    [hit, screenPt],
+    half > 0 ? 0x9fd8ff : 0xffcf9f,
+    { opacity: 0.5 * op }
+  )
+);
       }
     }
 
@@ -622,15 +670,32 @@ function buildRaysAndSources(){
     function addConstruction(edgeYs, srcObj, color){
       var srcV = new THREE.Vector3(srcObj.x, srcObj.y, z);
       for (var e=0;e<edgeYs.length;e++){
-        var hit = new THREE.Vector3(sceneY1, edgeYs[e], z);
+        var hit = new THREE.Vector3(vis.rayPlaneX, edgeYs[e], z);
         gRays.add(makeLine([Spt, hit], color, { opacity: 0.85*op, linewidth:2 }));
         var dir = new THREE.Vector3().subVectors(hit, srcV);
         var tScreen = (sceneD - srcV.x) / dir.x;
         var screenPt = new THREE.Vector3().copy(srcV).addScaledVector(dir, tScreen);
         gRays.add(makeLine([hit, screenPt], color, { opacity: 0.85*op, linewidth:2 }));
         if (state.show.sources) {
-          gSources.add(makeLine([srcV, hit], color, { dashed:true, opacity:0.75*op, dashSize:0.14, gapSize:0.1 }));
-        }
+  /*
+    Dashed backward extension:
+    extend from the biprism point backward to the virtual
+    source. This shows why the emergent rays appear to
+    originate from S₁ or S₂.
+  */
+  gSources.add(
+    makeLine(
+      [hit, srcV],
+      color,
+      {
+        dashed: true,
+        opacity: 0.75 * op,
+        dashSize: 0.14,
+        gapSize: 0.10
+      }
+    )
+  );
+}
       }
     }
     addConstruction(edgesUpper, S1, 0x5ec2ff);
@@ -666,7 +731,7 @@ function buildOverlap(){
 
   // shaded overlap wedge in space (from biprism plane to screen), built from the 4 bounding rays
   var zf = ZLEN/2 + 0.02;
-  var p1 = new THREE.Vector3(sceneY1, 0, 0);
+  var p1 = new THREE.Vector3(vis.rayPlaneX, 0, 0);
   var p2 = new THREE.Vector3(sceneD, EFhalf, 0);
   var p3 = new THREE.Vector3(sceneD, -EFhalf, 0);
   var geo = new THREE.BufferGeometry().setFromPoints([p1,p2,p3]);
@@ -729,9 +794,17 @@ function updateScreenTexture(phys, vis){
   var EF = vis.EFhalf;
   var beamTop = vis.beamTop, beamBottom = vis.beamBottom;
   var colorRGB = wavelengthToRGB(phys.lambda_nm);
-  var refBeta = 0.0338; // cm, reference (default params) fringe width used to scale visual fringe count
-  var nFringes = clamp(Math.round(10 * (refBeta / Math.max(phys.beta_cm,1e-6))), 4, 46);
-  var fringeSpacingVis = (EF*2) / nFringes;
+/*
+  Convert the real physical fringe width β into a visible
+  screen spacing. The physics value remains untouched;
+  only the visual scale is exaggerated so fringes are visible.
+*/
+var FRINGE_VIS_SCALE = 3.0; // visual units per cm of physical β
+var fringeSpacingVis = clamp(
+  phys.beta_cm * FRINGE_VIS_SCALE,
+  0.025,
+  Math.max(EF * 1.8, 0.05)
+);
 
   for (var py=0; py<TEX_H; py++){
     var v = 1 - py/(TEX_H-1);           // 1 at top .. 0 at bottom
@@ -739,8 +812,8 @@ function updateScreenTexture(phys, vis){
     var r=10, g=10, b=18;
 
     if (state.show.fringes && Math.abs(y) <= EF){
-      var phase = Math.PI * y / (fringeSpacingVis/2);
-      var I = Math.cos(phase)*Math.cos(phase);
+      var phase = Math.PI * y / fringeSpacingVis;
+      var I = Math.cos(phase) * Math.cos(phase);
       var m = colorRGB.match(/\d+/g);
       var br = I*0.92 + 0.04;
       r = Math.round(parseInt(m[0]) * br);
@@ -799,7 +872,7 @@ function buildMeasurements(phys, vis){
   var zd = ZLEN/2 + 1.3;
   var y1p1 = new THREE.Vector3(0, H+1.7, zd);
   var y1p2 = new THREE.Vector3(vis.sceneY1, H+1.7, zd);
-  addDim(y1p1, y1p2, "y\u2081 = " + fmt(phys.y1_cm,0) + " cm", 0x5ec2ff);
+  addDim(y1p1, y1p2, "y₁ = " + fmt(phys.y1_cm,0) + " cm", 0x5ec2ff);
 
   var y2p1 = new THREE.Vector3(vis.sceneY1, H+1.7, zd);
   var y2p2 = new THREE.Vector3(vis.sceneD, H+1.7, zd);
