@@ -533,12 +533,13 @@ function buildBiprismMesh(){
   biprismEdges = new THREE.LineSegments(edgesGeo, new THREE.LineBasicMaterial({ color:0xbfe6ff, transparent:true, opacity:0.85 }));
   gBiprism.add(biprismEdges);
 
-  // BD edge (shared refracting edge, dividing line), highlighted
+  // BD is the dividing line between the two prism halves.
+// B is the actual refracting edge, parallel to the slit.
   var bdPts = [ new THREE.Vector3(T,0,-ZLEN/2), new THREE.Vector3(T,0,ZLEN/2) ];
   edgeBDLine = makeLine(bdPts, 0xffe27a, { opacity:1, linewidth:2 });
   gBiprism.add(edgeBDLine);
 
-  // D marker line (center of the flat back face)
+  // D marks the midpoint of the base AC
   var dPts = [ new THREE.Vector3(0,0,-ZLEN/2), new THREE.Vector3(0,0,ZLEN/2) ];
   gBiprism.add(makeLine(dPts, 0x8899bb, { opacity:0.5 }));
 
